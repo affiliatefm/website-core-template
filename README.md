@@ -1,22 +1,28 @@
-# Affiliate.fm Website Starter
+# Affiliate.fm Website Core Template
 
-A flexible, i18n-ready Astro starter template for building affiliate websites. Works seamlessly as a single-page landing or a full multi-page, multi-language site.
+The foundational template for Affiliate.fm websites. This is not a starter you fork once and forget — it's a living core that powers your site while letting you pull updates without touching your content.
+
+## Philosophy
+
+Your site is built on top of this template. When we improve the core — fix bugs, add features, optimize performance — you can pull those changes seamlessly. Your content, configuration, and assets remain untouched.
+
+**Template updates flow in. Your content stays yours.**
 
 ## Features
 
-- **Single or Multi-Page** — Start with a simple one-pager and scale to a full content site
-- **i18n Ready** — Built-in internationalization support with locale-aware file structure
-- **Easy Updates** — Pull template improvements without overwriting your content
+- **Updatable Core** — Pull template improvements without losing your work
+- **i18n Ready** — Built-in internationalization with locale-aware structure
+- **Flexible Scale** — Works as a single-page landing or a full multi-language site
 - **Astro Powered** — Fast, modern, content-focused architecture
 
-## Quick Start
+## Getting Started
 
 ```bash
-# Clone or init via Astro
-npx create-astro@latest -- --template affiliatefm/website-starter
+# Initialize a new site from the template
+npx create-astro@latest -- --template affiliatefm/website-core-template
 
 # Or clone directly
-git clone https://github.com/affiliatefm/website-starter.git my-site
+git clone https://github.com/affiliatefm/website-core-template.git my-site
 cd my-site
 npm install
 npm run dev
@@ -26,52 +32,56 @@ npm run dev
 
 ```
 src/
-├── content/          # Your content (excluded from template updates)
+├── content/          # Your content (preserved during updates)
 ├── config/
-│   ├── site.ts       # Site configuration (excluded from updates)
-│   └── locales.ts    # Locale settings (excluded from updates)
-└── ...
+│   ├── site.ts       # Your site settings (preserved)
+│   └── locales.ts    # Your locale config (preserved)
+└── ...               # Core template files (updatable)
 
 public/
-├── img/              # Your images (excluded from updates)
-└── favicon.*         # Your favicon (excluded from updates)
+├── img/              # Your images (preserved)
+└── favicon.*         # Your favicon (preserved)
 ```
 
-## Updating the Template
+## Updating the Core
 
-Keep your site up-to-date with the latest template improvements while preserving your content and configuration:
+Pull the latest template improvements while keeping your content intact:
 
 ```bash
 make update-template
 ```
 
-This syncs template files while keeping your content, config, and assets untouched. Review changes with `git status` before committing.
+Review changes with `git status` and resolve any conflicts before committing.
 
 ### What Gets Updated
+
 - Components, layouts, and utilities
-- Base styles and configurations
-- Build scripts and dependencies
+- Base styles and theme
+- Build configuration and scripts
+- Dependencies and tooling
 
 ### What Stays Yours
-- `src/content/` — Your pages and posts
-- `src/config/site.ts` — Site settings
-- `src/config/locales.ts` — Language configuration
-- `public/img/` — Your images
-- Environment files and secrets
 
-## i18n Support
+- `src/content/` — All your pages and posts
+- `src/config/site.ts` — Site configuration
+- `src/config/locales.ts` — Language settings
+- `public/img/` — Your images and media
+- `public/favicon*` — Your branding
+- `.env` files — Your secrets and environment
 
-The starter is designed with internationalization in mind from day one:
+## i18n Architecture
 
-- Locale-based content organization
+The template is designed with internationalization as a first-class concern:
+
+- Locale-based content organization (`src/content/{locale}/`)
 - URL path prefixes per language
 - Shared components with translation support
-- Works with a single locale or many
+- Single-locale sites work perfectly — adding languages later is seamless
 
-Even single-language sites benefit from this structure — adding languages later is seamless.
+## Related
+
+- [astro-content-ai-translator](https://github.com/affiliatefm/astro-content-ai-translator) — AI-powered translation for your content
 
 ## License
 
 MIT
-
-
