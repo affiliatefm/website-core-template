@@ -33,7 +33,7 @@ const hasMultipleLanguages = Object.keys(hreflangUrls).length > 1;
 ---
 
 <!doctype html>
-<html lang={locale}>
+<html lang={toHreflang(locale)}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
