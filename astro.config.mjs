@@ -1,9 +1,10 @@
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
-import { locales, defaultLocale } from "./src/i18n/config";
+import { locales, defaultLocale, siteUrl } from "./src/config/site.ts";
 
 export default defineConfig({
-  site: "https://example.com",
+  site: siteUrl,
+
   integrations: [mdx()],
 
   trailingSlash: "always",

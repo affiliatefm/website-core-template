@@ -1,4 +1,12 @@
 ---
+/**
+ * Navigation Component
+ * ====================
+ * Renders the main navigation menu based on locale-specific links.
+ *
+ * Navigation items are configured in src/config/site.ts
+ */
+
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { t, type Locale } from "@/i18n";
 
@@ -9,7 +17,9 @@ interface Props {
 const { locale } = Astro.props;
 const { nav } = t(locale);
 
-// Normalize path for comparison (remove trailing slash, handle root)
+/**
+ * Normalize path for active state comparison.
+ */
 function normalizePath(path: string): string {
   if (path === "/") return "/";
   return path.replace(/\/$/, "");
@@ -20,10 +30,14 @@ const currentPath = normalizePath(Astro.url.pathname);
 
 <nav class="nav">
   {
-    nav.links.map((link) => {
+    nav.map((link) => {
       const href = getRelativeLocaleUrl(locale, link.path);
       const isActive = currentPath === normalizePath(href);
-      return <a href={href} class:list={[{ active: isActive }]}>{link.label}</a>;
+      return (
+        <a href={href} class:list={[{ active: isActive }]}>
+          {link.label}
+        </a>
+      );
     })
   }
 </nav>

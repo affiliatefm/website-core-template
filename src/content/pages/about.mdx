@@ -12,24 +12,23 @@ This boilerplate demonstrates how to build a **content-driven multilingual site*
 
 ## Architecture
 
+### Configuration (`src/config/site.ts`)
+
+**Single source of truth** for all site settings:
+
+- Supported locales and default locale
+- Site URL and metadata
+- UI translations and navigation links
+
 ### Content (`src/content/pages/`)
 
-MDX files organized by locale. Default locale files live in the root, other locales in subfolders.
+MDX files organized by locale. Default locale files live at the root, other locales in subfolders.
 
 ### Routing (`src/pages/`)
 
-Two dynamic routes handle all pages:
+Single universal route handles all pages:
 
-- `[...path].astro` — Default locale (no prefix)
-- `[locale]/[...path].astro` — Other locales
-
-### i18n (`src/i18n/`)
-
-Centralized configuration:
-
-- `config.ts` — Locales, default locale
-- `translations.ts` — UI strings and navigation
-- `utils.ts` — Helper functions
+- `[...slug].astro` — All locales, all paths
 
 ## Custom URLs
 
