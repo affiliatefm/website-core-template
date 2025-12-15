@@ -8,14 +8,21 @@ interface Props {
 
 const { locale } = Astro.props;
 const { nav } = t(locale);
-const currentPath = Astro.url.pathname;
+
+// Normalize path for comparison (remove trailing slash, handle root)
+function normalizePath(path: string): string {
+  if (path === "/") return "/";
+  return path.replace(/\/$/, "");
+}
+
+const currentPath = normalizePath(Astro.url.pathname);
 ---
 
 <nav class="nav">
   {
     nav.links.map((link) => {
       const href = getRelativeLocaleUrl(locale, link.path);
-      const isActive = currentPath === href || currentPath === href.slice(0, -1);
+      const isActive = currentPath === normalizePath(href);
       return <a href={href} class:list={[{ active: isActive }]}>{link.label}</a>;
     })
   }

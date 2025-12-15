@@ -1,7 +1,7 @@
 ---
 import LanguageSwitcher from "@/components/LanguageSwitcher.astro";
 import Navigation from "@/components/Navigation.astro";
-import { t, type Locale } from "@/i18n";
+import { t, defaultLocale, type Locale } from "@/i18n";
 
 interface Props {
   title: string;
@@ -12,6 +12,14 @@ interface Props {
 
 const { title, description, locale, alternates = {} } = Astro.props;
 const ui = t(locale);
+
+// Canonical URL (current page)
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).href;
+
+// x-default points to default locale version (or current if no default exists)
+const xDefaultUrl = alternates[defaultLocale] 
+  ? new URL(alternates[defaultLocale], Astro.site ?? Astro.url.origin).href 
+  : canonicalUrl;
 ---
 
 <!doctype html>
@@ -21,11 +29,15 @@ const ui = t(locale);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title} | {ui.meta.siteName}</title>
     {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonicalUrl} />
     {
       Object.entries(alternates).map(([lang, url]) => (
-        <link rel="alternate" hreflang={lang} href={url} />
+        <link rel="alternate" hreflang={lang} href={new URL(url, Astro.site ?? Astro.url.origin).href} />
       ))
     }
+    {Object.keys(alternates).length > 1 && (
+      <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
+    )}
   </head>
   <body>
     <div class="page">

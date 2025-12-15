@@ -1,9 +1,10 @@
 /**
  * i18n Configuration
  * Single source of truth for all i18n settings
+ * Used by both astro.config.mjs and application code
  */
 
-// Supported locales (must match astro.config.mjs)
+// Supported locales
 export const locales = ["en", "ru"] as const;
 
 // Default locale (content in root, no URL prefix)
