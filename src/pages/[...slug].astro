@@ -30,9 +30,27 @@ export async function getStaticPaths() {
 
   const paths = [];
 
+  // Track slugs per locale to detect duplicates
+  const slugsByLocale = new Map<string, Map<string, string>>();
+  for (const loc of locales) {
+    slugsByLocale.set(loc, new Map());
+  }
+
   for (const entry of allPages) {
     const locale = getLocaleFromId(entry.id);
     const slug = getUrlSlug(entry);
+
+    // Check for duplicate permalinks within the same locale
+    const localeSlugMap = slugsByLocale.get(locale)!;
+    if (localeSlugMap.has(slug)) {
+      const existingId = localeSlugMap.get(slug);
+      throw new Error(
+        `Duplicate permalink "${slug || "/"}" for locale "${locale}": ` +
+          `found in both "${existingId}" and "${entry.id}". ` +
+          `Use unique permalinks or rename files.`
+      );
+    }
+    localeSlugMap.set(slug, entry.id);
 
     if (locale === defaultLocale) {
       // Default locale: no prefix

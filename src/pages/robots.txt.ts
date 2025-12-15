@@ -8,7 +8,7 @@ import type { APIRoute } from "astro";
 import { siteUrl } from "@/config/site";
 
 export const GET: APIRoute = () => {
-  const sitemapUrl = `${siteUrl}/sitemap-index.xml`;
+  const sitemapUrl = `${siteUrl}/sitemap.xml`;
 
   const content = `# Robots.txt
 # https://www.robotstxt.org/
