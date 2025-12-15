@@ -1,11 +1,12 @@
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import { locales, defaultLocale, siteUrl } from "./src/config/site.ts";
+import { checksIntegration } from "./src/integrations/checks.ts";
 
 export default defineConfig({
   site: siteUrl,
 
-  integrations: [mdx()],
+  integrations: [mdx(), checksIntegration()],
 
   trailingSlash: "always",
 

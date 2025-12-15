@@ -23,7 +23,6 @@ import {
   getUrlSlug,
   getAlternateUrls,
 } from "@/i18n";
-import { runChecks } from "@/checks";
 
 export async function getStaticPaths() {
   const allPages = await getCollection("pages", ({ data }) => !data.draft);
@@ -86,9 +85,6 @@ export async function getStaticPaths() {
       `Default locale pages cannot use slugs reserved for locale prefixes: ${list}`
     );
   }
-
-  // Run all build-time checks
-  runChecks(allPages);
 
   return paths;
 }
