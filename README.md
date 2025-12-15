@@ -10,6 +10,7 @@ A production-ready, reusable template for building multilingual websites with **
 - **Custom URLs** — Different slugs per locale when needed
 - **Multi-domain** — Subdomains, ccTLDs, or external domains per locale
 - **Type-safe** — Full TypeScript support
+- **SEO-ready** — Sitemap, robots.txt, hreflang tags
 - **Minimal** — No unnecessary dependencies
 
 ## Quick Start
@@ -47,7 +48,9 @@ src/
 ├── layouts/             # Page layouts
 ├── i18n/                # i18n utilities (auto-configured)
 └── pages/
-    └── [...slug].astro  # Universal router (don't edit unless advanced)
+    ├── [...slug].astro  # Universal router (don't edit unless advanced)
+    ├── 404.astro        # Custom 404 page
+    └── robots.txt.ts    # Dynamic robots.txt (uses siteUrl from config)
 ```
 
 ## Configuration
@@ -214,6 +217,20 @@ export const domains: Partial<Record<Locale, string>> = {
 | `es` | `https://example.es` | `https://example.es/about/` |
 
 When a locale has its own domain, the locale prefix is **not** included in the path (the domain itself identifies the locale).
+
+## SEO
+
+### Sitemap
+
+Sitemap is auto-generated at build time via `@astrojs/sitemap`. Output: `/sitemap-index.xml`
+
+### Robots.txt
+
+Auto-generated from `siteUrl` config. Edit `src/pages/robots.txt.ts` to customize rules.
+
+### 404 Page
+
+Custom 404 page at `src/pages/404.astro`. Automatically detects locale from URL path.
 
 ## Technical Details
 
