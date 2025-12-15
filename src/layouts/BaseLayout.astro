@@ -13,12 +13,17 @@ interface Props {
 const { title, description, locale, alternates = {} } = Astro.props;
 const ui = t(locale);
 
+const site = Astro.site;
+if (!site) {
+  throw new Error("Set `site` in astro.config.mjs to render canonical and hreflang links correctly.");
+}
+
 // Canonical URL (current page)
-const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).href;
+const canonicalUrl = new URL(Astro.url.pathname, site).href;
 
 // x-default points to default locale version (or current if no default exists)
 const xDefaultUrl = alternates[defaultLocale] 
-  ? new URL(alternates[defaultLocale], Astro.site ?? Astro.url.origin).href 
+  ? new URL(alternates[defaultLocale], site).href 
   : canonicalUrl;
 ---
 

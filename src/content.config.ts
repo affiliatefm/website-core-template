@@ -1,5 +1,6 @@
 import { defineCollection, z } from "astro:content";
 import { glob } from "astro/loaders";
+import path from "node:path";
 
 /**
  * Pages collection - MDX pages with i18n support
@@ -19,7 +20,8 @@ const pages = defineCollection({
     pattern: "**/*.mdx",
     base: "./src/content/pages",
     // Keep full path as id (don't use slug from frontmatter)
-    generateId: ({ entry }) => entry.replace(/\.mdx$/, ""),
+    // Normalize to POSIX separators so locale parsing works cross-platform
+    generateId: ({ entry }) => path.posix.normalize(entry.replace(/\\/g, "/").replace(/\.mdx$/, "")),
   }),
   schema: z.object({
     // Required

@@ -3,6 +3,7 @@ import mdx from "@astrojs/mdx";
 import { locales, defaultLocale } from "./src/i18n/config";
 
 export default defineConfig({
+  site: "https://example.com",
   integrations: [mdx()],
 
   trailingSlash: "always",

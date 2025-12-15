@@ -11,6 +11,19 @@ import { defaultLocale, locales, getUrlSlug, getAlternateUrls } from "@/i18n";
 export async function getStaticPaths() {
   const allPages = await getCollection("pages", ({ data }) => !data.draft);
   const otherLocales = locales.filter((l) => l !== defaultLocale);
+
+  // Guard against default-locale slugs that collide with locale prefixes (e.g., ru.mdx)
+  const reservedSlugConflicts = allPages.filter((page) => {
+    const firstSegment = page.id.split("/")[0];
+    return !page.id.includes("/") && otherLocales.includes(firstSegment as any);
+  });
+
+  if (reservedSlugConflicts.length > 0) {
+    const list = reservedSlugConflicts.map((p) => `"${p.id}"`).join(", ");
+    throw new Error(
+      `Default-locale pages cannot use slugs reserved for locale prefixes (${list}).`
+    );
+  }
   
   const defaultLocalePages = allPages.filter((page) => {
     const firstSegment = page.id.split("/")[0];

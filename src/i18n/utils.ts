@@ -13,6 +13,10 @@ export function t(locale: Locale) {
   return translations[locale] ?? translations[defaultLocale];
 }
 
+function normalizeSlug(slug: string): string {
+  return slug.replace(/^\//, "");
+}
+
 /**
  * Extract locale from entry ID
  * 
@@ -66,8 +70,8 @@ export function getBasePath(id: string): string {
  * Uses permalink from frontmatter if provided, otherwise base path
  */
 export function getUrlSlug(entry: { id: string; data: { permalink?: string } }): string {
-  if (entry.data.permalink) {
-    return entry.data.permalink;
+  if (entry.data.permalink && entry.data.permalink.trim().length > 0) {
+    return normalizeSlug(entry.data.permalink);
   }
   return getBasePath(entry.id);
 }
@@ -83,6 +87,14 @@ export function getPageUrl(entry: { id: string; data: { permalink?: string } }):
 
 type PageEntry = { id: string; data: { permalink?: string; alternates?: Record<string, string> } };
 
+function findEntryByLocaleAndSlug(locale: Locale, slug: string, entries: PageEntry[]) {
+  const targetSlug = normalizeSlug(slug);
+  return entries.find(
+    (candidate) =>
+      getLocaleFromId(candidate.id) === locale && getUrlSlug(candidate) === targetSlug
+  );
+}
+
 /**
  * Get alternate language URLs for a page
  * 
@@ -96,6 +108,7 @@ export function getAlternateUrls(
 ): Record<string, string> {
   const result: Record<string, string> = {};
   const currentLocale = getLocaleFromId(entry.id);
+  const currentSlug = getUrlSlug(entry);
   
   // Always include current page
   result[currentLocale] = getPageUrl(entry);
@@ -103,9 +116,16 @@ export function getAlternateUrls(
   // If explicit alternates defined → use them for OTHER locales
   if (entry.data.alternates) {
     for (const [locale, slug] of Object.entries(entry.data.alternates)) {
-      if (isValidLocale(locale) && locale !== currentLocale) {
-        result[locale] = getRelativeLocaleUrl(locale, slug);
+      if (!isValidLocale(locale) || locale === currentLocale) continue;
+
+      const matchedEntry = findEntryByLocaleAndSlug(locale, slug, allEntries);
+      if (!matchedEntry) {
+        throw new Error(
+          `Alternate mapping for "${entry.id}" points to missing page: ${locale}:${slug}`
+        );
       }
+
+      result[locale] = getPageUrl(matchedEntry);
     }
     return result;
   }
@@ -118,12 +138,23 @@ export function getAlternateUrls(
     
     // Skip same locale
     if (otherLocale === currentLocale) continue;
-    
-    // Skip if other page has custom alternates (it defines its own mapping)
-    if (other.data.alternates) continue;
-    
-    // Match by base path
-    if (getBasePath(other.id) === currentBasePath) {
+
+    const otherBasePath = getBasePath(other.id);
+    const otherAlternates = other.data.alternates;
+    const otherSlug = getUrlSlug(other);
+
+    const linksToCurrent =
+      !!otherAlternates &&
+      Object.entries(otherAlternates).some(
+        ([loc, slug]) =>
+          isValidLocale(loc) &&
+          loc === currentLocale &&
+          normalizeSlug(slug) === currentSlug
+      );
+
+    const canAutoPair = !otherAlternates && otherBasePath === currentBasePath;
+
+    if ((linksToCurrent || canAutoPair) && !result[otherLocale]) {
       result[otherLocale] = getPageUrl(other);
     }
   }
