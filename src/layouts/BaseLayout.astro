@@ -20,26 +20,11 @@ interface Props {
 const { title, description, locale, alternates = {} } = Astro.props;
 const ui = t(locale);
 
-// Ensure site URL is configured
-const site = Astro.site ?? new URL(siteUrl);
+// Canonical URL: use alternate for current locale, or fallback to current path
+const canonicalUrl = alternates[locale] ?? `${siteUrl}${Astro.url.pathname}`;
 
-/**
- * Convert relative URLs to absolute.
- */
-function toAbsolute(url: string): string {
-  if (/^https?:\/\//i.test(url)) return url;
-  return new URL(url, site).href;
-}
-
-// Canonical URL from alternates or current path
-const canonicalUrl = alternates[locale]
-  ? toAbsolute(alternates[locale])
-  : new URL(Astro.url.pathname, site).href;
-
-// x-default points to default locale version
-const xDefaultUrl = alternates[defaultLocale]
-  ? toAbsolute(alternates[defaultLocale])
-  : canonicalUrl;
+// x-default points to default locale version (or canonical if not available)
+const xDefaultUrl = alternates[defaultLocale] ?? canonicalUrl;
 
 const hasMultipleLanguages = Object.keys(alternates).length > 1;
 ---
@@ -58,7 +43,7 @@ const hasMultipleLanguages = Object.keys(alternates).length > 1;
     <!-- Hreflang tags for alternate languages -->
     {
       Object.entries(alternates).map(([lang, url]) => (
-        <link rel="alternate" hreflang={lang} href={toAbsolute(url)} />
+        <link rel="alternate" hreflang={lang} href={url} />
       ))
     }
     {

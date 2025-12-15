@@ -185,7 +185,7 @@ type PageEntry = {
 export function getAlternateUrls(
   entry: PageEntry,
   allEntries: PageEntry[],
-  options?: { absolute?: boolean; siteUrl?: string }
+  options?: { absolute?: boolean }
 ): Record<string, string> {
   const result: Record<string, string> = {};
   const currentLocale = getLocaleFromId(entry.id);

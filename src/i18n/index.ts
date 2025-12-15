@@ -14,7 +14,6 @@ export {
   defaultLocale,
   localeLabels,
   siteUrl,
-  siteName,
   domains,
   ui,
   type Locale,

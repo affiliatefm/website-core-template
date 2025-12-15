@@ -49,16 +49,10 @@ export const localeLabels: Record<Locale, string> = {
 // =============================================================================
 
 /**
- * Default site URL - used as fallback for canonical URLs, sitemaps, etc.
+ * Default site URL - used for canonical URLs, sitemaps, hreflang tags.
  * Set to your production domain.
  */
 export const siteUrl = "https://example.com";
-
-/**
- * Site name - displayed in the browser tab and meta tags.
- * Can be overridden per-locale in the `ui` object below.
- */
-export const siteName = "My Site";
 
 /**
  * Domain mapping per locale.
