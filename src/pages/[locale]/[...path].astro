@@ -33,7 +33,7 @@ export async function getStaticPaths() {
 
 const { entry, locale, allPages } = Astro.props;
 const { Content } = await render(entry);
-const alternates = getAlternateUrls(entry, allPages);
+const alternates = getAlternateUrls(entry, allPages, { site: Astro.site, absolute: true });
 ---
 
 <BaseLayout

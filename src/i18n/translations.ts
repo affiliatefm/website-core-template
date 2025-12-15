@@ -57,6 +57,48 @@ const translations: Record<Locale, Translations> = {
       siteName: "i18n Демо",
     },
   },
+  fr: {
+    nav: {
+      links: [
+        { path: "", label: "Accueil" },
+      ],
+    },
+    ui: {
+      readMore: "Lire plus",
+      backToHome: "Retour à l'accueil",
+    },
+    meta: {
+      siteName: "Démo i18n",
+    },
+  },
+  es: {
+    nav: {
+      links: [
+        { path: "", label: "Inicio" },
+      ],
+    },
+    ui: {
+      readMore: "Leer más",
+      backToHome: "Volver al inicio",
+    },
+    meta: {
+      siteName: "Demo i18n",
+    },
+  },
+  ja: {
+    nav: {
+      links: [
+        { path: "", label: "ホーム" },
+      ],
+    },
+    ui: {
+      readMore: "続きを読む",
+      backToHome: "ホームに戻る",
+    },
+    meta: {
+      siteName: "i18nデモ",
+    },
+  },
 };
 
 export default translations;

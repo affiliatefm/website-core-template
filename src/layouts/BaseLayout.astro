@@ -18,12 +18,15 @@ if (!site) {
   throw new Error("Set `site` in astro.config.mjs to render canonical and hreflang links correctly.");
 }
 
-// Canonical URL (current page)
-const canonicalUrl = new URL(Astro.url.pathname, site).href;
+const isAbsoluteUrl = (value: string) => /^https?:\/\//i.test(value);
+const toAbsolute = (value: string) => (isAbsoluteUrl(value) ? value : new URL(value, site).href);
+
+// Use alternates map as source of truth for canonicals/hreflang
+const canonicalUrl = alternates[locale] ? toAbsolute(alternates[locale]) : new URL(Astro.url.pathname, site).href;
 
 // x-default points to default locale version (or current if no default exists)
 const xDefaultUrl = alternates[defaultLocale] 
-  ? new URL(alternates[defaultLocale], site).href 
+  ? toAbsolute(alternates[defaultLocale]) 
   : canonicalUrl;
 ---
 
@@ -37,7 +40,7 @@ const xDefaultUrl = alternates[defaultLocale]
     <link rel="canonical" href={canonicalUrl} />
     {
       Object.entries(alternates).map(([lang, url]) => (
-        <link rel="alternate" hreflang={lang} href={new URL(url, Astro.site ?? Astro.url.origin).href} />
+        <link rel="alternate" hreflang={lang} href={toAbsolute(url)} />
       ))
     }
     {Object.keys(alternates).length > 1 && (

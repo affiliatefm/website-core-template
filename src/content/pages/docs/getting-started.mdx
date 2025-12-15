@@ -7,6 +7,13 @@ description: How to use this i18n boilerplate
 
 Quick guide to using and customizing this boilerplate.
 
+## Domain-aware hreflang
+
+- Update `site` in `astro.config.mjs` to your primary domain.
+- Configure per-locale domains in `src/i18n/config.ts` (`domains`), including subdomains, separate ccTLDs, or even external hosts with a base path.
+- The boilerplate builds absolute hreflang/canonical URLs from this map (and supports absolute URLs in `alternates` when you need custom targets).
+- Astro's built-in `i18n.domains` requires `output: "server"`; this template stays `static` and uses the map for link generation only.
+
 ## Installation
 
 ```bash

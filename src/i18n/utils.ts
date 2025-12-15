@@ -3,7 +3,7 @@
  */
 
 import { getRelativeLocaleUrl } from "astro:i18n";
-import { defaultLocale, locales, isValidLocale, type Locale } from "./config";
+import { defaultLocale, locales, domains, isValidLocale, type Locale } from "./config";
 import translations from "./translations";
 
 /**
@@ -15,6 +15,22 @@ export function t(locale: Locale) {
 
 function normalizeSlug(slug: string): string {
   return slug.replace(/^\//, "");
+}
+
+function ensureTrailingSlash(url: string): string {
+  return url.endsWith("/") ? url : `${url}/`;
+}
+
+function isAbsoluteUrl(value: string): boolean {
+  return /^https?:\/\//i.test(value);
+}
+
+function getLocaleBase(locale: Locale, site?: string): string {
+  const base = domains[locale] ?? site;
+  if (!base) {
+    throw new Error("Set `site` in astro.config.mjs or provide a domain for each locale.");
+  }
+  return ensureTrailingSlash(base);
 }
 
 /**
@@ -87,6 +103,18 @@ export function getPageUrl(entry: { id: string; data: { permalink?: string } }):
 
 type PageEntry = { id: string; data: { permalink?: string; alternates?: Record<string, string> } };
 
+function toHref(locale: Locale, slugOrUrl: string, opts?: { absolute?: boolean; site?: string }) {
+  if (isAbsoluteUrl(slugOrUrl)) {
+    return slugOrUrl;
+  }
+  const relative = getRelativeLocaleUrl(locale, slugOrUrl);
+  if (!opts?.absolute) return relative;
+
+  const base = getLocaleBase(locale, opts.site);
+  const relativePath = relative.replace(/^\//, "");
+  return new URL(relativePath, base).href;
+}
+
 function findEntryByLocaleAndSlug(locale: Locale, slug: string, entries: PageEntry[]) {
   const targetSlug = normalizeSlug(slug);
   return entries.find(
@@ -104,19 +132,25 @@ function findEntryByLocaleAndSlug(locale: Locale, slug: string, entries: PageEnt
  */
 export function getAlternateUrls(
   entry: PageEntry,
-  allEntries: PageEntry[]
+  allEntries: PageEntry[],
+  opts?: { absolute?: boolean; site?: string }
 ): Record<string, string> {
   const result: Record<string, string> = {};
   const currentLocale = getLocaleFromId(entry.id);
   const currentSlug = getUrlSlug(entry);
   
   // Always include current page
-  result[currentLocale] = getPageUrl(entry);
+  result[currentLocale] = toHref(currentLocale, currentSlug, opts);
 
   // If explicit alternates defined → use them for OTHER locales
   if (entry.data.alternates) {
     for (const [locale, slug] of Object.entries(entry.data.alternates)) {
       if (!isValidLocale(locale) || locale === currentLocale) continue;
+
+      if (isAbsoluteUrl(slug)) {
+        result[locale] = slug;
+        continue;
+      }
 
       const matchedEntry = findEntryByLocaleAndSlug(locale, slug, allEntries);
       if (!matchedEntry) {
@@ -125,7 +159,7 @@ export function getAlternateUrls(
         );
       }
 
-      result[locale] = getPageUrl(matchedEntry);
+      result[locale] = toHref(locale, getUrlSlug(matchedEntry), opts);
     }
     return result;
   }
@@ -155,7 +189,7 @@ export function getAlternateUrls(
     const canAutoPair = !otherAlternates && otherBasePath === currentBasePath;
 
     if ((linksToCurrent || canAutoPair) && !result[otherLocale]) {
-      result[otherLocale] = getPageUrl(other);
+      result[otherLocale] = toHref(otherLocale, otherSlug, opts);
     }
   }
 
