@@ -1,29 +1,20 @@
-# Affiliate.fm Website Core Template
+# Astro i18n Boilerplate
 
-The foundational template for Affiliate.fm websites. This is not a starter you fork once and forget — it's a living core that powers your site while letting you pull updates without touching your content.
-
-## Philosophy
-
-Your site is built on top of this template. When we improve the core — fix bugs, add features, optimize performance — you can pull those changes seamlessly. Your content, configuration, and assets remain untouched.
-
-**Template updates flow in. Your content stays yours.**
+Minimal, content-driven i18n boilerplate for Astro 5.
 
 ## Features
 
-- **Updatable Core** — Pull template improvements without losing your work
-- **i18n Ready** — Built-in internationalization with locale-aware structure
-- **Flexible Scale** — Works as a single-page landing or a full multi-language site
-- **Astro Powered** — Fast, modern, content-focused architecture
+- ✅ Astro 5 built-in i18n routing
+- ✅ MDX content collections
+- ✅ Auto-matching translations by path
+- ✅ Custom URLs per locale
+- ✅ Single-locale pages support
+- ✅ Nested paths
+- ✅ TypeScript
 
-## Getting Started
+## Quick Start
 
 ```bash
-# Initialize a new site from the template
-npx create-astro@latest -- --template affiliatefm/website-core-template
-
-# Or clone directly
-git clone https://github.com/affiliatefm/website-core-template.git my-site
-cd my-site
 npm install
 npm run dev
 ```
@@ -32,55 +23,127 @@ npm run dev
 
 ```
 src/
-├── content/          # Your content (preserved during updates)
-├── config/
-│   ├── site.ts       # Your site settings (preserved)
-│   └── locales.ts    # Your locale config (preserved)
-└── ...               # Core template files (updatable)
-
-public/
-├── img/              # Your images (preserved)
-└── favicon.*         # Your favicon (preserved)
+├── content/pages/              # MDX content
+│   ├── index.mdx               # /
+│   ├── about.mdx               # /about
+│   ├── contact.mdx             # /contact (EN only)
+│   ├── docs/
+│   │   └── getting-started.mdx # /docs/getting-started
+│   └── ru/
+│       ├── index.mdx           # /ru
+│       ├── o-nas.mdx           # /ru/o-nas (custom URL)
+│       ├── only-russian.mdx    # /ru/only-russian (RU only)
+│       └── docs/
+│           └── getting-started.mdx
+├── pages/
+│   ├── [...path].astro         # Default locale routes
+│   └── [locale]/
+│       └── [...path].astro     # Other locale routes
+├── i18n/
+│   ├── config.ts               # Locales config
+│   ├── translations.ts         # UI strings + nav
+│   └── utils.ts                # Helpers
+├── layouts/
+│   └── BaseLayout.astro
+└── components/
+    ├── Navigation.astro
+    └── LanguageSwitcher.astro
 ```
 
-## Updating the Core
+## i18n Patterns
 
-Pull the latest template improvements while keeping your content intact:
+### Auto-Matched Pages
 
-```bash
-make update-template
+Pages with same path structure link automatically:
+
+```
+pages/about.mdx       ↔  pages/ru/about.mdx
+pages/docs/guide.mdx  ↔  pages/ru/docs/guide.mdx
 ```
 
-Review changes with `git status` and resolve any conflicts before committing.
+No configuration needed.
 
-### What Gets Updated
+### Custom URLs
 
-- Components, layouts, and utilities
-- Base styles and theme
-- Build configuration and scripts
-- Dependencies and tooling
+When paths must differ between locales:
 
-### What Stays Yours
+**English** (`pages/about.mdx`):
+```yaml
+---
+title: About
+alternates:
+  en: about
+  ru: o-nas
+---
+```
 
-- `src/content/` — All your pages and posts
-- `src/config/site.ts` — Site configuration
-- `src/config/locales.ts` — Language settings
-- `public/img/` — Your images and media
-- `public/favicon*` — Your branding
-- `.env` files — Your secrets and environment
+**Russian** (`pages/ru/o-nas.mdx`):
+```yaml
+---
+title: О нас
+permalink: o-nas
+alternates:
+  en: about
+  ru: o-nas
+---
+```
 
-## i18n Architecture
+Result: `/about` ↔ `/ru/o-nas`
 
-The template is designed with internationalization as a first-class concern:
+### Single-Locale Pages
 
-- Locale-based content organization (`src/content/{locale}/`)
-- URL path prefixes per language
-- Shared components with translation support
-- Single-locale sites work perfectly — adding languages later is seamless
+Just don't create the translation. Language switcher shows it as unavailable.
 
-## Related
+## Adding Content
 
-- [astro-content-ai-translator](https://github.com/affiliatefm/astro-content-ai-translator) — AI-powered translation for your content
+### New Page (Both Locales)
+
+```
+pages/services.mdx      → /services
+pages/ru/services.mdx   → /ru/services
+```
+
+Auto-linked, no frontmatter needed.
+
+### Navigation
+
+Update `src/i18n/translations.ts`:
+
+```ts
+en: {
+  nav: {
+    links: [
+      { path: "", label: "Home" },
+      { path: "services", label: "Services" },
+    ],
+  },
+},
+ru: {
+  nav: {
+    links: [
+      { path: "", label: "Главная" },
+      { path: "services", label: "Услуги" },
+    ],
+  },
+},
+```
+
+## Adding a Locale
+
+1. `astro.config.mjs` — add to `locales` array
+2. `src/i18n/config.ts` — add to `locales` and `localeLabels`
+3. `src/i18n/translations.ts` — add UI translations
+4. Create `src/content/pages/<locale>/`
+
+## Frontmatter Reference
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `title` | string | Page title (required) |
+| `description` | string | Meta description |
+| `permalink` | string | Custom URL slug |
+| `alternates` | object | `{ locale: slug }` mapping |
+| `draft` | boolean | Exclude from build |
 
 ## License
 

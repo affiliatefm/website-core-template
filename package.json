@@ -1,0 +1,17 @@
+{
+  "name": "website-core-template",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && find dist -name '*.html' -exec js-beautify -r --type html {} \\;",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.0.0",
+    "@astrojs/mdx": "^4.0.0"
+  },
+  "devDependencies": {
+    "js-beautify": "^1.15.1"
+  }
+}

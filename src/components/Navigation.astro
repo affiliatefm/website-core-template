@@ -1,0 +1,22 @@
+---
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { t, type Locale } from "@/i18n";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const { nav } = t(locale);
+const currentPath = Astro.url.pathname;
+---
+
+<nav class="nav">
+  {
+    nav.links.map((link) => {
+      const href = getRelativeLocaleUrl(locale, link.path);
+      const isActive = currentPath === href || currentPath === href.slice(0, -1);
+      return <a href={href} class:list={[{ active: isActive }]}>{link.label}</a>;
+    })
+  }
+</nav>

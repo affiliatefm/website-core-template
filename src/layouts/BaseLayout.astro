@@ -1,0 +1,138 @@
+---
+import LanguageSwitcher from "@/components/LanguageSwitcher.astro";
+import Navigation from "@/components/Navigation.astro";
+import { t, type Locale } from "@/i18n";
+
+interface Props {
+  title: string;
+  description?: string;
+  locale: Locale;
+  alternates?: Record<string, string>;
+}
+
+const { title, description, locale, alternates = {} } = Astro.props;
+const ui = t(locale);
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} | {ui.meta.siteName}</title>
+    {description && <meta name="description" content={description} />}
+    {
+      Object.entries(alternates).map(([lang, url]) => (
+        <link rel="alternate" hreflang={lang} href={url} />
+      ))
+    }
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <Navigation locale={locale} />
+        <LanguageSwitcher locale={locale} alternates={alternates} />
+      </header>
+      <main>
+        <slot />
+      </main>
+      <footer>© {new Date().getFullYear()} · Astro i18n</footer>
+    </div>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --text: #222;
+    --muted: #666;
+    --light: #999;
+    --accent: #0055ff;
+    --border: #eee;
+    --bg: #fff;
+    --bg-code: #f5f5f5;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font: 15px/1.6 system-ui, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  h1 { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; }
+  h2 { font-size: 1.15rem; font-weight: 600; margin: 1.75rem 0 0.75rem; }
+  h3 { font-size: 1rem; font-weight: 600; margin: 1.25rem 0 0.5rem; }
+
+  p { margin-bottom: 0.75rem; }
+  ul, ol { margin: 0.75rem 0; padding-left: 1.25rem; }
+  li { margin-bottom: 0.25rem; }
+
+  code {
+    font: 0.9em ui-monospace, monospace;
+    background: var(--bg-code);
+    padding: 0.15em 0.35em;
+    border-radius: 3px;
+  }
+
+  pre {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-size: 0.85rem;
+  }
+
+  pre code { background: none; padding: 0; }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
+  th { font-weight: 600; background: var(--bg-code); }
+
+  /* Layout */
+  .page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  main { flex: 1; padding: 1.5rem 0; }
+
+  footer {
+    padding: 1rem 0;
+    border-top: 1px solid var(--border);
+    font-size: 0.8rem;
+    color: var(--light);
+  }
+
+  /* Navigation */
+  .nav { display: flex; gap: 1.25rem; font-size: 0.9rem; }
+  .nav a { color: var(--muted); }
+  .nav a:hover { color: var(--text); text-decoration: none; }
+  .nav a.active { color: var(--text); font-weight: 500; }
+
+  /* Language Switcher */
+  .lang { display: flex; gap: 0.3rem; font-size: 0.8rem; }
+  .lang .sep { color: #ddd; }
+  .lang .current { color: var(--text); }
+  .lang a { color: var(--muted); }
+  .lang .na { color: #ccc; text-decoration: line-through; }
+</style>

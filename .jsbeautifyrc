@@ -1,0 +1,12 @@
+{
+  "html": {
+    "indent_size": 2,
+    "indent_inner_html": false,
+    "preserve_newlines": false,
+    "max_preserve_newlines": 0,
+    "unformatted": ["pre", "code", "span"],
+    "content_unformatted": ["pre", "code"],
+    "extra_liners": [],
+    "inline": ["a", "span", "strong", "em", "code", "b", "i"]
+  }
+}

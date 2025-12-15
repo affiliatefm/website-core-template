@@ -1,0 +1,45 @@
+---
+title: Welcome
+description: Minimal Astro 5 i18n boilerplate with content-driven architecture
+---
+
+# Astro i18n Boilerplate
+
+A clean, minimal foundation for building multilingual websites with **Astro 5**.
+
+## Features
+
+- **Content-driven** — Pages as MDX files with frontmatter
+- **Auto-linking** — Translations matched automatically by path structure
+- **Custom URLs** — Different slugs per locale when needed
+- **Type-safe** — Full TypeScript support throughout
+- **Minimal** — No unnecessary dependencies or complexity
+
+## Demo Pages
+
+- [Home](/) — Paired with `/ru` (auto-matched)
+- [About](/about) — Custom URL: `/ru/o-nas`
+- [Contact](/contact) — English only
+- [Docs](/docs/getting-started) — Nested path, auto-matched
+
+## Quick Start
+
+```bash
+npm install
+npm run dev
+```
+
+## How It Works
+
+Content lives in `src/content/pages/`. Folder structure determines URLs:
+
+```
+src/content/pages/
+├── index.mdx           → /
+├── about.mdx           → /about
+└── ru/
+    ├── index.mdx       → /ru
+    └── o-nas.mdx       → /ru/o-nas
+```
+
+Pages with the same structure are linked automatically. Custom URLs use `permalink` + `alternates` in frontmatter.

@@ -1,0 +1,38 @@
+---
+/**
+ * Default locale pages (no prefix)
+ * Handles: /, /about, /contact, /docs/getting-started
+ */
+
+import { getCollection, render } from "astro:content";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { defaultLocale, locales, getBasePath, getAlternateUrls } from "@/i18n";
+
+export async function getStaticPaths() {
+  const allPages = await getCollection("pages", ({ data }) => !data.draft);
+  const otherLocales = locales.filter((l) => l !== defaultLocale);
+  
+  const defaultLocalePages = allPages.filter((page) => {
+    const firstSegment = page.id.split("/")[0];
+    return !otherLocales.includes(firstSegment as any);
+  });
+
+  return defaultLocalePages.map((entry) => ({
+    params: { path: getBasePath(entry.id) || undefined },
+    props: { entry, allPages },
+  }));
+}
+
+const { entry, allPages } = Astro.props;
+const { Content } = await render(entry);
+const alternates = getAlternateUrls(entry, allPages);
+---
+
+<BaseLayout
+  title={entry.data.title}
+  description={entry.data.description}
+  locale={defaultLocale}
+  alternates={alternates}
+>
+  <Content />
+</BaseLayout>

@@ -1,0 +1,34 @@
+---
+import { locales, localeLabels, type Locale } from "@/i18n";
+
+interface Props {
+  locale: Locale;
+  alternates?: Record<string, string>;
+}
+
+const { locale, alternates = {} } = Astro.props;
+
+const options = locales.map((loc) => ({
+  code: loc,
+  label: localeLabels[loc],
+  href: alternates[loc] || null,
+  isCurrent: loc === locale,
+}));
+---
+
+<div class="lang">
+  {
+    options.map((opt, i) => (
+      <>
+        {i > 0 && <span class="sep">/</span>}
+        {opt.isCurrent ? (
+          <span class="current">{opt.label}</span>
+        ) : opt.href ? (
+          <a href={opt.href}>{opt.label}</a>
+        ) : (
+          <span class="na">{opt.label}</span>
+        )}
+      </>
+    ))
+  }
+</div>

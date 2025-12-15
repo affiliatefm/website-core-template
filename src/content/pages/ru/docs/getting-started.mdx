@@ -1,0 +1,60 @@
+---
+title: Начало работы
+description: Как использовать этот i18n бойлерплейт
+---
+
+# Начало работы
+
+Краткое руководство по использованию бойлерплейта.
+
+## Установка
+
+```bash
+git clone <repo-url> my-site
+cd my-site
+npm install
+npm run dev
+```
+
+## Добавление страниц
+
+### Авто-связь (одинаковый путь)
+
+Создайте файлы с одинаковой структурой:
+
+```
+pages/services.mdx      → /services
+pages/ru/services.mdx   → /ru/services
+```
+
+Связываются автоматически, frontmatter не нужен.
+
+### Кастомные URL
+
+Когда пути должны отличаться:
+
+```yaml
+# pages/about.mdx
+alternates:
+  en: about
+  ru: o-nas
+```
+
+```yaml
+# pages/ru/o-nas.mdx
+permalink: o-nas
+alternates:
+  en: about
+  ru: o-nas
+```
+
+## Добавление локали
+
+1. `astro.config.mjs` — добавить в `locales`
+2. `src/i18n/config.ts` — добавить в `locales` и `localeLabels`
+3. `src/i18n/translations.ts` — добавить UI строки
+4. Создать `src/content/pages/<locale>/`
+
+---
+
+[← На главную](/ru)

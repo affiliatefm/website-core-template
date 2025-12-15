@@ -1,0 +1,45 @@
+---
+title: About
+description: About this i18n boilerplate template
+alternates:
+  en: about
+  ru: o-nas
+---
+
+# About This Template
+
+This boilerplate demonstrates how to build a **content-driven multilingual site** with Astro 5's built-in i18n features.
+
+## Architecture
+
+### Content (`src/content/pages/`)
+
+MDX files organized by locale. Default locale files live in the root, other locales in subfolders.
+
+### Routing (`src/pages/`)
+
+Two dynamic routes handle all pages:
+
+- `[...path].astro` — Default locale (no prefix)
+- `[locale]/[...path].astro` — Other locales
+
+### i18n (`src/i18n/`)
+
+Centralized configuration:
+
+- `config.ts` — Locales, default locale
+- `translations.ts` — UI strings and navigation
+- `utils.ts` — Helper functions
+
+## Custom URLs
+
+This page demonstrates **custom URL mapping**:
+
+- English: `/about`
+- Russian: `/ru/o-nas`
+
+Achieved with `alternates` in frontmatter on both pages, plus `permalink` on the Russian version.
+
+---
+
+[← Back to Home](/)

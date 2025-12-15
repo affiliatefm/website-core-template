@@ -1,0 +1,60 @@
+---
+title: Getting Started
+description: How to use this i18n boilerplate
+---
+
+# Getting Started
+
+Quick guide to using and customizing this boilerplate.
+
+## Installation
+
+```bash
+git clone <repo-url> my-site
+cd my-site
+npm install
+npm run dev
+```
+
+## Adding Pages
+
+### Auto-Matched (Same Path)
+
+Create files with the same structure:
+
+```
+pages/services.mdx      → /services
+pages/ru/services.mdx   → /ru/services
+```
+
+Linked automatically, no frontmatter needed.
+
+### Custom URLs
+
+When paths must differ:
+
+```yaml
+# pages/about.mdx
+alternates:
+  en: about
+  ru: o-nas
+```
+
+```yaml
+# pages/ru/o-nas.mdx
+permalink: o-nas
+alternates:
+  en: about
+  ru: o-nas
+```
+
+## Adding a Locale
+
+1. `astro.config.mjs` — add to `locales`
+2. `src/i18n/config.ts` — add to `locales` and `localeLabels`
+3. `src/i18n/translations.ts` — add UI strings
+4. Create `src/content/pages/<locale>/`
+
+---
+
+[← Back to Home](/)
