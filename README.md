@@ -132,6 +132,7 @@ permalink: custom-slug     # Optional: override URL slug
 alternates:                # Optional: link to translations with different slugs
   en: about
   ru: o-nas
+updatedAt: 2024-12-15      # Optional: last update date for sitemap
 draft: false               # Optional: hide from production
 ---
 ```
@@ -171,6 +172,44 @@ alternates:
   en: about
 ---
 ```
+
+### External Alternates (Multi-Domain)
+
+You can link to translations on external domains:
+
+```yaml
+---
+title: Welcome
+alternates:
+  en: ""
+  ru: ""
+  fr: https://fr.example.com/      # External subdomain
+  es: https://example.es/          # External ccTLD
+  ja: https://partner-site.jp/     # External partner site
+---
+```
+
+**⚠️ Important:** External sites **must** have reciprocal `hreflang` links pointing back to your site. Without bidirectional links, search engines will ignore the `hreflang` tags.
+
+The build process will warn you about external alternates:
+
+```
+[build-checks] Found 3 external hreflang link(s) to: https://fr.example.com, https://example.es
+[build-checks] External sites MUST have reciprocal hreflang links pointing back.
+```
+
+### Hreflang Format (BCP 47)
+
+Locale codes in folder names can be any format you prefer (e.g., `ru-kz`, `kz`, `zh-hans`), but hreflang tags are automatically normalized to [BCP 47 standard](https://en.wikipedia.org/wiki/IETF_language_tag):
+
+| Folder Name | Hreflang Output |
+|-------------|-----------------|
+| `ru` | `ru` |
+| `ru-kz` | `ru-KZ` |
+| `pt-br` | `pt-BR` |
+| `zh-hans` | `zh-Hans` |
+
+This ensures compatibility with Google, Bing, and other search engines.
 
 ## Customization
 
@@ -245,6 +284,33 @@ i18n: {
   defaultLocale: "en",
   routing: {
     prefixDefaultLocale: false,  // / instead of /en/
+  },
+}
+```
+
+### No Fallback Behavior
+
+This template intentionally does **not** use Astro's `fallback` feature. Here's why:
+
+1. **Static builds** — With `fallback`, Astro creates duplicate HTML files for missing translations, which may not be desired
+2. **Explicit control** — Missing translations are shown as unavailable in the language switcher (not auto-redirected)
+3. **SEO clarity** — Each page exists in specific locales only; no confusing redirects
+
+**What happens when a translation is missing:**
+
+- The page only exists for locales that have the content file
+- Language switcher shows only available locales for that page
+- No `hreflang` tags are generated for missing locales
+- Visiting a non-existent locale URL returns 404
+
+If you need fallback behavior, add it to `astro.config.mjs`:
+
+```javascript
+i18n: {
+  routing: {
+    fallback: {
+      ru: "en",  // Russian visitors see English if no Russian version
+    },
   },
 }
 ```

@@ -5,7 +5,7 @@
  *
  * Usage in components:
  *   import { locales, defaultLocale, t, getLocaleFromId } from "@/i18n";
- *   import { getAbsoluteLocaleUrl } from "@/i18n";
+ *   import { getAbsoluteLocaleUrl, toHreflang } from "@/i18n";
  */
 
 // Re-export all config from site.ts

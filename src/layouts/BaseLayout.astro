@@ -8,7 +8,7 @@
 
 import LanguageSwitcher from "@/components/LanguageSwitcher.astro";
 import Navigation from "@/components/Navigation.astro";
-import { t, defaultLocale, siteUrl, type Locale } from "@/i18n";
+import { t, defaultLocale, siteUrl, toHreflang, type Locale } from "@/i18n";
 
 interface Props {
   title: string;
@@ -43,10 +43,10 @@ const hasMultipleLanguages = Object.keys(hreflangUrls).length > 1;
     <!-- Canonical -->
     <link rel="canonical" href={canonicalUrl} />
 
-    <!-- Hreflang tags for alternate languages -->
+    <!-- Hreflang tags for alternate languages (BCP 47 format) -->
     {
       Object.entries(hreflangUrls).map(([lang, url]) => (
-        <link rel="alternate" hreflang={lang} href={url} />
+        <link rel="alternate" hreflang={toHreflang(lang)} href={url} />
       ))
     }
     {

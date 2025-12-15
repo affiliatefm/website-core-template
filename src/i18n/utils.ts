@@ -15,7 +15,7 @@ import {
 } from "@/config/site";
 
 // =============================================================================
-// LOCALE VALIDATION
+// LOCALE VALIDATION & NORMALIZATION
 // =============================================================================
 
 /**
@@ -23,6 +23,52 @@ import {
  */
 export function isValidLocale(value: string): value is Locale {
   return locales.includes(value as Locale);
+}
+
+/**
+ * Convert locale code to BCP 47 format for hreflang tags.
+ *
+ * Path/folder names can be any format (e.g., "ru-kz", "kz", "zh-hans"),
+ * but hreflang tags must follow BCP 47 standard:
+ * - Language subtag: lowercase (e.g., "en", "ru")
+ * - Region subtag: UPPERCASE (e.g., "US", "KZ")
+ * - Script subtag: Title case (e.g., "Hans", "Latn")
+ *
+ * Examples:
+ * - "en" → "en"
+ * - "ru-kz" → "ru-KZ"
+ * - "zh-hans" → "zh-Hans"
+ * - "pt-br" → "pt-BR"
+ */
+export function toHreflang(locale: string): string {
+  const parts = locale.split("-");
+
+  if (parts.length === 1) {
+    // Simple language code: "en", "ru"
+    return parts[0].toLowerCase();
+  }
+
+  if (parts.length === 2) {
+    const [first, second] = parts;
+
+    // Check if second part is a script (4 letters) or region (2 letters)
+    if (second.length === 4) {
+      // Script: zh-hans → zh-Hans
+      return `${first.toLowerCase()}-${second.charAt(0).toUpperCase()}${second.slice(1).toLowerCase()}`;
+    }
+
+    // Region: ru-kz → ru-KZ
+    return `${first.toLowerCase()}-${second.toUpperCase()}`;
+  }
+
+  // Three parts: language-script-region (e.g., zh-Hans-CN)
+  if (parts.length === 3) {
+    const [lang, script, region] = parts;
+    return `${lang.toLowerCase()}-${script.charAt(0).toUpperCase()}${script.slice(1).toLowerCase()}-${region.toUpperCase()}`;
+  }
+
+  // Fallback: return as-is
+  return locale;
 }
 
 // =============================================================================

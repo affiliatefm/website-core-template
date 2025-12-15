@@ -374,6 +374,22 @@ export function checksIntegration(options: ChecksOptions = {}): AstroIntegration
 
         logger.info(`Found ${pagesWithHreflang.length} pages with hreflang tags`);
 
+        // Warn about external alternates (cannot be validated)
+        const externalLinks = pagesWithHreflang.flatMap((p) =>
+          p.links.filter((l) => isExternal(l.href, siteUrl))
+        );
+        if (externalLinks.length > 0) {
+          const uniqueExternalDomains = [
+            ...new Set(externalLinks.map((l) => new URL(l.href).origin)),
+          ];
+          logger.warn(
+            `Found ${externalLinks.length} external hreflang link(s) to: ${uniqueExternalDomains.join(", ")}`
+          );
+          logger.warn(
+            `External sites MUST have reciprocal hreflang links pointing back. This cannot be validated automatically.`
+          );
+        }
+
         // Run checks
         let totalErrors = 0;
         const results: { name: string; errors: CheckError[]; time: number }[] = [];

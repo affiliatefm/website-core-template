@@ -58,6 +58,13 @@ const pages = defineCollection({
     alternates: z.record(z.string(), z.string()).optional(),
 
     /**
+     * Last updated date (optional).
+     * Used in sitemap <lastmod> tag for SEO.
+     * Format: YAML date (2024-12-15) or ISO string.
+     */
+    updatedAt: z.coerce.date().optional(),
+
+    /**
      * Draft status (optional, default: false).
      * Draft pages are excluded from production builds.
      */

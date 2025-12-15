@@ -16,6 +16,7 @@ import {
   getUrlSlug,
   getAlternateUrls,
   getAbsoluteLocaleUrl,
+  toHreflang,
 } from "@/i18n";
 
 export const GET: APIRoute = async () => {
@@ -24,6 +25,7 @@ export const GET: APIRoute = async () => {
   // Build URL entries with alternates
   const urlEntries: Array<{
     loc: string;
+    lastmod?: string;
     alternates: Record<string, string>;
   }> = [];
 
@@ -33,7 +35,12 @@ export const GET: APIRoute = async () => {
     const loc = getAbsoluteLocaleUrl(locale, slug);
     const alternates = getAlternateUrls(entry, allPages, { absolute: true });
 
-    urlEntries.push({ loc, alternates });
+    // Use updatedAt from frontmatter, or undefined (will be omitted)
+    const lastmod = entry.data.updatedAt
+      ? entry.data.updatedAt.toISOString().split("T")[0]
+      : undefined;
+
+    urlEntries.push({ loc, lastmod, alternates });
   }
 
   // Generate XML
@@ -47,13 +54,14 @@ export const GET: APIRoute = async () => {
 };
 
 function generateSitemapXml(
-  entries: Array<{ loc: string; alternates: Record<string, string> }>
+  entries: Array<{ loc: string; lastmod?: string; alternates: Record<string, string> }>
 ): string {
   const urlElements = entries.map((entry) => {
+    // Convert locale codes to BCP 47 format for hreflang
     const alternateLinks = Object.entries(entry.alternates)
       .map(
         ([lang, href]) =>
-          `    <xhtml:link rel="alternate" hreflang="${lang}" href="${escapeXml(href)}" />`
+          `    <xhtml:link rel="alternate" hreflang="${toHreflang(lang)}" href="${escapeXml(href)}" />`
       )
       .join("\n");
 
@@ -64,8 +72,13 @@ function generateSitemapXml(
         ? `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(xDefaultUrl)}" />`
         : "";
 
+    // Optional lastmod
+    const lastmodTag = entry.lastmod
+      ? `\n    <lastmod>${entry.lastmod}</lastmod>`
+      : "";
+
     return `  <url>
-    <loc>${escapeXml(entry.loc)}</loc>
+    <loc>${escapeXml(entry.loc)}</loc>${lastmodTag}
 ${alternateLinks}${xDefaultLink}
   </url>`;
   });
