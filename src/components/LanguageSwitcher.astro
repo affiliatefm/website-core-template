@@ -2,14 +2,15 @@
 /**
  * Language Switcher Component
  * ===========================
- * Displays available language options with links to alternate versions.
+ * Displays language options based on available alternates.
  *
  * - Current locale: highlighted text
- * - Available alternates: clickable links
- * - Missing translations: struck-through text
+ * - Available alternates: clickable links (internal or external)
+ *
+ * Labels are taken from localeLabels config, or fallback to uppercase code.
  */
 
-import { locales, localeLabels, type Locale } from "@/i18n";
+import { localeLabels, type Locale } from "@/i18n";
 
 interface Props {
   locale: Locale;
@@ -18,27 +19,35 @@ interface Props {
 
 const { locale, alternates = {} } = Astro.props;
 
-const options = locales.map((loc) => ({
-  code: loc,
-  label: localeLabels[loc],
-  href: alternates[loc] || null,
-  isCurrent: loc === locale,
+// Build options from alternates (shows only what's available)
+const options = Object.entries(alternates).map(([code, href]) => ({
+  code,
+  label: localeLabels[code as Locale] ?? code.toUpperCase(),
+  href,
+  isCurrent: code === locale,
 }));
+
+// Sort: current locale first, then alphabetically
+options.sort((a, b) => {
+  if (a.isCurrent) return -1;
+  if (b.isCurrent) return 1;
+  return a.code.localeCompare(b.code);
+});
 ---
 
-<div class="lang">
-  {
-    options.map((opt, i) => (
-      <>
-        {i > 0 && <span class="sep">/</span>}
-        {opt.isCurrent ? (
-          <span class="current">{opt.label}</span>
-        ) : opt.href ? (
-          <a href={opt.href}>{opt.label}</a>
-        ) : (
-          <span class="na">{opt.label}</span>
-        )}
-      </>
-    ))
-  }
-</div>
+{options.length > 1 && (
+  <div class="lang">
+    {
+      options.map((opt, i) => (
+        <>
+          {i > 0 && <span class="sep">/</span>}
+          {opt.isCurrent ? (
+            <span class="current">{opt.label}</span>
+          ) : (
+            <a href={opt.href}>{opt.label}</a>
+          )}
+        </>
+      ))
+    }
+  </div>
+)}

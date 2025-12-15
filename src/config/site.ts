@@ -19,7 +19,7 @@
  * 1. A folder in src/content/pages/ (except defaultLocale)
  * 2. A key in the `ui` translations below
  */
-export const locales = ["en", "ru", "fr", "es", "ja"] as const;
+export const locales = ["en", "ru"] as const;
 
 /**
  * Default locale - content at root level, no URL prefix.
@@ -39,43 +39,17 @@ export type Locale = (typeof locales)[number];
 export const localeLabels: Record<Locale, string> = {
   en: "English",
   ru: "Русский",
-  fr: "Français",
-  es: "Español",
-  ja: "日本語",
 };
 
 // =============================================================================
-// SITE METADATA & DOMAINS
+// SITE METADATA
 // =============================================================================
 
 /**
- * Default site URL - used for canonical URLs, sitemaps, hreflang tags.
+ * Site URL - used for canonical URLs, sitemaps, hreflang tags.
  * Set to your production domain.
  */
 export const siteUrl = "https://example.com";
-
-/**
- * Domain mapping per locale.
- * Supports multiple deployment patterns:
- *
- * - Same domain, prefixed paths:  "https://example.com"      → /ru/about
- * - Subdomain:                    "https://fr.example.com"   → /about
- * - Separate ccTLD:               "https://example.es"       → /about
- * - External domain with base:    "https://partner.com/site" → /site/about
- *
- * Leave undefined to use the default `siteUrl` for that locale.
- *
- * Note: For static builds, this affects URL generation (hreflang, canonical).
- * For SSR with domains routing, also configure `i18n.domains` in astro.config.mjs
- */
-export const domains: Partial<Record<Locale, string>> = {
-  // Uncomment and configure as needed:
-  // en uses default siteUrl (no entry needed)
-  // ru: "https://example.com",              // Same domain, prefixed path
-  // fr: "https://fr.example.com",           // Subdomain
-  // es: "https://example.es",               // Separate ccTLD
-  // ja: "https://partner.example.com/site", // External domain with base path
-};
 
 // =============================================================================
 // UI TRANSLATIONS
@@ -118,36 +92,6 @@ export const ui = {
     ui: {
       readMore: "Читать далее",
       backToHome: "На главную",
-    },
-  },
-  fr: {
-    meta: {
-      siteName: "Démo i18n",
-    },
-    nav: [{ label: "Accueil", path: "" }],
-    ui: {
-      readMore: "Lire plus",
-      backToHome: "Retour à l'accueil",
-    },
-  },
-  es: {
-    meta: {
-      siteName: "Demo i18n",
-    },
-    nav: [{ label: "Inicio", path: "" }],
-    ui: {
-      readMore: "Leer más",
-      backToHome: "Volver al inicio",
-    },
-  },
-  ja: {
-    meta: {
-      siteName: "i18nデモ",
-    },
-    nav: [{ label: "ホーム", path: "" }],
-    ui: {
-      readMore: "続きを読む",
-      backToHome: "ホームに戻る",
     },
   },
 } as const satisfies Record<Locale, UIStrings>;

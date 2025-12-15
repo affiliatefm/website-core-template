@@ -10,7 +10,6 @@ import {
   locales,
   defaultLocale,
   siteUrl,
-  domains,
   ui,
   type Locale,
 } from "@/config/site";
@@ -111,53 +110,23 @@ export function getPageUrl(entry: {
 }
 
 // =============================================================================
-// DOMAIN HELPERS
+// URL HELPERS
 // =============================================================================
 
 /**
- * Get the origin (domain) for a specific locale.
- * Falls back to siteUrl if no custom domain is configured.
- *
- * Examples (with domains config):
- * - getLocaleOrigin("en") → "https://example.com"
- * - getLocaleOrigin("fr") → "https://fr.example.com"
- * - getLocaleOrigin("es") → "https://example.es"
+ * Get site origin (without trailing slash).
  */
-export function getLocaleOrigin(locale: Locale): string {
-  const domain = domains[locale];
-  if (domain) {
-    // Ensure trailing slash for consistent URL joining
-    return domain.endsWith("/") ? domain.slice(0, -1) : domain;
-  }
+function getOrigin(): string {
   return siteUrl.endsWith("/") ? siteUrl.slice(0, -1) : siteUrl;
 }
 
 /**
- * Build absolute URL for a locale, respecting domain configuration.
- *
- * For locales with custom domains (subdomains, ccTLDs):
- * - The locale prefix is typically NOT included in the path
- * - e.g., fr.example.com/about (not fr.example.com/fr/about)
- *
- * For locales on the main domain:
- * - The locale prefix IS included (except for defaultLocale)
- * - e.g., example.com/ru/about
+ * Build absolute URL for a locale.
+ * Combines siteUrl with Astro's relative locale URL.
  */
 export function getAbsoluteLocaleUrl(locale: Locale, slug: string): string {
-  const origin = getLocaleOrigin(locale);
-  const hasCustomDomain = !!domains[locale];
-
-  // If locale has its own domain, don't add locale prefix to path
-  // (the domain itself identifies the locale)
-  if (hasCustomDomain) {
-    const normalizedSlug = slug.startsWith("/") ? slug : `/${slug}`;
-    const path = normalizedSlug === "/" ? "/" : `${normalizedSlug}/`;
-    return `${origin}${path}`;
-  }
-
-  // Otherwise use Astro's relative URL and combine with origin
   const relative = getRelativeLocaleUrl(locale, slug);
-  return `${origin}${relative}`;
+  return `${getOrigin()}${relative}`;
 }
 
 // =============================================================================
@@ -173,14 +142,23 @@ type PageEntry = {
 };
 
 /**
+ * Check if a string is a full URL (external link).
+ */
+function isFullUrl(value: string): boolean {
+  return value.startsWith("http://") || value.startsWith("https://");
+}
+
+/**
  * Get alternate language URLs for a page.
  * Used for hreflang tags and language switcher.
  *
  * Resolution logic:
- * 1. If entry has explicit `alternates` in frontmatter → use those
- * 2. Otherwise → auto-find pages with matching base path in other locales
+ * 1. Explicit `alternates` in frontmatter:
+ *    - Full URL (https://...) → used as-is (external site)
+ *    - Slug → resolved to local page
+ * 2. Auto-find pages with matching base path in other locales
  *
- * When `absolute: true`, uses domain configuration for proper multi-domain URLs.
+ * When `absolute: true`, local URLs include domain for SEO tags.
  */
 export function getAlternateUrls(
   entry: PageEntry,
@@ -191,31 +169,40 @@ export function getAlternateUrls(
   const currentLocale = getLocaleFromId(entry.id);
   const currentSlug = getUrlSlug(entry);
 
-  // Helper to build URL (respects domain config when absolute)
-  const buildUrl = (locale: Locale, slug: string): string => {
-    if (!options?.absolute) {
-      return getRelativeLocaleUrl(locale, slug);
+  // Helper to build URL for local pages
+  const buildLocalUrl = (locale: Locale, slug: string): string => {
+    if (options?.absolute) {
+      return getAbsoluteLocaleUrl(locale, slug);
     }
-    return getAbsoluteLocaleUrl(locale, slug);
+    return getRelativeLocaleUrl(locale, slug);
   };
 
   // Always include current page
-  result[currentLocale] = buildUrl(currentLocale, currentSlug);
+  result[currentLocale] = buildLocalUrl(currentLocale, currentSlug);
 
-  // If explicit alternates defined → use them
+  // Process explicit alternates from frontmatter
   if (entry.data.alternates) {
-    for (const [locale, targetSlug] of Object.entries(entry.data.alternates)) {
-      if (!isValidLocale(locale) || locale === currentLocale) continue;
+    for (const [key, value] of Object.entries(entry.data.alternates)) {
+      if (key === currentLocale) continue;
 
-      // Verify target page exists
-      const targetEntry = allEntries.find(
-        (e) =>
-          getLocaleFromId(e.id) === locale &&
-          getUrlSlug(e) === targetSlug.replace(/^\//, "")
-      );
+      // Full URL = external site, use as-is
+      if (isFullUrl(value)) {
+        result[key] = value;
+        continue;
+      }
 
-      if (targetEntry) {
-        result[locale] = buildUrl(locale as Locale, getUrlSlug(targetEntry));
+      // Slug = local page, verify it exists
+      if (isValidLocale(key)) {
+        const normalizedSlug = value.replace(/^\//, "");
+        const targetEntry = allEntries.find(
+          (e) =>
+            getLocaleFromId(e.id) === key &&
+            getUrlSlug(e) === normalizedSlug
+        );
+
+        if (targetEntry) {
+          result[key] = buildLocalUrl(key as Locale, getUrlSlug(targetEntry));
+        }
       }
     }
     return result;
@@ -237,6 +224,7 @@ export function getAlternateUrls(
           ([loc, slug]) =>
             isValidLocale(loc) &&
             loc === currentLocale &&
+            !isFullUrl(slug) &&
             slug.replace(/^\//, "") === currentSlug
         )
       : false;
@@ -246,7 +234,7 @@ export function getAlternateUrls(
       (!other.data.alternates && otherBasePath === currentBasePath) ||
       linksBack
     ) {
-      result[otherLocale] = buildUrl(otherLocale, getUrlSlug(other));
+      result[otherLocale] = buildLocalUrl(otherLocale, getUrlSlug(other));
     }
   }
 
