@@ -19,7 +19,7 @@
  * 1. A folder in src/content/pages/ (except defaultLocale)
  * 2. A key in the `ui` translations below
  */
-export const locales = ["en", "ru"] as const;
+export const locales = ["en", "ru", "ru-kz"] as const;
 
 /**
  * Default locale - content at root level, no URL prefix.
@@ -39,6 +39,7 @@ export type Locale = (typeof locales)[number];
 export const localeLabels: Record<Locale, string> = {
   en: "English",
   ru: "Русский",
+  "ru-kz": "Қазақстан (RU)",
 };
 
 // =============================================================================
@@ -92,6 +93,19 @@ export const ui = {
     ui: {
       readMore: "Читать далее",
       backToHome: "На главную",
+    },
+  },
+  "ru-kz": {
+    meta: {
+      siteName: "i18n Демо (KZ)",
+    },
+    nav: [
+      { label: "Басты бет", path: "" },
+      { label: "Біз туралы", path: "biz-turaly" },
+    ],
+    ui: {
+      readMore: "Толығырақ оқу",
+      backToHome: "Басты бетке",
     },
   },
 } as const satisfies Record<Locale, UIStrings>;
