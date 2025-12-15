@@ -110,9 +110,11 @@ export function getLocaleFromId(id: string): Locale {
  * Examples:
  * - "index" → ""
  * - "about" → "about"
+ * - "docs/index" → "docs"
  * - "docs/getting-started" → "docs/getting-started"
  * - "ru/index" → ""
  * - "ru/about" → "about"
+ * - "ru/docs/index" → "docs"
  * - "ru/docs/getting-started" → "docs/getting-started"
  */
 export function getBasePath(id: string): string {
@@ -125,8 +127,13 @@ export function getBasePath(id: string): string {
     path = path.replace(new RegExp(`^${locale}/`), "");
   }
 
-  // "index" → "" (homepage)
-  return path === "index" ? "" : path;
+  // Handle index files:
+  // - "index" → "" (root homepage)
+  // - "docs/index" → "docs" (section index)
+  if (path === "index") {
+    return "";
+  }
+  return path.replace(/\/index$/, "");
 }
 
 /**
@@ -201,10 +208,12 @@ function isFullUrl(value: string): boolean {
  * Resolution logic:
  * 1. Explicit `alternates` in frontmatter:
  *    - Full URL (https://...) → used as-is (external site)
- *    - Slug → resolved to local page
+ *    - Slug → resolved to local page (throws if not found)
  * 2. Auto-find pages with matching base path in other locales
  *
  * When `absolute: true`, local URLs include domain for SEO tags.
+ *
+ * @throws Error if alternates references non-existent page or invalid locale
  */
 export function getAlternateUrls(
   entry: PageEntry,
@@ -237,19 +246,30 @@ export function getAlternateUrls(
         continue;
       }
 
-      // Slug = local page, verify it exists
-      if (isValidLocale(key)) {
-        const normalizedSlug = value.replace(/^\//, "");
-        const targetEntry = allEntries.find(
-          (e) =>
-            getLocaleFromId(e.id) === key &&
-            getUrlSlug(e) === normalizedSlug
+      // Validate locale key
+      if (!isValidLocale(key)) {
+        throw new Error(
+          `Invalid locale "${key}" in alternates for "${entry.id}". ` +
+            `Valid locales: ${locales.join(", ")}`
         );
-
-        if (targetEntry) {
-          result[key] = buildLocalUrl(key as Locale, getUrlSlug(targetEntry));
-        }
       }
+
+      // Slug = local page, verify it exists
+      const normalizedSlug = value.replace(/^\//, "");
+      const targetEntry = allEntries.find(
+        (e) =>
+          getLocaleFromId(e.id) === key &&
+          getUrlSlug(e) === normalizedSlug
+      );
+
+      if (!targetEntry) {
+        throw new Error(
+          `Alternate "${key}: ${value}" in "${entry.id}" points to non-existent page. ` +
+            `No page found with locale "${key}" and slug "${normalizedSlug}".`
+        );
+      }
+
+      result[key] = buildLocalUrl(key as Locale, getUrlSlug(targetEntry));
     }
     return result;
   }
