@@ -1,6 +1,7 @@
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
-import { locales, defaultLocale, siteUrl } from "./src/config/site.ts";
+import { fileURLToPath } from "node:url";
+import { locales, defaultLocale, siteUrl, template } from "./src/config/site.ts";
 import { checksIntegration } from "./src/integrations/checks.ts";
 
 export default defineConfig({
@@ -15,10 +16,18 @@ export default defineConfig({
     defaultLocale,
     routing: {
       prefixDefaultLocale: false,
-      // Note: `fallback` is not used here because:
-      // 1. For static builds, it creates duplicate pages for missing translations
-      // 2. Our content-driven approach with getStaticPaths handles this explicitly
-      // 3. Missing translations are intentionally shown as unavailable in language switcher
+    },
+  },
+
+  vite: {
+    resolve: {
+      alias: {
+        // Virtual alias for the active template's Layout
+        // Usage: import Layout from "#layout"
+        "#layout": fileURLToPath(
+          new URL(`./src/layouts/${template}/Layout.astro`, import.meta.url)
+        ),
+      },
     },
   },
 });

@@ -1,34 +1,42 @@
 ---
 /**
- * Base Layout
- * ===========
- * Main layout wrapper for all pages.
- * Handles HTML structure, meta tags, hreflang, and common UI.
+ * Basic Template Layout
+ * ======================
+ * Clean, light template with minimal styling.
+ * This is the default template for the boilerplate.
+ *
+ * Features:
+ * - Light color scheme
+ * - Simple, readable typography
+ * - Minimal visual elements
+ *
+ * Component imports:
+ * - Shared components: @/components/...
+ * - Template-specific: ./components/... or @/template/components/...
  */
 
+// Shared components (work with any template)
 import LanguageSwitcher from "@/components/LanguageSwitcher.astro";
 import Navigation from "@/components/Navigation.astro";
+
+// Template-specific components
+import Badge from "./components/Badge.astro";
+
 import { t, defaultLocale, siteUrl, toHreflang, type Locale } from "@/i18n";
 
 interface Props {
   title: string;
   description?: string;
   locale: Locale;
-  /** Relative URLs for navigation (works in dev) */
   alternates?: Record<string, string>;
-  /** Absolute URLs for SEO meta tags (hreflang, canonical) */
   hreflangUrls?: Record<string, string>;
 }
 
 const { title, description, locale, alternates = {}, hreflangUrls = {} } = Astro.props;
 const ui = t(locale);
 
-// Canonical URL: use hreflang URL for current locale, or fallback to current path
 const canonicalUrl = hreflangUrls[locale] ?? `${siteUrl}${Astro.url.pathname}`;
-
-// x-default points to default locale version (or canonical if not available)
 const xDefaultUrl = hreflangUrls[defaultLocale] ?? canonicalUrl;
-
 const hasMultipleLanguages = Object.keys(hreflangUrls).length > 1;
 ---
 
@@ -37,13 +45,12 @@ const hasMultipleLanguages = Object.keys(hreflangUrls).length > 1;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
     <title>{title} | {ui.meta.siteName}</title>
     {description && <meta name="description" content={description} />}
 
-    <!-- Canonical -->
     <link rel="canonical" href={canonicalUrl} />
 
-    <!-- Hreflang tags for alternate languages (BCP 47 format) -->
     {
       Object.entries(hreflangUrls).map(([lang, url]) => (
         <link rel="alternate" hreflang={toHreflang(lang)} href={url} />
@@ -58,7 +65,10 @@ const hasMultipleLanguages = Object.keys(hreflangUrls).length > 1;
   <body>
     <div class="page">
       <header>
-        <Navigation locale={locale} />
+        <div class="header-left">
+          <Navigation locale={locale} />
+          <Badge>v1.0</Badge>
+        </div>
         <LanguageSwitcher locale={locale} alternates={alternates} />
       </header>
       <main>
@@ -70,10 +80,16 @@ const hasMultipleLanguages = Object.keys(hreflangUrls).length > 1;
 </html>
 
 <style is:global>
+  /* ==========================================================================
+   * BASIC TEMPLATE STYLES
+   * ==========================================================================
+   * Light, clean design with minimal visual elements.
+   */
+
   :root {
     --text: #222;
-    --muted: #666;
-    --light: #999;
+    --text-muted: #666;
+    --text-light: #999;
     --accent: #0055ff;
     --border: #eee;
     --bg: #fff;
@@ -200,7 +216,14 @@ const hasMultipleLanguages = Object.keys(hreflangUrls).length > 1;
     padding: 1rem 0;
     border-top: 1px solid var(--border);
     font-size: 0.8rem;
-    color: var(--light);
+    color: var(--text-light);
+  }
+
+  /* Header */
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
   }
 
   /* Navigation */
@@ -210,7 +233,7 @@ const hasMultipleLanguages = Object.keys(hreflangUrls).length > 1;
     font-size: 0.9rem;
   }
   .nav a {
-    color: var(--muted);
+    color: var(--text-muted);
   }
   .nav a:hover {
     color: var(--text);
@@ -234,7 +257,7 @@ const hasMultipleLanguages = Object.keys(hreflangUrls).length > 1;
     color: var(--text);
   }
   .lang a {
-    color: var(--muted);
+    color: var(--text-muted);
   }
   .lang .na {
     color: #ccc;

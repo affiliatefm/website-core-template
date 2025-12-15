@@ -8,6 +8,28 @@
  */
 
 // =============================================================================
+// TEMPLATE
+// =============================================================================
+
+/**
+ * Available templates for the site.
+ *
+ * Each template is a complete Layout component with its own structure and styles.
+ * Templates are located in src/layouts/{name}/Layout.astro
+ *
+ * Built-in templates:
+ * - "basic"      - Clean, light template with minimal styling
+ * - "basic-dark" - Dark variant with high contrast
+ */
+export type TemplateId = "basic" | "basic-dark";
+
+/**
+ * Active template for the site.
+ * Change this to switch the entire site's layout.
+ */
+export const template: TemplateId = "basic";
+
+// =============================================================================
 // LOCALES
 // =============================================================================
 

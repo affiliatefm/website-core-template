@@ -1,0 +1,59 @@
+---
+/**
+ * Badge Component (Basic Dark Template)
+ * ======================================
+ * Small label for status, categories, or tags.
+ * Dark theme variant with higher contrast.
+ *
+ * Usage:
+ *   <Badge>New</Badge>
+ *   <Badge variant="success">Published</Badge>
+ */
+
+interface Props {
+  variant?: "default" | "success" | "warning" | "error";
+}
+
+const { variant = "default" } = Astro.props;
+---
+
+<span class:list={["badge", variant]}>
+  <slot />
+</span>
+
+<style>
+  .badge {
+    display: inline-block;
+    padding: 0.15em 0.5em;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    border: 1px solid;
+  }
+
+  .default {
+    background: #3f3f46;
+    border-color: #52525b;
+    color: #e4e4e7;
+  }
+
+  .success {
+    background: #14532d;
+    border-color: #166534;
+    color: #86efac;
+  }
+
+  .warning {
+    background: #78350f;
+    border-color: #92400e;
+    color: #fde68a;
+  }
+
+  .error {
+    background: #7f1d1d;
+    border-color: #991b1b;
+    color: #fca5a5;
+  }
+</style>

@@ -6,7 +6,7 @@
  * Works for all locales - detects language from URL or defaults to defaultLocale.
  */
 
-import BaseLayout from "@/layouts/BaseLayout.astro";
+import Layout from "#layout";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { locales, defaultLocale, t, type Locale } from "@/i18n";
 
@@ -20,13 +20,13 @@ const ui = t(locale);
 const homeUrl = getRelativeLocaleUrl(locale, "");
 ---
 
-<BaseLayout title="404 - Page Not Found" locale={locale}>
+<Layout title="404 - Page Not Found" locale={locale}>
   <div class="error-page">
     <h1>404</h1>
     <p>Page not found</p>
     <a href={homeUrl}>{ui.ui.backToHome}</a>
   </div>
-</BaseLayout>
+</Layout>
 
 <style>
   .error-page {
