@@ -8,10 +8,10 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "astro": "^5.0.0",
-    "@astrojs/mdx": "^4.0.0"
+    "@astrojs/mdx": "^4.3.13",
+    "astro": "^5.16.5"
   },
   "devDependencies": {
-    "js-beautify": "^1.15.1"
+    "js-beautify": "^1.15.4"
   }
 }
