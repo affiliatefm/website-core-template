@@ -347,6 +347,14 @@ getAbsoluteLocaleUrl("fr", "about"); // "https://fr.example.com/about/"
 getAbsoluteLocaleUrl("ru", "about"); // "https://example.com/ru/about/"
 ```
 
+## Related
+
+- [@affiliate.fm/astro-content-ai-translator](https://github.com/affiliatefm/astro-content-ai-translator) — AI-powered translation for Astro content collections
+
+## Author
+
+Built by [Affiliate.FM](https://affiliate.fm) — independent media and open-source tools for affiliate, performance, and digital marketing.
+
 ## License
 
 MIT

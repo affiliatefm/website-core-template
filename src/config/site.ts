@@ -41,7 +41,7 @@ export const template: TemplateId = "basic";
  * 1. A folder in src/content/pages/ (except defaultLocale)
  * 2. A key in the `ui` translations below
  */
-export const locales = ["en", "ru", "ru-kz"] as const;
+export const locales = ["en", "ru", "ru-kz", "ja"] as const;
 
 /**
  * Default locale - content at root level, no URL prefix.
@@ -62,6 +62,7 @@ export const localeLabels: Record<Locale, string> = {
   en: "English",
   ru: "Русский",
   "ru-kz": "Қазақстан (RU)",
+  ja: "日本語",
 };
 
 // =============================================================================
@@ -128,6 +129,19 @@ export const ui = {
     ui: {
       readMore: "Толығырақ оқу",
       backToHome: "Басты бетке",
+    },
+  },
+  ja: {
+    meta: {
+      siteName: "i18n デモ",
+    },
+    nav: [
+      { label: "ホーム", path: "" },
+      { label: "概要", path: "about" },
+    ],
+    ui: {
+      readMore: "続きを読む",
+      backToHome: "ホームへ戻る",
     },
   },
 } as const satisfies Record<Locale, UIStrings>;

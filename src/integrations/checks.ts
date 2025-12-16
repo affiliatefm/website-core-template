@@ -442,3 +442,4 @@ export function checksIntegration(options: ChecksOptions = {}): AstroIntegration
     },
   };
 }
+

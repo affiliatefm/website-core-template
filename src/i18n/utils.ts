@@ -313,3 +313,4 @@ export function getAlternateUrls(
 export function getMissingLocales(alternates: Record<string, string>): Locale[] {
   return locales.filter((locale) => !(locale in alternates));
 }
+

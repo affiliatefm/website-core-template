@@ -1,0 +1,56 @@
+---
+alternates:
+  en: ''
+  ru: ''
+  ru-kz: ''
+  ja: ''
+  fr: 'https://fr.example.com/'
+  es: 'https://example.es/'
+title: ようこそ
+description: コンテンツ駆動型アーキテクチャを備えたミニマルなAstro 5 i18nボイラープレート
+_ai:
+  source: index.mdx
+  hash: c585edb4fb06
+  model: gpt-4.1
+  date: '2025-12-16'
+---
+# Astro i18n ボイラープレート
+
+**Astro 5** で多言語ウェブサイトを構築するための、クリーンでミニマルな基盤です。
+
+## 特徴
+
+- **コンテンツ駆動型** — フロントマター付きMDXファイルとしてページを管理
+- **自動リンク** — パス構造による翻訳の自動マッチング
+- **カスタムURL** — 必要に応じてロケールごとに異なるスラッグを設定可能
+- **型安全** — 全体を通してTypeScriptを完全サポート
+- **ミニマル** — 不要な依存関係や複雑さなし
+
+## デモページ
+
+- [ホーム](/) — `/ru` とペア（自動マッチング）
+- [アバウト](/about) — カスタムURL: `/ru/o-nas`
+- [お問い合わせ](/contact) — 英語のみ
+- [ドキュメント](/docs/getting-started) — ネストされたパス、自動マッチング
+
+## クイックスタート
+
+```bash
+npm install
+npm run dev
+```
+
+## 仕組み
+
+コンテンツは `src/content/pages/` に配置します。フォルダ構造がURLを決定します。
+
+```
+src/content/pages/
+├── index.mdx           → /
+├── about.mdx           → /about
+└── ru/
+    ├── index.mdx       → /ru
+    └── o-nas.mdx       → /ru/o-nas
+```
+
+同じ構造のページは自動的にリンクされます。カスタムURLはフロントマターの `permalink` と `alternates` を利用します。
