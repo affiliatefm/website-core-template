@@ -3,11 +3,12 @@ import mdx from "@astrojs/mdx";
 import { fileURLToPath } from "node:url";
 import { locales, defaultLocale, siteUrl, template } from "./src/config/site.ts";
 import { checksIntegration } from "./src/integrations/checks.ts";
+import aiTranslator from "@affiliate.fm/astro-content-astro-ai-translator";
 
 export default defineConfig({
   site: siteUrl,
 
-  integrations: [mdx(), checksIntegration()],
+  integrations: [mdx(), checksIntegration(), aiTranslator()],
 
   trailingSlash: "always",
 
