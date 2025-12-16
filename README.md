@@ -350,6 +350,7 @@ getAbsoluteLocaleUrl("ru", "about"); // "https://example.com/ru/about/"
 ## Related
 
 - [@affiliate.fm/astro-content-ai-translator](https://github.com/affiliatefm/astro-content-ai-translator) — AI-powered translation for Astro content collections
+- [astro-content-ai-enhancer](https://github.com/affiliatefm/astro-content-ai-enhancer) — AI assistant that enhances raw Markdown into structured, well-formatted pages
 
 ## Author
 
