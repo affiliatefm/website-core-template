@@ -7,7 +7,7 @@ alternates:
   fr: 'https://fr.example.com/'
   es: 'https://example.es/'
 title: ようこそ
-description: コンテンツ駆動型アーキテクチャを備えたミニマルなAstro 5 i18nボイラープレート
+description: コンテンツ主導型アーキテクチャを備えたミニマルなAstro 5 i18nボイラープレート
 _ai:
   source: index.mdx
   hash: c585edb4fb06
@@ -20,18 +20,18 @@ _ai:
 
 ## 特徴
 
-- **コンテンツ駆動型** — フロントマター付きMDXファイルとしてページを管理
-- **自動リンク** — パス構造による翻訳の自動マッチング
+- **コンテンツ主導型** — フロントマター付きMDXファイルとしてページを管理
+- **自動リンク** — パス構造によって翻訳を自動的にマッチング
 - **カスタムURL** — 必要に応じてロケールごとに異なるスラッグを設定可能
-- **型安全** — 全体を通してTypeScriptを完全サポート
+- **型安全** — 全体を通して完全なTypeScriptサポート
 - **ミニマル** — 不要な依存関係や複雑さなし
 
 ## デモページ
 
-- [ホーム](/) — `/ru` とペア（自動マッチング）
+- [ホーム](/) — `/ru` とペア（自動マッチ）
 - [アバウト](/about) — カスタムURL: `/ru/o-nas`
-- [お問い合わせ](/contact) — 英語のみ
-- [ドキュメント](/docs/getting-started) — ネストされたパス、自動マッチング
+- [コンタクト](/contact) — 英語のみ
+- [ドキュメント](/docs/getting-started) — ネストされたパス、自動マッチ
 
 ## クイックスタート
 
@@ -42,7 +42,7 @@ npm run dev
 
 ## 仕組み
 
-コンテンツは `src/content/pages/` に配置します。フォルダ構造がURLを決定します。
+コンテンツは `src/content/pages/` に保存されています。フォルダ構造がURLを決定します:
 
 ```
 src/content/pages/
@@ -53,4 +53,4 @@ src/content/pages/
     └── o-nas.mdx       → /ru/o-nas
 ```
 
-同じ構造のページは自動的にリンクされます。カスタムURLはフロントマターの `permalink` と `alternates` を利用します。
+同じ構造のページは自動的にリンクされます。カスタムURLはフロントマターの `permalink` と `alternates` を使用します。

@@ -8,7 +8,7 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "@affiliate.fm/astro-content-ai-translator": "^0.2.0",
+    "@affiliate.fm/astro-content-ai-translator": "^0.3.0",
     "@astrojs/mdx": "^4.3.13",
     "astro": "^5.16.5"
   },
@@ -16,4 +16,3 @@
     "js-beautify": "^1.15.4"
   }
 }
-
