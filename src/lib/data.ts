@@ -1,3 +1,6 @@
+import opportunities from "../data/network-opportunities.json" assert { type: "json" };
+import performance from "../data/performance-insights.json" assert { type: "json" };
+
 export type Opportunity = {
   id: number;
   program: string;
@@ -18,11 +21,13 @@ export type PerformancePoint = {
   topRegion: string;
 };
 
-const opportunityData: Opportunity[] = [];
-const performanceData: PerformancePoint[] = [];
+const opportunityData = opportunities as Opportunity[];
+const performanceData = performance as PerformancePoint[];
 
 export function getTopOpportunities(limit = 3): Opportunity[] {
-  return opportunityData.slice(0, limit);
+  return [...opportunityData]
+    .sort((a, b) => b.avgCpa - a.avgCpa)
+    .slice(0, limit);
 }
 
 export function getPerformanceTrend(): PerformancePoint[] {
@@ -30,10 +35,14 @@ export function getPerformanceTrend(): PerformancePoint[] {
 }
 
 export function getDataSummary() {
+  const avgCpa = opportunityData.reduce((sum, item) => sum + item.avgCpa, 0) / opportunityData.length;
+  const fastestApproval = Math.min(...opportunityData.map((item) => item.approvalTimeDays));
+  const bestCtr = Math.max(...performanceData.map((item) => item.ctr));
+
   return {
-    avgCpa: 0,
-    fastestApproval: 0,
-    bestCtr: 0,
-    sampleSize: opportunityData.length,
+    avgCpa: Number(avgCpa.toFixed(2)),
+    fastestApproval,
+    bestCtr,
+    sampleSize: opportunityData.length
   };
 }

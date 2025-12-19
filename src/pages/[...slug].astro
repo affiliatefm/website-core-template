@@ -18,6 +18,7 @@ import Layout from "#layout";
 import {
   locales,
   defaultLocale,
+  type Locale,
   getLocaleFromId,
   getUrlSlug,
   getAlternateUrls,
@@ -26,6 +27,10 @@ import {
 
 export async function getStaticPaths() {
   const allPages = await getCollection("pages", ({ data }) => !data.draft);
+  const nonDefaultLocales = locales.filter(
+    (locale): locale is Exclude<Locale, typeof defaultLocale> => locale !== defaultLocale
+  );
+
   const paths = [];
 
   // Track slugs per locale to detect duplicates
@@ -72,13 +77,14 @@ export async function getStaticPaths() {
   const defaultLocalePages = allPages.filter(
     (p) => getLocaleFromId(p.id) === defaultLocale
   );
-  const conflicts =
-    locales.length <= 1
-      ? []
-      : defaultLocalePages.filter((p) => {
-          const slug = getUrlSlug(p);
-          return isValidLocale(slug) && slug !== defaultLocale;
-        });
+  const conflicts = defaultLocalePages.filter((p) => {
+    const slug = getUrlSlug(p);
+    return (
+      isValidLocale(slug) &&
+      slug !== defaultLocale &&
+      nonDefaultLocales.includes(slug as Exclude<Locale, typeof defaultLocale>)
+    );
+  });
 
   if (conflicts.length > 0) {
     const list = conflicts.map((p) => `"${p.id}"`).join(", ");
@@ -107,4 +113,7 @@ const { Content } = await render(entry);
 >
   <Content />
 </Layout>
+
+
+
 

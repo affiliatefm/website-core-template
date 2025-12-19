@@ -19,7 +19,6 @@ const DEFAULT_CORE_PATHS = [
   "astro.config.mjs",
   "README.md",
   "scripts",
-  "templates",
   "src/components",
   "src/config",
   "src/i18n",

@@ -9,7 +9,7 @@
     "check": "astro check",
     "bootstrap": "node scripts/bootstrap.mjs",
     "update:core": "node scripts/update-core.mjs",
-    "seed:demo": "node scripts/seed-demo.mjs"
+    "seed:data": "node scripts/seed-sample-data.mjs"
   },
   "dependencies": {
     "@affiliate.fm/astro-content-ai-translator": "^0.3.0",

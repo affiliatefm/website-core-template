@@ -22,7 +22,7 @@ bootstrap:
 	@npm run bootstrap
 
 seed:
-	@npm run seed:demo
+	@npm run seed:data
 
 update:
 	@npm run update:core
