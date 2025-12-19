@@ -1,15 +1,14 @@
-# Astro i18n Starter (Minimal)
+# Astro i18n Core Template
 
-Ultra-minimal Astro 5 boilerplate for multilingual sites. All wiring is done for
-you — add content and edit a few data files, nothing else.
+Minimal Astro 5 template for multilingual sites. Zero config to start — just add content.
 
-## What you get
+## Features
 
-- **Data-only config** – user-facing settings live in `src/data/`.
-- **Single MDX collection** – every file under `src/content/pages/` is a route.
-- **Built-in i18n routing** – canonical URLs, hreflang, sitemap, robots.
-- **Integrity checks** – build fails if hreflang links are inconsistent.
-- **No demo clutter** – only one MDX page and one default layout.
+- **File-based i18n** — language detection from folder structure
+- **Auto-generated sitemap** with hreflang alternate links
+- **Build-time validation** — catches broken hreflang links before deploy
+- **SEO-ready** — canonical URLs, robots.txt, proper meta tags
+- **Single layout** — easily customizable via `#layout` alias
 
 ## Quick start
 
@@ -18,90 +17,153 @@ npm install
 npm run dev
 ```
 
+Open http://localhost:4321 — you're running!
+
 ## Project structure
 
 ```
 src/
-├── config/               # Runtime config using the data layer (no edits needed)
-│   └── site.ts
+├── data/                 # ✏️ EDIT THESE FILES
+│   ├── site.ts           #    Site URL + default language
+│   └── ui.ts             #    UI strings per language
 ├── content/
-│   └── pages/            # Your MDX content (index.mdx is the only example)
-├── data/                 # The files you edit
-│   ├── site.ts           # Site URL + default language
-│   └── ui.ts             # Language strings (only the Home label)
+│   └── pages/            # ✏️ YOUR CONTENT GOES HERE
+│       ├── index.mdx     #    Default language homepage
+│       ├── about.mdx     #    Default language page
+│       ├── ru/           #    Russian content folder
+│       │   ├── index.mdx
+│       │   └── about.mdx
+│       └── de/           #    German content folder
+│           └── index.mdx
+├── config/               # Runtime config (auto-generated from data/)
 ├── i18n/                 # URL helpers & translation utilities
-├── integrations/         # Build-time checks (hreflang integrity)
-├── layouts/              # Default layout (imported via #layout alias)
-└── pages/                # Astro routes (router, 404, sitemap, robots)
+├── integrations/         # Build-time checks
+├── layouts/              # Page layouts
+└── pages/                # Astro router
 ```
 
-## Editing data
+## Setup (2 minutes)
 
-Only touch the files under `src/data/`:
+### 1. Configure your site
 
-| File | Fields |
-| --- | --- |
-| `site.ts` | `siteUrl` (canonical origin) and `defaultLanguage` (the language served from the root URLs). |
-| `ui.ts` | Per-language UI strings. Currently only `homeLabel` is needed. |
+Edit `src/data/site.ts`:
 
-Example UI file:
+```ts
+export const siteUrl = "https://your-domain.com";
+export const defaultLanguage = "en";
+```
+
+### 2. Add UI strings
+
+Edit `src/data/ui.ts`:
 
 ```ts
 export const uiStrings = {
   en: { homeLabel: "Home" },
-  "en-US": { homeLabel: "Home" },
-};
+  ru: { homeLabel: "Главная" },
+  de: { homeLabel: "Startseite" },
+} as const;
 ```
 
-## Declaring languages
+### 3. Create content
 
-- Set `defaultLanguage` once in `src/data/site.ts` (e.g., `"en"`).
-- Place the default language content directly under `src/content/pages/` (subfolders like `docs/` are fine).
-- Create subfolders named after BCP 47 codes for every additional language: `src/content/pages/ru/`, `src/content/pages/ja/`, `src/content/pages/en-US/`, etc.
-- Avoid using 2–3 letter folder names for non-language sections to prevent conflicts with language detection.
+Add MDX files to `src/content/pages/`:
 
-Once a folder exists, the language is automatically exposed to Astro's `i18n` config. No frontmatter fields are required.
+- Default language → directly in `pages/`
+- Other languages → in subfolders like `pages/ru/`, `pages/de/`
 
-## Adding content
-
-MDX files in `src/content/pages/` correspond to routes. To add a language, create a
-folder named after the language code and duplicate pages inside it.
-
-```
-src/content/pages/
-├── index.mdx       → /
-└── ru/
-    └── index.mdx   → /ru/
-```
-
-Frontmatter example (matches the included `index.mdx`):
+**Frontmatter example:**
 
 ```yaml
 ---
-title: Starter
-alternates:
-  en: ""
-  en-US: ""
-  ja: https://ja.example.com/   # Example external alternate
-_translateTo: all
+title: About Us
+description: Learn more about our company
 ---
 ```
 
-`alternates` explicitly links translations (including off-site URLs). `_translateTo`
-is optional and is only read by the AI translation integration.
+## Linking translations
 
-## Layout
+Translations are linked automatically when files have the same path:
 
-The `#layout` alias always points to `src/layouts/basic/Layout.astro`. If you need
-a custom layout, duplicate that file and change `layoutPath` in `src/config/site.ts`.
-Every page automatically receives canonical/hreflang tags and the localized Home
-link, so you stay focused on Markdown/MDX content.
+```
+pages/about.mdx      → /about/
+pages/ru/about.mdx   → /ru/about/
+```
+
+For **different slugs**, use `alternates` in frontmatter:
+
+```yaml
+# pages/about.mdx
+---
+title: About
+alternates:
+  ru: o-nas  # Links to /ru/o-nas/
+---
+
+# pages/ru/o-nas.mdx
+---
+title: О нас
+permalink: o-nas
+alternates:
+  en: about  # Links back to /about/
+---
+```
+
+For **external alternates** (e.g., separate domain per language):
+
+```yaml
+---
+title: About
+alternates:
+  ja: https://ja.example.com/about/
+---
+```
+
+## Frontmatter reference
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `title` | string | Page title (required) |
+| `description` | string | Meta description |
+| `permalink` | string | Custom URL slug |
+| `alternates` | object | Language → slug/URL mapping |
+| `updatedAt` | date | Last modified (for sitemap) |
+| `draft` | boolean | Exclude from build |
+
+## Custom layout
+
+The `#layout` alias points to `src/layouts/basic/Layout.astro`.
+
+To customize:
+1. Edit the existing layout, or
+2. Create a new layout and update `layoutPath` in `src/config/site.ts`
 
 ## Commands
 
-- `npm run dev` – start dev server
-- `npm run build` – production build + HTML formatting + integrity checks
-- `npm run preview` – preview the build
+| Command | Action |
+|---------|--------|
+| `npm run dev` | Start dev server at localhost:4321 |
+| `npm run build` | Build for production + run integrity checks |
+| `npm run preview` | Preview production build locally |
+
+## Build checks
+
+The template validates your build automatically:
+
+- ✓ All hreflang links are bidirectional
+- ✓ All languages have UI strings defined
+- ✓ No conflicting URL slugs
+
+If checks fail, the build stops with a clear error message.
+
+## Adding integrations
+
+This template works with any Astro integration:
+
+```bash
+npx astro add tailwind
+npx astro add react
+```
 
 ## License
 
