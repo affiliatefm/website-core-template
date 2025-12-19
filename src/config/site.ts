@@ -1,9 +1,10 @@
-import { siteUrl, defaultLanguage, locales } from "../data/site";
+import { siteUrl, locales, defaultLocale } from "../data/site";
 import { uiStrings } from "../data/ui";
 
-export { siteUrl, defaultLanguage, locales };
+export { siteUrl };
 
 export const languages = locales;
+export const defaultLanguage = defaultLocale;
 export type LanguageCode = (typeof locales)[number];
 
 export const ui = uiStrings;

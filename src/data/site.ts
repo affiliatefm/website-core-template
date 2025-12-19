@@ -2,7 +2,6 @@
 
 export const siteUrl = "https://example.com";
 
-export const defaultLanguage = "en";
-
-// All supported languages (for i18n routing and translation)
+// i18n settings
 export const locales = ["en"] as const;
+export const defaultLocale = "en";

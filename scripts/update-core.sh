@@ -18,11 +18,10 @@ mkdir -p "$TEMP/_user"
 [[ -d "public" ]] && cp -r public "$TEMP/_user/"
 cp package.json "$TEMP/_user/"
 
-# Copy everything from template
+# Copy core files (astro.config.mjs is user-managed, not updated)
 rm -rf src
 cp -r "$TEMP/src" .
 cp -r "$TEMP/scripts" .
-cp "$TEMP/astro.config.mjs" .
 cp "$TEMP/tsconfig.json" .
 cp "$TEMP/Makefile" .
 [[ -f "$TEMP/.prettierrc" ]] && cp "$TEMP/.prettierrc" .
