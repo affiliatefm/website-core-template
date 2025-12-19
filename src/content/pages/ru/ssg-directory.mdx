@@ -1,0 +1,96 @@
+---
+permalink: ssg-directory
+alternates:
+  en: ssg-directory
+  en-US: ssg-directory
+  ru: ssg-directory
+  ja: ssg-directory
+title: staticsitegenerators.net — Каталог статических генераторов сайтов
+description: >-
+  Всеобъемлющий каталог статических генераторов сайтов. Сравнивайте функции,
+  языки и найдите идеальный SSG для своего проекта.
+_ai:
+  source: ssg-directory.mdx
+  hash: 1c3c80bbd445
+  model: gpt-4.1
+  date: '2025-12-19'
+---
+import { getProductById } from "@/data/products";
+import ProsCons from "@/layouts/affiliate/components/ProsCons.astro";
+
+export const product = getProductById("staticsitegenerators-net");
+
+# staticsitegenerators.net
+
+<p class="text-sm text-gray-500 mb-6">Часть экосистемы с открытым исходным кодом Affiliate.FM</p>
+
+<div class="flex items-center gap-3 mb-6">
+  <span class="text-amber-500">{"★".repeat(Math.round(product.rating))}</span>
+  <span class="font-medium">{product.rating}/5</span>
+  <span class="text-gray-400">·</span>
+  <span class="text-gray-500">{product.reviewCount} участников</span>
+  <span class="badge badge-blue">Живой сайт</span>
+</div>
+
+Всеобъемлющий каталог статических генераторов сайтов. Сравнивайте функции, фильтруйте по языкам и найдите идеальный SSG для своего следующего проекта.
+
+<a href={product.affiliateUrl} target="_blank" rel="noopener" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gray-900 hover:bg-gray-700 rounded-md transition-colors no-underline">Перейти на сайт →</a>
+
+## Кратко
+
+<ProsCons pros={product.pros} cons={product.cons} />
+
+| | |
+|---|---|
+| **Тип** | {product.priceLabel} |
+| **Сделано с помощью** | website-core-template, Astro 5 |
+| **Языки** | Английский, Русский, Японский |
+
+---
+
+## О проекте
+
+staticsitegenerators.net — это реальный пример того, что можно создать с помощью website-core-template. Здесь представлены:
+
+- **Мультиязычный контент** — Один и тот же контент на нескольких языках с корректным hreflang
+- **Страницы на основе данных** — Списки SSG, сгенерированные из структурированных данных
+- **SEO-оптимизация** — Корректные мета-теги, карта сайта, структурированные данные
+- **Автоматическое развертывание** — GitHub Actions → GitHub Pages
+
+## Возможности
+
+- **300+ генераторов** — Обширная база данных SSG
+- **Фильтрация и поиск** — По языкам, шаблонизаторам, функциям
+- **Таблицы сравнения** — Сравнение функций в формате "бок о бок"
+- **Регулярные обновления** — Данные поддерживаются сообществом
+
+## Технологический стек
+
+```
+Astro 5 + website-core-template
+├── Контент: MDX со структурированными данными
+├── Стилизация: Tailwind CSS
+├── i18n: Встроенная поддержка мультиязычности
+├── Деплой: GitHub Pages
+└── CI/CD: GitHub Actions
+```
+
+## Вклад
+
+Проект с открытым исходным кодом. Вы можете:
+
+- Добавлять новые SSG в базу данных
+- Улучшать описания и метаданные
+- Переводить контент на новые языки
+- Сообщать об ошибках и предлагать функции
+
+---
+
+## Похожие проекты
+
+- [website-core-template](/) — Шаблон, на котором работает этот сайт
+- [astro-content-ai-translator](/ai-translator/) — Как мы переводим контент
+
+---
+
+← [Назад к экосистеме](/)

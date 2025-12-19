@@ -1,0 +1,123 @@
+---
+permalink: ai-enhancer
+alternates:
+  en: ai-enhancer
+  en-US: ai-enhancer
+  ru: ai-enhancer
+  ja: ai-enhancer
+title: astro-content-ai-enhancer — Astro向けAIコンテンツ強化ツール
+description: 生のMarkdownを構造化されたリッチなページに変換し、適切なフォーマット、ブロック、メタデータを付与するAIアシスタント。
+_ai:
+  source: ai-enhancer.mdx
+  hash: f82cab772239
+  model: gpt-4.1
+  date: '2025-12-19'
+---
+import { getProductById } from "@/data/products";
+import ProsCons from "@/layouts/affiliate/components/ProsCons.astro";
+
+export const product = getProductById("astro-content-ai-enhancer");
+
+# astro-content-ai-enhancer
+
+<p class="text-sm text-gray-500 mb-6">Affiliate.FMオープンソースエコシステムの一部</p>
+
+<div class="flex items-center gap-3 mb-6">
+  <span class="text-amber-500">{"★".repeat(Math.round(product.rating))}</span>
+  <span class="font-medium">{product.rating}/5</span>
+  <span class="text-gray-400">·</span>
+  <span class="text-gray-500">{product.reviewCount} コミット</span>
+  <span class="badge badge-green">アーリーアクセス</span>
+</div>
+
+AIアシスタントが生のMarkdown下書きを、見やすく構造化されたページへと変換します。見出し階層の整理、コールアウトブロックやテーブルの追加、メタデータの強化などを行いながら、あなたの文体や内容はそのまま保ちます。
+
+<a href={product.affiliateUrl} target="_blank" rel="noopener" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gray-900 hover:bg-gray-700 rounded-md transition-colors no-underline">GitHubで見る →</a>
+
+## クイックサマリー
+
+<ProsCons pros={product.pros} cons={product.cons} />
+
+| | |
+|---|---|
+| **ライセンス** | MIT |
+| **価格** | {product.priceLabel} |
+| **対応** | Astro 5、全てのMDXコンテンツ |
+
+---
+
+## できること
+
+このようなMarkdownを:
+
+```markdown
+---
+title: My Post
+---
+
+here is some text about topic. it has important info.
+also there are steps: first do this, then that, finally done.
+```
+
+このように変換します:
+
+```markdown
+---
+title: My Post
+description: A comprehensive guide to topic with step-by-step instructions.
+---
+
+# My Post
+
+Here is some text about **topic**. It contains important information.
+
+## Steps
+
+1. First, do this
+2. Then, do that  
+3. Finally, you're done
+
+> **Note:** This guide assumes basic familiarity with the subject.
+```
+
+## 主な特徴
+
+- **構造強化** — 適切な見出し階層を自動で追加
+- **リッチブロック** — パターンをコールアウト、テーブル、コードブロックへ変換
+- **メタデータ生成** — 内容から説明文やタグを自動生成
+- **文体維持** — あなたの書き方をそのまま保持
+- **選択的処理** — `_enhance: true` でファイルを指定
+
+## インストール
+
+```bash
+npm install @affiliate.fm/astro-content-ai-enhancer
+```
+
+## 使い方
+
+強化したいファイルにマークを付けます:
+
+```yaml
+---
+title: My Draft
+_enhance: true
+---
+```
+
+エンハンサーを実行:
+
+```bash
+npx astro-ai-enhancer
+```
+
+---
+
+## 関連
+
+- [website-core-template](/) — Astroサイトの基盤となるテンプレート
+- [astro-content-ai-translator](/ai-translator/) — 強化されたコンテンツを他言語に翻訳
+
+---
+
+← [エコシステムに戻る](/)

@@ -8,7 +8,7 @@
 
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { t, toHreflang } from "@/i18n";
-import { defaultLanguage, type LanguageCode, siteUrl } from "@/config/site";
+import { defaultLanguage, languages, type LanguageCode, siteUrl } from "@/config/site";
 import { tt } from "./i18n";
 
 interface Props {
@@ -16,13 +16,19 @@ interface Props {
   description?: string;
   language: LanguageCode;
   hreflangUrls?: Record<string, string>;
+  switcherUrls?: Record<string, string>;
 }
 
-const { title, description, language, hreflangUrls = {} } = Astro.props;
+const { title, description, language, hreflangUrls = {}, switcherUrls = {} } = Astro.props;
 
 const canonicalUrl = hreflangUrls[language] ?? `${siteUrl}${Astro.url.pathname}`;
 const xDefaultUrl = hreflangUrls[defaultLanguage] ?? canonicalUrl;
 const hasMultipleLanguages = Object.keys(hreflangUrls).length > 1;
+
+// For switcher, use relative URLs and filter to only show actual locales (not aliases like en-US)
+const switcherLinks = Object.entries(switcherUrls).filter(([lang]) => 
+  languages.includes(lang as LanguageCode)
+);
 
 // Two translation layers:
 // - ui: user data (siteName, custom strings) from src/data/ui.ts
@@ -67,9 +73,9 @@ const tpl = tt(language);
             </a>
           </nav>
 
-          {hasMultipleLanguages && (
+          {switcherLinks.length > 1 && (
             <div class="flex gap-0.5">
-              {Object.entries(hreflangUrls).map(([lang, url]) => (
+              {switcherLinks.map(([lang, url]) => (
                 <a
                   href={url}
                   class:list={[

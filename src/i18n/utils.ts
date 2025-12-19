@@ -203,13 +203,25 @@ export function getAlternateUrls(
         continue;
       }
 
-      // Empty string or same slug — use current page URL for this language
       const normalizedSlug = value.replace(/^\//, "");
+      
+      // Empty string or same slug — this is an alias for current page
       if (normalizedSlug === "" || normalizedSlug === currentSlug) {
-        result[key] = buildLocalUrl(currentLanguage, currentSlug);
+        // For supported languages, build URL for that language
+        if (isSupportedLanguage(key)) {
+          result[key] = buildLocalUrl(key as LanguageCode, currentSlug);
+        } else {
+          // For hreflang aliases (e.g. en-US → en), find base language from prefix
+          const baseLanguage = key.split("-")[0];
+          const targetLanguage = isSupportedLanguage(baseLanguage) 
+            ? baseLanguage as LanguageCode 
+            : defaultLanguage;
+          result[key] = buildLocalUrl(targetLanguage, currentSlug);
+        }
         continue;
       }
 
+      // Skip unsupported languages for non-alias alternates
       if (!isSupportedLanguage(key)) continue;
 
       // Local slug — find the entry

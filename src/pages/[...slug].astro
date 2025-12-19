@@ -82,6 +82,8 @@ export async function getStaticPaths() {
 const { entry, language, allPages } = Astro.props;
 // Absolute URLs for SEO meta tags (hreflang, canonical)
 const alternatesAbsolute = getAlternateUrls(entry, allPages, { absolute: true });
+// Relative URLs for language switcher
+const alternatesRelative = getAlternateUrls(entry, allPages);
 const { Content } = await render(entry);
 ---
 
@@ -90,6 +92,7 @@ const { Content } = await render(entry);
   description={entry.data.description}
   language={language}
   hreflangUrls={alternatesAbsolute}
+  switcherUrls={alternatesRelative}
 >
   <Content />
 </Layout>
