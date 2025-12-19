@@ -1,15 +1,49 @@
 ---
-title: Affiliate.FM ядросы
-description: Astro 5 негізіндегі statik шаблон
+title: Қош келдіңіз
+description: Astro 5 үшін минималистік i18n бойлерплейт
 alternates:
   en: ""
   ru: ""
   ru-kz: ""
   ja: ""
+  # External sites
   fr: https://fr.example.com/
   es: https://example.es/
 ---
 
-# Сәлем!
+# Astro i18n Бойлерплейт (Қазақстан)
 
-Affiliate.FM — тәуелсіз медиа. Бұл репозиторийді `make bootstrap` және `make seed` арқылы жылдам іске қосуға болады. Контентті `src/content/pages/ru-kz/` ішіне салып, қажет болғанда `make update` арқылы жаңа core-ды тартып алыңыз.
+Көптілді сайттар құруға арналған таза негіз **Astro 5**.
+
+## Мүмкіндіктер
+
+- **Content-driven** — MDX файлдар түріндегі беттер
+- **Автосілтеме** — Аудармалар құрылым бойынша байланысады
+- **Реттелетін URL** — Әр тіл үшін әртүрлі slug
+- **Типизация** — TypeScript қолдауы
+- **Минимализм** — Артық тәуелділіктерсіз
+
+## Демо беттер
+
+- [Басты бет](/ru-KZ) — Қазақстан нұсқасы
+- [Біз туралы](/ru-KZ/biz-turaly) — Қазақша URL
+
+## Тез бастау
+
+```bash
+npm install
+npm run dev
+```
+
+## Бұл қалай жұмыс істейді
+
+Мазмұн `src/content/pages/` ішінде. Қалта құрылымы URL анықтайды:
+
+```
+src/content/pages/
+├── index.mdx           → /
+├── ru/
+│   └── index.mdx       → /ru
+└── ru-KZ/
+    └── index.mdx       → /ru-KZ
+```

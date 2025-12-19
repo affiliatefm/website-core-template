@@ -1,48 +1,62 @@
 ---
-title: Быстрый старт
-description: Настройка и обновление ядра Affiliate.FM
-alternates:
-  en: docs/getting-started
-  ru: docs/getting-started
+title: Начало работы
+description: Как использовать этот i18n бойлерплейт
 ---
 
-# Быстрый старт
+# Начало работы
 
-## 1. Создаем проект
+Краткое руководство по использованию бойлерплейта.
+
+## Установка
 
 ```bash
-npm create astro@latest -- --template affiliatefm/website-core-template
+git clone <repo-url> my-site
 cd my-site
-make install && make bootstrap && make seed
+npm install
+npm run dev
 ```
 
-`make bootstrap` → создаёт `affiliatefm.core.json` с перечнем защищенных путей. `make seed` → заполняет `src/data/` демо-метриками.
+## Добавление страниц
 
-## 2. Основные команды
+### Авто-связь (одинаковый путь)
 
-| Команда | Что делает |
-| --- | --- |
-| `make dev` | dev-сервер Astro |
-| `make build` | production-билд + форматирование HTML |
-| `make preview` | предпросмотр билда |
-| `make check` | типизация/MDX проверки |
-| `make seed` | перегенерирует sample data |
-| `make update` | вытягивает свежий core без затрагивания protected paths |
+Создайте файлы с одинаковой структурой:
 
-## 3. Контент и локали
+```
+pages/services.mdx      → /services
+pages/ru/services.mdx   → /ru/services
+```
 
-- Английские страницы → `src/content/pages/*.mdx`
-- Русские страницы → `src/content/pages/ru/...`
-- Для разных URL используйте `permalink` + `alternates` в frontmatter.
+Связываются автоматически, frontmatter не нужен.
 
-## 4. Данные
+### Кастомные URL
 
-- Кладите JSON в `src/data/`.
-- Импортируйте через `@/lib/data` → доступны хелперы для витрин.
-- Демонстрационный компонент `<DataShowcase />` можно встраивать прямо в MDX.
+Когда пути должны отличаться:
 
-## 5. Обновления
+```yaml
+# pages/about.mdx
+alternates:
+  en: about
+  ru: o-nas
+```
 
-- `make update` скачивает репозиторий `affiliatefm/website-core-template` во временную папку.
-- Копируются только файлы из `corePaths`, остальные пути из `protectedPaths` пропускаются.
-- После копирования проверьте diff, выполните `npm install` (если `package.json` изменился) и соберите проект заново.
+```yaml
+# pages/ru/o-nas.mdx
+permalink: o-nas
+alternates:
+  en: about
+  ru: o-nas
+```
+
+## Добавление локали
+
+1. `astro.config.mjs` — добавить в `locales`
+2. `src/i18n/config.ts` — добавить в `locales` и `localeLabels`
+3. `src/i18n/translations.ts` — добавить UI строки
+4. Создать `src/content/pages/<locale>/`
+
+---
+
+[← На главную](/ru)
+
+

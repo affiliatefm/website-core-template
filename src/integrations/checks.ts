@@ -376,7 +376,7 @@ export function checksIntegration(options: ChecksOptions = {}): AstroIntegration
 
         // Warn about external alternates (cannot be validated)
         const externalLinks = pagesWithHreflang.flatMap((p) =>
-          p.links.filter((l) => isExternal(l.href, siteUrl!))
+          p.links.filter((l) => isExternal(l.href, siteUrl))
         );
         if (externalLinks.length > 0) {
           const uniqueExternalDomains = [
@@ -442,8 +442,5 @@ export function checksIntegration(options: ChecksOptions = {}): AstroIntegration
     },
   };
 }
-
-
-
 
 

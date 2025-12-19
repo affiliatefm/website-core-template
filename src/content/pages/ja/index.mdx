@@ -1,26 +1,56 @@
 ---
-title: Affiliate.FM Website Core
-description: 多言語 Astro サイトのためのオープンソースコア
 alternates:
-  en: ""
-  ru: ""
-  ru-kz: ""
-  ja: ""
-  fr: https://fr.example.com/
-  es: https://example.es/
+  en: ''
+  ru: ''
+  ru-kz: ''
+  ja: ''
+  fr: 'https://fr.example.com/'
+  es: 'https://example.es/'
+title: ようこそ
+description: コンテンツ主導型アーキテクチャを備えたミニマルなAstro 5 i18nボイラープレート
+_ai:
+  source: index.mdx
+  hash: c585edb4fb06
+  model: gpt-4.1
+  date: '2025-12-16'
 ---
+# Astro i18n ボイラープレート
 
-import DataShowcase from "@/components/DataShowcase.astro";
+**Astro 5** で多言語ウェブサイトを構築するための、クリーンでミニマルな基盤です。
 
-# Affiliate.FM コア
+## 特徴
 
-このテンプレートは、Astro 5 + 静的配信 + 多言語サイトを前提に最適化されています。`make bootstrap` → 設定ファイル、`make seed` → デモデータ、`make update` → 常に最新のコア。
+- **コンテンツ主導型** — フロントマター付きMDXファイルとしてページを管理
+- **自動リンク** — パス構造によって翻訳を自動的にマッチング
+- **カスタムURL** — 必要に応じてロケールごとに異なるスラッグを設定可能
+- **型安全** — 全体を通して完全なTypeScriptサポート
+- **ミニマル** — 不要な依存関係や複雑さなし
 
-<DataShowcase />
+## デモページ
 
-## 使い方
+- [ホーム](/) — `/ru` とペア（自動マッチ）
+- [アバウト](/about) — カスタムURL: `/ru/o-nas`
+- [コンタクト](/contact) — 英語のみ
+- [ドキュメント](/docs/getting-started) — ネストされたパス、自動マッチ
 
-1. `npm create astro@latest -- --template affiliatefm/website-core-template`
-2. `make install && make bootstrap && make seed`
-3. `src/content/pages/ja/` に記事を追加
-4. `src/config/site.ts` でナビゲーションとドメインを設定
+## クイックスタート
+
+```bash
+npm install
+npm run dev
+```
+
+## 仕組み
+
+コンテンツは `src/content/pages/` に保存されています。フォルダ構造がURLを決定します:
+
+```
+src/content/pages/
+├── index.mdx           → /
+├── about.mdx           → /about
+└── ru/
+    ├── index.mdx       → /ru
+    └── o-nas.mdx       → /ru/o-nas
+```
+
+同じ構造のページは自動的にリンクされます。カスタムURLはフロントマターの `permalink` と `alternates` を使用します。

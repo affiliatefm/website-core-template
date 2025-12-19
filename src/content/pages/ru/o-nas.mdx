@@ -1,32 +1,49 @@
 ---
-title: О Affiliate.FM
-description: Зачем мы сделали универсальное Astro-ядро для партнерских проектов
+title: О нас
+description: Об этом i18n бойлерплейте
+permalink: o-nas
 alternates:
   en: about
   ru: o-nas
   ru-kz: biz-turaly
   ja: about
-  fr: https://fr.example.com/about
-  es: https://example.es/about
-permalink: o-nas
 ---
 
-# Зачем нам это ядро
+# Об этом шаблоне
 
-Affiliate.FM публикует независимые исследования и инструменты для партнерского и performance-маркетинга. Нам нужен был статичный стек, который легко переиспользовать, обновлять и передавать командам в разных странах.
+Этот бойлерплейт демонстрирует как построить **content-driven многоязычный сайт** с i18n возможностями Astro 5.
 
-## Принципы
+## Архитектура
 
-1. **Только статический вывод** — Astro 5 (static) → любой CDN/хостинг.
-2. **Жесткие конвенции** — контент в `src/content/pages/<locale>/`, UI в `src/components/` и layouts в `src/layouts/`.
-3. **Документируем решения** — `make bootstrap` создаёт `affiliatefm.core.json`, где фиксируются защищенные пути и версия ядра.
-4. **Performance + a11y** — базовые темы уже настроены, можно сосредоточиться на контенте.
+### Конфигурация (`src/config/site.ts`)
 
-## Рабочий процесс
+**Единое место** для всех настроек сайта:
 
-1. `npm create astro@latest -- --template affiliatefm/website-core-template`
-2. `make bootstrap && make seed`
-3. Пишем контент и добавляем локали (достаточно создать папку `src/content/pages/ru/...`).
-4. Используем `make update`, чтобы подтянуть свежий core без затирания `protectedPaths`.
+- Поддерживаемые локали и дефолтная локаль
+- URL сайта и метаданные
+- UI переводы и ссылки навигации
 
-Есть вопросы? Напишите на [hello@affiliate.fm](mailto:hello@affiliate.fm) или создайте issue.
+### Контент (`src/content/pages/`)
+
+MDX файлы по локалям. Файлы дефолтной локали в корне, остальные — в подпапках.
+
+### Роутинг (`src/pages/`)
+
+Единый универсальный роут:
+
+- `[...slug].astro` — Все локали, все пути
+
+## Кастомные URL
+
+Эта страница демонстрирует **кастомный URL**:
+
+- English: `/about`
+- Русский: `/ru/o-nas`
+
+Достигается через `alternates` во frontmatter обеих страниц + `permalink` на русской версии.
+
+---
+
+[← На главную](/ru)
+
+

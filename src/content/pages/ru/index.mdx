@@ -1,6 +1,6 @@
 ---
-title: Affiliate.FM Website Core
-description: Astro-ядро для мультиязычных статических сайтов с данными
+title: Добро пожаловать
+description: Минималистичный i18n бойлерплейт для Astro 5
 alternates:
   en: ""
   ru: ""
@@ -10,26 +10,45 @@ alternates:
   es: https://example.es/
 ---
 
-import DataShowcase from "@/components/DataShowcase.astro";
+# Astro i18n Бойлерплейт
 
-# Affiliate.FM · Открытое ядро для performance-команд
+Чистая основа для создания многоязычных сайтов на **Astro 5**.
 
-Мы делимся инструментами для партнерского маркетинга. Этот репозиторий можно взять за основу, кастомизировать и регулярно обновлять без боли.
+## Возможности
 
-## Что внутри
+- **Content-driven** — Страницы как MDX файлы
+- **Автосвязывание** — Переводы связываются по структуре
+- **Кастомные URL** — Разные слаги для разных локалей
+- **Типизация** — Полная поддержка TypeScript
+- **Минимализм** — Без лишних зависимостей
 
-- **Контент** — MDX + Astro content collections, строгие схемы, автоссылки на переводы.
-- **Обновления** — `make bootstrap` фиксирует защищенные пути, `make update` подтягивает свежий core.
-- **Данные** — `make seed` генерирует demo JSON в `src/data/`, вы можете заменить их загрузками из своего BI.
-- **Инструменты** — Makefile + npm scripts + интеграция `@affiliate.fm/astro-content-ai-translator`.
+## Демо страницы
 
-<DataShowcase />
+- [Главная](/ru) — Связана с `/` (авто)
+- [О нас](/ru/o-nas) — Кастомный URL вместо `/ru/about`
+- [Документация](/ru/docs/getting-started) — Вложенный путь
+- [Только RU](/ru/only-russian) — Нет английской версии
 
-## Как работать
+## Быстрый старт
 
-1. `make install && make bootstrap && make seed`
-2. Добавьте контент в `src/content/pages/ru/...`
-3. Настройте навигацию и домены в `src/config/site.ts`
-4. Обновляйтесь через `make update`
+```bash
+npm install
+npm run dev
+```
 
-Есть вопросы? Пишите на [hello@affiliate.fm](mailto:hello@affiliate.fm).
+## Как это работает
+
+Контент в `src/content/pages/`. Структура папок определяет URL:
+
+```
+src/content/pages/
+├── index.mdx           → /
+├── about.mdx           → /about
+└── ru/
+    ├── index.mdx       → /ru
+    └── o-nas.mdx       → /ru/o-nas
+```
+
+Страницы с одинаковой структурой связываются автоматически. Кастомные URL — через `permalink` + `alternates`.
+
+

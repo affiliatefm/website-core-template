@@ -6,8 +6,6 @@ dist/
 
 # Astro
 .astro/
-.affiliatefm/
-affiliatefm.core.json
 
 # Environment
 .env
@@ -25,8 +23,5 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
-
-
-
 
 

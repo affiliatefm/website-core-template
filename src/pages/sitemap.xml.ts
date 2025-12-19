@@ -10,6 +10,7 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
 import {
+  locales,
   defaultLocale,
   getLocaleFromId,
   getUrlSlug,
@@ -97,8 +98,5 @@ function escapeXml(str: string): string {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;");
 }
-
-
-
 
 

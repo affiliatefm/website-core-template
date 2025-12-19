@@ -1,71 +1,54 @@
 ---
-title: Affiliate.FM Website Core
-description: Astro 5 starter tuned for high-volume affiliate, performance, and digital marketing sites
+title: Welcome
+description: Minimal Astro 5 i18n boilerplate with content-driven architecture
 alternates:
   en: ""
   ru: ""
   ru-kz: ""
   ja: ""
+  # External sites — full URLs
   fr: https://fr.example.com/
   es: https://example.es/
-_translateTo: all
+_translateTo: all # or you can use [ja]
 ---
 
-import DataShowcase from "@/components/DataShowcase.astro";
+# Astro i18n Boilerplate
 
-# Affiliate.FM · Independent Media + Open-Source Tools
+A clean, minimal foundation for building multilingual websites with **Astro 5**.
 
-We ship reusable building blocks for affiliate, performance, and data-driven content hubs. This template is our core—an Astro 5 starter tuned for static deployments, multi-lingual routing, and a predictable update story.
+## Features
 
-## What You Get Out of the Box
+- **Content-driven** — Pages as MDX files with frontmatter
+- **Auto-linking** — Translations matched automatically by path structure
+- **Custom URLs** — Different slugs per locale when needed
+- **Type-safe** — Full TypeScript support throughout
+- **Minimal** — No unnecessary dependencies or complexity
 
-- **Content-first**: Markdown/MDX via content collections, strictly typed frontmatter, and folder-based locales (no `page.locale.mdx` juggling).
-- **Deployment-agnostic**: Static output, zero server adapters required, domain-aware hreflang tags, and robots/sitemap routes already wired.
-- **Upgradeable core**: `make update` fetches our latest baseline without touching `src/content`, `src/data`, or anything you mark as protected.
-- **Tooling for every skill level**: Makefile commands for beginners, raw npm scripts for CI, and bootstrap/update scripts to document local decisions.
-- **Data workflows**: Seedable JSON under `src/data/` plus helper utilities so you can render performance metrics alongside editorial content.
+## Demo Pages
 
-<DataShowcase />
+- [Home](/) — Paired with `/ru` (auto-matched)
+- [About](/about) — Custom URL: `/ru/o-nas`
+- [Contact](/contact) — English only
+- [Docs](/docs/getting-started) — Nested path, auto-matched
 
-## Layers & Lifecycle
-
-| Layer | Owned By | Examples |
-| --- | --- | --- |
-| **Core** | Affiliate.FM | `src/components`, layouts, routing, integrations, update scripts |
-| **User Content** | You | `src/content/pages/**`, locale-specific assets, MDX, custom layouts |
-| **User Data** | You | `src/data/*.json`, API fetchers, bespoke pipelines |
-
-Keep core clean so you can `git pull` or `make update` without merge hell. Stash customizations inside user layers or extend the layout via slots/extra components.
-
-### Updating Safely
-
-1. Run `make bootstrap` once per project to generate `affiliatefm.core.json`.
-2. Add any paths you never want overwritten (custom integrations, data fetchers, etc.).
-3. Pull new goodies any time with `make update`.
-4. Inspect the diff, reinstall dependencies if `package.json` changed, rebuild.
-
-### Working With Data
-
-- Store structured data in `src/data/`. The template protects it from future core upgrades.
-- Generate fresh demo data for prototypes with `make seed` (`npm run seed:data`).
-- Import via `@/lib/data` helpers or wire your own data loaders.
-
-### Built-in Automation
+## Quick Start
 
 ```bash
-make install    # npm install
-make dev        # astro dev
-make build      # production build + HTML prettify
-make check      # astro check / type safety
-make seed       # rewrite sample data sets
-make update     # pull newest Affiliate.FM core
+npm install
+npm run dev
 ```
 
-## Next Steps
+## How It Works
 
-- Edit `src/config/site.ts` to set locales, nav, and optional per-locale domains.
-- Drop your own MDX into `src/content/pages/<<locale>>/`.
-- Swap the template skin via `template` in `site.ts` (`basic` vs `basic-dark`).
-- Wire AI-assisted translation with `@affiliate.fm/astro-content-ai-translator` using the sample scripts.
+Content lives in `src/content/pages/`. Folder structure determines URLs:
 
-Need help? Ping us on [affiliate.fm](https://affiliate.fm) or open an issue. We're building this in the open so you can ship faster.
+```
+src/content/pages/
+├── index.mdx           → /
+├── about.mdx           → /about
+└── ru/
+    ├── index.mdx       → /ru
+    └── o-nas.mdx       → /ru/o-nas
+```
+
+Pages with the same structure are linked automatically. Custom URLs use `permalink` + `alternates` in frontmatter.

@@ -14,7 +14,6 @@ export {
   defaultLocale,
   localeLabels,
   siteUrl,
-  localeDomains,
   ui,
   type Locale,
   type UIConfig,
@@ -23,8 +22,5 @@ export {
 
 // Export utility functions
 export * from "./utils";
-
-
-
 
 

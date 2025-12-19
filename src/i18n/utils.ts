@@ -10,7 +10,6 @@ import {
   locales,
   defaultLocale,
   siteUrl,
-  localeDomains,
   ui,
   type Locale,
 } from "@/config/site";
@@ -167,10 +166,11 @@ export function getPageUrl(entry: {
 // URL HELPERS
 // =============================================================================
 
-function getOrigin(locale?: Locale): string {
-  const domain = locale ? localeDomains[locale] : undefined;
-  const base = domain || siteUrl;
-  return base.endsWith("/") ? base.slice(0, -1) : base;
+/**
+ * Get site origin (without trailing slash).
+ */
+function getOrigin(): string {
+  return siteUrl.endsWith("/") ? siteUrl.slice(0, -1) : siteUrl;
 }
 
 /**
@@ -179,15 +179,7 @@ function getOrigin(locale?: Locale): string {
  */
 export function getAbsoluteLocaleUrl(locale: Locale, slug: string): string {
   const relative = getRelativeLocaleUrl(locale, slug);
-  const origin = getOrigin(locale);
-
-  if (localeDomains[locale]) {
-    const cleaned = relative.replace(new RegExp(`^/${locale}`), "") || "/";
-    const normalized = cleaned.startsWith("/") ? cleaned : `/${cleaned}`;
-    return `${origin}${normalized}`;
-  }
-
-  return `${origin}${relative}`;
+  return `${getOrigin()}${relative}`;
 }
 
 // =============================================================================
@@ -234,7 +226,7 @@ export function getAlternateUrls(
 
   // Helper to build URL for local pages
   const buildLocalUrl = (locale: Locale, slug: string): string => {
-    if (options?.absolute || localeDomains[locale]) {
+    if (options?.absolute) {
       return getAbsoluteLocaleUrl(locale, slug);
     }
     return getRelativeLocaleUrl(locale, slug);
@@ -321,8 +313,5 @@ export function getAlternateUrls(
 export function getMissingLocales(alternates: Record<string, string>): Locale[] {
   return locales.filter((locale) => !(locale in alternates));
 }
-
-
-
 
 

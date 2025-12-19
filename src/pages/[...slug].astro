@@ -22,14 +22,11 @@ import {
   getLocaleFromId,
   getUrlSlug,
   getAlternateUrls,
-  isValidLocale,
 } from "@/i18n";
 
 export async function getStaticPaths() {
   const allPages = await getCollection("pages", ({ data }) => !data.draft);
-  const nonDefaultLocales = locales.filter(
-    (locale): locale is Exclude<Locale, typeof defaultLocale> => locale !== defaultLocale
-  );
+  const nonDefaultLocales = locales.filter((l) => l !== defaultLocale);
 
   const paths = [];
 
@@ -79,11 +76,7 @@ export async function getStaticPaths() {
   );
   const conflicts = defaultLocalePages.filter((p) => {
     const slug = getUrlSlug(p);
-    return (
-      isValidLocale(slug) &&
-      slug !== defaultLocale &&
-      nonDefaultLocales.includes(slug as Exclude<Locale, typeof defaultLocale>)
-    );
+    return nonDefaultLocales.includes(slug as Locale);
   });
 
   if (conflicts.length > 0) {
@@ -113,7 +106,5 @@ const { Content } = await render(entry);
 >
   <Content />
 </Layout>
-
-
 
 
