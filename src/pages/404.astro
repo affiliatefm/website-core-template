@@ -4,24 +4,18 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import { languages, defaultLanguage, type LanguageCode } from "@/config/site";
 import { t } from "@/i18n";
 
-const pathSegment = Astro.url.pathname.split("/")[1];
-const language: LanguageCode = languages.includes(pathSegment as LanguageCode)
-  ? (pathSegment as LanguageCode)
-  : defaultLanguage;
-
-const ui = t(language);
+const seg = Astro.url.pathname.split("/")[1];
+const lang: LanguageCode = languages.includes(seg as LanguageCode) ? (seg as LanguageCode) : defaultLanguage;
 ---
 
-<Layout title="404" language={language}>
+<Layout title="404" language={lang}>
   <div class="e">
-    <h1>404</h1>
-    <p>Page not found</p>
-    <a href={getRelativeLocaleUrl(language, "")}>{ui.homeLabel}</a>
+    <b>404</b>
+    <span>Page not found · <a href={getRelativeLocaleUrl(lang, "")}>{t(lang).homeLabel}</a></span>
   </div>
 </Layout>
 
 <style>
-  .e { text-align: center; padding: 4rem 0; }
-  .e h1 { font-size: 3rem; color: #ddd; margin-bottom: 0.5rem; }
-  .e p { color: #666; margin-bottom: 1.5rem; }
+.e { text-align: center; padding: 3rem 0; color: #9ca3af; }
+.e b { font-size: 3rem; font-weight: 600; color: #e5e7eb; display: block; margin-bottom: 0.5rem; }
 </style>

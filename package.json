@@ -1,11 +1,33 @@
 {
   "name": "website-core-template",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.1.0",
+  "description": "A reusable, updatable static site generator by Affiliate.FM. Build fast, multilingual websites with Astro 5.",
+  "author": "Affiliate.FM <hello@affiliate.fm>",
+  "license": "MIT",
+  "homepage": "https://github.com/affiliatefm/website-core-template#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/affiliatefm/website-core-template.git"
+  },
+  "bugs": {
+    "url": "https://github.com/affiliatefm/website-core-template/issues"
+  },
+  "keywords": [
+    "astro",
+    "template",
+    "i18n",
+    "multilingual",
+    "static-site",
+    "affiliate",
+    "marketing"
+  ],
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && find dist -name '*.html' -exec js-beautify -r --type html {} \\;",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "check": "astro check",
+    "format": "prettier --write \"src/**/*.{astro,ts,js,mjs,json,md,mdx}\""
   },
   "dependencies": {
     "@affiliate.fm/astro-content-ai-translator": "^0.3.0",
@@ -13,7 +35,8 @@
     "astro": "^5.16.5"
   },
   "devDependencies": {
-    "js-beautify": "^1.15.4"
+    "js-beautify": "^1.15.4",
+    "prettier": "^3.5.3",
+    "prettier-plugin-astro": "^0.14.1"
   }
 }
-

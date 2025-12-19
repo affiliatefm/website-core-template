@@ -1,56 +1,48 @@
-# Affiliate.FM Website Core Template
+# Website Core Template
 
-Minimal Astro 5 template for multilingual sites. Zero config to start — just add content.
+Minimal Astro 5 template for multilingual static sites. Zero config to start — just add content.
 
-Part of the [Affiliate.FM](https://github.com/AffiliatesFM) open-source ecosystem.
+Built by [Affiliate.FM](https://affiliate.fm) — independent media and open-source tools for affiliate marketing.
 
-## Features
-
-- **File-based i18n** — language detection from folder structure
-- **Auto-generated sitemap** with hreflang alternate links
-- **Build-time validation** — catches broken hreflang links before deploy
-- **SEO-ready** — canonical URLs, robots.txt, proper meta tags
-- **Single layout** — easily customizable via `#layout` alias
-
-## Quick start
+## Quick Start
 
 ```bash
-npm install
-npm run dev
+npm create astro@latest -- --template affiliatefm/website-core-template
+cd my-site
+make dev
 ```
 
-Open http://localhost:4321 — you're running!
+Open http://localhost:4321
 
-## Project structure
+## Project Structure
 
 ```
 src/
-├── data/                 # ✏️ EDIT THESE FILES
-│   ├── site.ts           #    Site URL + default language
-│   └── ui.ts             #    UI strings per language
-├── content/
-│   └── pages/            # ✏️ YOUR CONTENT GOES HERE
-│       ├── index.mdx     #    Default language homepage
-│       ├── about.mdx     #    Default language page
-│       ├── ru/           #    Russian content folder
-│       │   ├── index.mdx
-│       │   └── about.mdx
-│       └── de/           #    German content folder
-│           └── index.mdx
-├── config/               # Runtime config (auto-generated from data/)
-├── i18n/                 # URL helpers & translation utilities
-├── integrations/         # Build-time checks
-├── layouts/              # Page layouts
-└── pages/                # Astro router
+├── content/pages/     # ✏️ Your content (MDX files)
+│   ├── index.mdx      #    Homepage
+│   ├── about.mdx      #    Another page
+│   └── ru/            #    Russian content
+│       └── index.mdx
+├── data/              # ✏️ Your configuration
+│   ├── site.ts        #    Site URL, default language
+│   └── ui.ts          #    UI translations
+├── config/            #    Runtime config (auto-generated)
+├── i18n/              #    URL helpers
+├── integrations/      #    Build checks
+├── layouts/basic/     #    Default layout
+└── pages/             #    Astro router
 ```
 
-## Setup (2 minutes)
+**Your files** (✏️) — edit freely, never touched by updates  
+**Core files** — updated via `make update`
 
-### 1. Configure your site
+## Setup
+
+### 1. Configure site
 
 Edit `src/data/site.ts`:
 
-```ts
+```typescript
 export const siteUrl = "https://your-domain.com";
 export const defaultLanguage = "en";
 ```
@@ -59,11 +51,10 @@ export const defaultLanguage = "en";
 
 Edit `src/data/ui.ts`:
 
-```ts
+```typescript
 export const uiStrings = {
   en: { homeLabel: "Home" },
   ru: { homeLabel: "Главная" },
-  de: { homeLabel: "Startseite" },
 } as const;
 ```
 
@@ -71,35 +62,37 @@ export const uiStrings = {
 
 Add MDX files to `src/content/pages/`:
 
-- Default language → directly in `pages/`
-- Other languages → in subfolders like `pages/ru/`, `pages/de/`
+- Default language → `pages/about.mdx` → `/about/`
+- Other languages → `pages/ru/about.mdx` → `/ru/about/`
 
-**Frontmatter example:**
+## Commands
 
-```yaml
----
-title: About Us
-description: Learn more about our company
----
-```
+| Command | Description |
+|---------|-------------|
+| `make dev` | Start dev server |
+| `make build` | Build for production |
+| `make preview` | Preview build |
+| `make update` | Update core from upstream |
 
-## Linking translations
+## Multilingual
 
-Translations are linked automatically when files have the same path:
+### Same slugs (automatic linking)
 
 ```
 pages/about.mdx      → /about/
 pages/ru/about.mdx   → /ru/about/
 ```
 
-For **different slugs**, use `alternates` in frontmatter:
+Hreflang links generated automatically.
+
+### Different slugs
 
 ```yaml
 # pages/about.mdx
 ---
 title: About
 alternates:
-  ru: o-nas  # Links to /ru/o-nas/
+  ru: o-nas
 ---
 
 # pages/ru/o-nas.mdx
@@ -107,11 +100,11 @@ alternates:
 title: О нас
 permalink: o-nas
 alternates:
-  en: about  # Links back to /about/
+  en: about
 ---
 ```
 
-For **external alternates** (e.g., separate domain per language):
+### External alternates
 
 ```yaml
 ---
@@ -121,61 +114,44 @@ alternates:
 ---
 ```
 
-## Frontmatter reference
+## Frontmatter
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `title` | string | Page title (required) |
 | `description` | string | Meta description |
 | `permalink` | string | Custom URL slug |
-| `alternates` | object | Language → slug/URL mapping |
-| `updatedAt` | date | Last modified (for sitemap) |
+| `alternates` | object | Language → slug mapping |
+| `updatedAt` | date | For sitemap |
 | `draft` | boolean | Exclude from build |
 
-## Custom layout
+## Updating
 
-The `#layout` alias points to `src/layouts/basic/Layout.astro`.
+```bash
+# Check what would change
+make update-check
 
-To customize:
-1. Edit the existing layout, or
-2. Create a new layout and update `layoutPath` in `src/config/site.ts`
+# Apply update
+make update
+```
 
-## Commands
+**Preserved:** `src/content/`, `src/data/`, `public/`  
+**Updated:** everything else
 
-| Command | Action |
-|---------|--------|
-| `npm run dev` | Start dev server at localhost:4321 |
-| `npm run build` | Build for production + run integrity checks |
-| `npm run preview` | Preview production build locally |
+## Build Checks
 
-## Build checks
+Automatic validation:
+- ✓ Hreflang links are bidirectional
+- ✓ All languages have UI strings
+- ✓ No duplicate URLs
 
-The template validates your build automatically:
-
-- ✓ All hreflang links are bidirectional
-- ✓ All languages have UI strings defined
-- ✓ No conflicting URL slugs
-
-If checks fail, the build stops with a clear error message.
-
-## Adding integrations
-
-This template works with any Astro integration:
+## Adding Integrations
 
 ```bash
 npx astro add tailwind
 npx astro add react
 ```
 
-## Related
-
-- [website-core-template](https://github.com/affiliatefm/website-core-template) — i18n-ready Astro starter template
-- [astro-content-ai-enhancer](https://github.com/affiliatefm/astro-content-ai-enhancer) — AI assistant that enhances raw Markdown into structured, well-formatted pages
-
-## Author
-
-Built by [Affiliate.FM](https://affiliate.fm) — independent media and open-source tools for affiliate, performance, and digital marketing.
-
 ## License
 
-MIT
+MIT © [Affiliate.FM](https://affiliate.fm)
