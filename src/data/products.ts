@@ -1,6 +1,6 @@
-// Example data file. Create your own in src/data/
+// Example data — replace with your own
 export const products = [
-  { id: "alpha", name: "Product Alpha", description: "Short description here", url: "#" },
-  { id: "beta", name: "Product Beta", description: "Another description", url: "#" },
-  { id: "gamma", name: "Product Gamma", description: "Third item description", url: "#" },
+  { id: "core", name: "Website Core Template", description: "Multilingual static site generator", url: "https://github.com/affiliatefm/website-core-template" },
+  { id: "translator", name: "Content AI Translator", description: "AI-powered content translation", url: "https://github.com/affiliatefm/astro-content-ai-translator" },
+  { id: "enhancer", name: "Content AI Enhancer", description: "AI content enhancement tool", url: "https://github.com/affiliatefm/astro-content-ai-enhancer" },
 ];

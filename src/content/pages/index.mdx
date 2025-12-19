@@ -1,13 +1,20 @@
 ---
-title: Website Core Template
-description: Minimal Astro 5 template for multilingual static sites by Affiliate.FM
+title: "Affiliate.FM: Website Core Template"
+description: Reusable static site generator for multilingual sites
 ---
 
 import { products } from "@/data/products";
 
 # Website Core Template
 
-Minimal static site generator with i18n, auto-sitemap, and updatable core.
+Reusable, updatable static site generator for multilingual sites. Part of the [Affiliate.FM](https://affiliate.fm) open-source ecosystem — tools for affiliate and digital marketing.
+
+## Features
+
+- **i18n routing** — folder-based, zero config
+- **Auto-sitemap** — with hreflang links
+- **Updatable core** — `make update` syncs core, preserves your content
+- **Data-ready** — import data into MDX pages
 
 ## Quick Start
 
@@ -16,11 +23,13 @@ npm create astro@latest -- --template affiliatefm/website-core-template
 make dev
 ```
 
+Edit `src/data/site.ts` → add content to `src/content/pages/` → done.
+
 ## Data Example
 
 <table>
   <thead>
-    <tr><th>Product</th><th>Description</th><th></th></tr>
+    <tr><th>Tool</th><th>Description</th><th></th></tr>
   </thead>
   <tbody>
     {products.map(p => (
@@ -33,5 +42,30 @@ make dev
   </tbody>
 </table>
 
----
+## Docs
 
+### Adding Languages
+
+Create `src/content/pages/ru/index.mdx` → available at `/ru/`
+
+### Frontmatter
+
+- `title` — page title (required)
+- `description` — meta description
+- `permalink` — custom URL slug
+- `alternates` — link translations with different slugs
+- `draft: true` — exclude from build
+
+### Commands
+
+| Command | Description |
+|---------|-------------|
+| `make dev` | Dev server |
+| `make build` | Production build |
+| `make update` | Update core |
+
+## Links
+
+- [Source code](https://github.com/affiliatefm/website-core-template)
+- [Content AI Translator](https://github.com/affiliatefm/astro-content-ai-translator) — AI-powered translation for Astro. Auto-generates localized content from your content/ directory.
+- [Content AI Enhancer](https://github.com/affiliatefm/astro-content-ai-enhancer) — AI assistant that turns raw Markdown into structured, well-formatted pages while keeping the original voice.

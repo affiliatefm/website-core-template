@@ -152,6 +152,15 @@ npx astro add tailwind
 npx astro add react
 ```
 
+## Related
+
+- [astro-content-ai-translator](https://github.com/affiliatefm/astro-content-ai-translator) — AI-powered translation for Astro. Auto-generates localized content from your content/ directory.
+- [astro-content-ai-enhancer](https://github.com/affiliatefm/astro-content-ai-enhancer) — AI assistant that turns raw Markdown into structured, well-formatted pages while keeping the original voice.
+
+## Author
+
+[Affiliate.FM](https://affiliate.fm) — independent media and open-source tools for affiliate, performance, and digital marketing.
+
 ## License
 
-MIT © [Affiliate.FM](https://affiliate.fm)
+MIT

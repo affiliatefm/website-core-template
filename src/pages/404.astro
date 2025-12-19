@@ -9,13 +9,8 @@ const lang: LanguageCode = languages.includes(seg as LanguageCode) ? (seg as Lan
 ---
 
 <Layout title="404" language={lang}>
-  <div class="e">
-    <b>404</b>
-    <span>Page not found · <a href={getRelativeLocaleUrl(lang, "")}>{t(lang).homeLabel}</a></span>
+  <div class="center spacer">
+    <div class="hero">404</div>
+    <p class="muted">Page not found · <a href={getRelativeLocaleUrl(lang, "")}>{t(lang).homeLabel}</a></p>
   </div>
 </Layout>
-
-<style>
-.e { text-align: center; padding: 3rem 0; color: #9ca3af; }
-.e b { font-size: 3rem; font-weight: 600; color: #e5e7eb; display: block; margin-bottom: 0.5rem; }
-</style>
