@@ -21,7 +21,6 @@ cp package.json "$TEMP/_user/"
 # Copy core files
 rm -rf src
 cp -r "$TEMP/src" .
-cp -r "$TEMP/scripts" .
 cp "$TEMP/astro.config.mjs" .
 cp "$TEMP/tsconfig.json" .
 cp "$TEMP/Makefile" .
@@ -43,5 +42,8 @@ fs.writeFileSync('package.json', JSON.stringify(merged, null, 2));
 [[ -d "$TEMP/_user/public" ]] && rm -rf public && cp -r "$TEMP/_user/public" .
 
 npm install --silent 2>/dev/null || npm install
+
+# Copy scripts last (this script is running, must be after all other operations)
+cp -r "$TEMP/scripts" .
 
 echo "Done. Run 'make dev' to test."
