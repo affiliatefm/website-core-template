@@ -156,6 +156,10 @@ function isFullUrl(value: string): boolean {
 
 /**
  * Get alternate language URLs for a page.
+ * 
+ * Logic:
+ * 1. Auto-link pages with same basePath
+ * 2. Override/extend with explicit alternates (supports external URLs)
  */
 export function getAlternateUrls(
   entry: PageEntry,
@@ -165,6 +169,7 @@ export function getAlternateUrls(
   const result: Record<string, string> = {};
   const currentLanguage = getLanguageFromId(entry.id);
   const currentSlug = getUrlSlug(entry);
+  const currentBasePath = getBasePath(entry.id);
 
   const buildLocalUrl = (language: LanguageCode, slug: string): string => {
     if (options?.absolute) {
@@ -173,12 +178,26 @@ export function getAlternateUrls(
     return getRelativeLocaleUrl(language, slug);
   };
 
+  // Add current page
   result[currentLanguage] = buildLocalUrl(currentLanguage, currentSlug);
 
+  // Auto-link pages with same basePath
+  for (const other of allEntries) {
+    const otherLanguage = getLanguageFromId(other.id);
+    if (otherLanguage === currentLanguage) continue;
+
+    const otherBasePath = getBasePath(other.id);
+    if (otherBasePath === currentBasePath) {
+      result[otherLanguage] = buildLocalUrl(otherLanguage, getUrlSlug(other));
+    }
+  }
+
+  // Override/extend with explicit alternates
   if (entry.data.alternates) {
     for (const [key, value] of Object.entries(entry.data.alternates)) {
       if (key === currentLanguage) continue;
 
+      // External URL — use as-is
       if (isFullUrl(value)) {
         result[key] = value;
         continue;
@@ -186,6 +205,7 @@ export function getAlternateUrls(
 
       if (!isSupportedLanguage(key)) continue;
 
+      // Local slug — find the entry
       const normalizedSlug = value.replace(/^\//, "");
       const targetEntry = allEntries.find(
         (candidate) =>
@@ -193,40 +213,9 @@ export function getAlternateUrls(
           getUrlSlug(candidate) === normalizedSlug
       );
 
-      if (!targetEntry) continue;
-
-      result[key] = buildLocalUrl(key as LanguageCode, getUrlSlug(targetEntry));
-    }
-    return result;
-  }
-
-  const currentBasePath = getBasePath(entry.id);
-
-  for (const other of allEntries) {
-    const otherLanguage = getLanguageFromId(other.id);
-    if (otherLanguage === currentLanguage) continue;
-    if (result[otherLanguage]) continue;
-
-    const otherBasePath = getBasePath(other.id);
-
-    const linksBack = other.data.alternates
-      ? Object.entries(other.data.alternates).some(
-          ([lang, slug]) =>
-            isSupportedLanguage(lang) &&
-            lang === currentLanguage &&
-            !isFullUrl(slug) &&
-            slug.replace(/^\//, "") === currentSlug
-        )
-      : false;
-
-    if (
-      (!other.data.alternates && otherBasePath === currentBasePath) ||
-      linksBack
-    ) {
-      result[otherLanguage] = buildLocalUrl(
-        otherLanguage,
-        getUrlSlug(other)
-      );
+      if (targetEntry) {
+        result[key] = buildLocalUrl(key as LanguageCode, getUrlSlug(targetEntry));
+      }
     }
   }
 
