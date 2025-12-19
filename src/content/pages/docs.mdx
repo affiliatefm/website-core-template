@@ -1,0 +1,199 @@
+---
+title: "Documentation — Website Core Template"
+description: "Learn how to set up, configure, and extend the website-core-template for your multilingual static site."
+permalink: docs
+_translateTo: all
+alternates:
+  en: docs
+  en-US: docs
+---
+
+import { getProductsByRank } from "@/data/products";
+import RatingTable from "@/layouts/affiliate/components/RatingTable.astro";
+
+# Documentation
+
+<p class="text-sm text-gray-500 mb-6">Website Core Template · By Affiliate.FM · 5 min read</p>
+
+This guide covers everything you need to know to set up, configure, and extend the template for your project.
+
+## Table of Contents
+
+1. [Project Structure](#project-structure)
+2. [Configuration](#configuration)
+3. [Adding Content](#adding-content)
+4. [Multilingual Setup](#multilingual-setup)
+5. [Extending with Tools](#extending-with-tools)
+
+---
+
+## Project Structure
+
+```
+src/
+├── content/pages/     # ✏️ Your content (MDX files)
+│   ├── index.mdx      #    Homepage
+│   ├── about.mdx      #    Another page
+│   └── ru/            #    Russian content
+│       └── index.mdx
+├── data/              # ✏️ Your configuration
+│   ├── site.ts        #    Site URL, default language
+│   └── ui.ts          #    UI translations
+├── config/            #    Runtime config (auto-generated)
+├── i18n/              #    URL helpers
+├── integrations/      #    Build checks
+├── layouts/           #    Page layouts
+└── pages/             #    Astro router
+```
+
+**Your files** (✏️) — edit freely, never touched by updates  
+**Core files** — updated via `make update`
+
+## Configuration
+
+### 1. Configure site
+
+Edit `src/data/site.ts`:
+
+```typescript
+export const siteUrl = "https://your-domain.com";
+export const defaultLanguage = "en";
+```
+
+### 2. Add UI strings
+
+Edit `src/data/ui.ts`:
+
+```typescript
+export const uiStrings = {
+  en: { siteName: "My Site" },
+  ru: { siteName: "Мой сайт" },
+} as const;
+```
+
+## Adding Content
+
+Create MDX files in `src/content/pages/`:
+
+```yaml
+---
+title: "Page Title"
+description: "Meta description for SEO"
+---
+
+# Your content here
+
+Write in Markdown with full MDX component support.
+```
+
+### Frontmatter options
+
+| Field | Type | Description |
+|-------|------|-------------|
+| title | string | Page title (required) |
+| description | string | Meta description |
+| permalink | string | Custom URL slug |
+| alternates | object | Language → slug mapping |
+| updatedAt | date | For sitemap |
+| draft | boolean | Exclude from build |
+
+## Multilingual Setup
+
+### Same slugs (automatic)
+
+```
+pages/about.mdx      → /about/
+pages/ru/about.mdx   → /ru/about/
+```
+
+Hreflang links generated automatically.
+
+### Different slugs
+
+```yaml
+# pages/about.mdx
+---
+title: About
+alternates:
+  ru: o-nas
+---
+
+# pages/ru/o-nas.mdx
+---
+title: О нас
+permalink: o-nas
+alternates:
+  en: about
+---
+```
+
+### External alternates
+
+```yaml
+---
+title: About
+alternates:
+  ja: https://ja.example.com/about/
+---
+```
+
+## Extending with Tools
+
+The template works seamlessly with other Affiliate.FM tools:
+
+<RatingTable products={getProductsByRank().slice(1, 3)} />
+
+### AI Translation
+
+Add automatic translation to your workflow:
+
+```bash
+npm install @affiliate.fm/astro-content-ai-translator
+npx astro-ai-translator init
+```
+
+Then mark files for translation:
+
+```yaml
+---
+title: About Us
+_translateTo: all
+---
+```
+
+### Adding Integrations
+
+```bash
+npx astro add tailwind
+npx astro add react
+```
+
+## Updating
+
+The template is designed for safe updates:
+
+```bash
+# Check what would change
+make update-check
+
+# Apply update
+make update
+```
+
+**Preserved:** `src/content/`, `src/data/`, `public/`  
+**Updated:** everything else
+
+---
+
+## Next Steps
+
+1. Clone the template
+2. Configure `src/data/site.ts`
+3. Add your content to `src/content/pages/`
+4. Deploy to your favorite platform
+
+**Questions?** Open an issue on [GitHub](https://github.com/affiliatefm/website-core-template).
+
+---
+
+← [Back to home](/)

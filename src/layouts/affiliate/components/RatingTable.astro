@@ -1,0 +1,91 @@
+---
+/**
+ * Rating Table
+ * ============
+ * Clean product comparison table with links.
+ */
+
+import type { Product } from "../types";
+
+interface Props {
+  products: Product[];
+}
+
+const { products } = Astro.props;
+const sorted = [...products].sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999));
+---
+
+<div class="overflow-x-auto -mx-5 px-5">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="text-left text-xs font-medium text-gray-400 uppercase tracking-wide">
+        <th class="w-12 pb-3">#</th>
+        <th class="pb-3">Product</th>
+        <th class="pb-3 text-right">Rating</th>
+        <th class="pb-3 text-right hidden sm:table-cell">Price</th>
+        <th class="pb-3 w-24"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      {sorted.map((p) => {
+        const nameUrl = p.pageUrl || p.affiliateUrl;
+        const isExternal = !p.pageUrl;
+        
+        return (
+          <tr class:list={["group", p.rank === 1 && "bg-emerald-50/50"]}>
+            <td class="py-4 pr-2">
+              <span class:list={[
+                "inline-flex items-center justify-center w-7 h-7 rounded-md text-sm font-medium",
+                p.rank === 1 ? "bg-emerald-600 text-white" : "bg-gray-100 text-gray-600"
+              ]}>
+                {p.rank}
+              </span>
+            </td>
+            <td class="py-4">
+              <div class="flex items-start gap-3">
+                {p.image && (
+                  <img src={p.image} alt="" class="w-10 h-10 rounded-lg object-cover bg-gray-100 shrink-0" />
+                )}
+                <div class="min-w-0">
+                  <div class="flex items-center gap-2">
+                    <a 
+                      href={nameUrl} 
+                      class="font-medium text-gray-900 hover:text-blue-600"
+                      target={isExternal ? "_blank" : undefined}
+                      rel={isExternal ? "noopener" : undefined}
+                    >
+                      {p.name}
+                    </a>
+                    {p.rank === 1 && (
+                      <span class="px-1.5 py-0.5 text-[10px] font-semibold uppercase bg-emerald-100 text-emerald-700 rounded">
+                        Top
+                      </span>
+                    )}
+                  </div>
+                  <p class="text-gray-500 text-xs mt-0.5 line-clamp-1">{p.description}</p>
+                </div>
+              </div>
+            </td>
+            <td class="py-4 text-right">
+              <div class="text-amber-500 text-xs">{"★".repeat(Math.round(p.rating))}</div>
+              <div class="text-xs text-gray-400 mt-0.5">{p.rating}</div>
+            </td>
+            <td class="py-4 text-right text-gray-900 font-medium hidden sm:table-cell">
+              {p.priceLabel || "—"}
+            </td>
+            <td class="py-4 text-right">
+              <a
+                href={p.affiliateUrl}
+                target="_blank"
+                rel="noopener"
+                class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-md transition-colors"
+              >
+                GitHub →
+              </a>
+            </td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+</div>

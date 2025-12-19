@@ -10,4 +10,9 @@ export type LanguageCode = (typeof locales)[number];
 export const ui = uiStrings;
 export type UIStrings = (typeof uiStrings)[LanguageCode];
 
-export const layoutPath = "./src/layouts/basic/Layout.astro";
+/**
+ * Layout path — choose your template:
+ *   - "./src/layouts/basic/Layout.astro"     — minimal, text-focused
+ *   - "./src/layouts/affiliate/Layout.astro" — affiliate site with Tailwind
+ */
+export const layoutPath = "./src/layouts/affiliate/Layout.astro";

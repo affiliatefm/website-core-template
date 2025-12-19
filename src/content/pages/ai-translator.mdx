@@ -1,0 +1,103 @@
+---
+title: "astro-content-ai-translator — AI Translation for Astro"
+description: "AI-powered translation utility for Astro websites. Automatically generates localized content from your content/ directory."
+permalink: ai-translator
+_translateTo: all
+alternates:
+  en: ai-translator
+  en-US: ai-translator
+---
+
+import { getProductById } from "@/data/products";
+import ProsCons from "@/layouts/affiliate/components/ProsCons.astro";
+
+export const product = getProductById("astro-content-ai-translator");
+
+# astro-content-ai-translator
+
+<p class="text-sm text-gray-500 mb-6">Part of the Affiliate.FM open-source ecosystem</p>
+
+<div class="flex items-center gap-3 mb-6">
+  <span class="text-amber-500">{"★".repeat(Math.round(product.rating))}</span>
+  <span class="font-medium">{product.rating}/5</span>
+  <span class="text-gray-400">·</span>
+  <span class="text-gray-500">{product.reviewCount} commits</span>
+  <span class="badge badge-blue">AI-Powered</span>
+</div>
+
+AI-powered translation utility for Astro websites. Automatically generates localized content from files in the `content/` directory and supports both single-page and multi-page i18n workflows.
+
+<a href={product.affiliateUrl} target="_blank" rel="noopener" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gray-900 hover:bg-gray-700 rounded-md transition-colors no-underline">View on GitHub →</a>
+
+## Quick Summary
+
+<ProsCons pros={product.pros} cons={product.cons} />
+
+| | |
+|---|---|
+| **License** | MIT |
+| **Price** | {product.priceLabel} |
+| **Works with** | Astro 5, website-core-template |
+
+---
+
+## Installation
+
+```bash
+npm install @affiliate.fm/astro-content-ai-translator
+npx astro-ai-translator init
+```
+
+The setup wizard will:
+- Add integration to your `astro.config.mjs`
+- Set up your OpenAI API key in `.env`
+
+## Usage
+
+### Mark files for translation
+
+In your content files, add `_translateTo` to frontmatter:
+
+```yaml
+---
+title: About Us
+description: Learn about our company
+_translateTo: [ru, de]
+---
+```
+
+Options:
+- `_translateTo: [ru, de]` — translate to specific locales
+- `_translateTo: all` — translate to all configured locales
+- No field — file is not translated
+
+### Run translation
+
+```bash
+npx astro-ai-translator
+```
+
+Before translation starts, you'll see:
+- **Cost estimate** — approximate tokens and USD cost
+- **File list** — what will be translated
+- **Confirmation prompt** — approve before spending API credits
+
+## Supported Models
+
+| Model | Input | Output | Best for |
+|-------|-------|--------|----------|
+| gpt-4.1 | $2.00 | $8.00 | Default, best quality |
+| gpt-4.1-mini | $0.40 | $1.60 | Good balance |
+| gpt-4o-mini | $0.15 | $0.60 | Budget option |
+
+---
+
+## Related
+
+- [website-core-template](/) — i18n-ready Astro starter
+- [astro-content-ai-enhancer](/ai-enhancer/) — AI that enhances raw Markdown
+- [staticsitegenerators.net](/ssg-directory/) — Real-world example site
+
+---
+
+← [Back to ecosystem](/)

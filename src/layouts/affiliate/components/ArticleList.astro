@@ -1,0 +1,40 @@
+---
+/**
+ * Article List
+ * ============
+ * Clean article listing.
+ */
+
+import type { Article } from "../types";
+
+interface Props {
+  articles: Article[];
+}
+
+const { articles } = Astro.props;
+
+function formatDate(date: Date | string): string {
+  return new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+---
+
+<div class="divide-y divide-gray-100">
+  {articles.map((article) => (
+    <article class="py-4 first:pt-0 last:pb-0">
+      <div class="flex items-center gap-2 text-xs text-gray-400 mb-1">
+        {article.category && <span class="text-blue-600 font-medium">{article.category}</span>}
+        {article.date && <time>{formatDate(article.date)}</time>}
+      </div>
+      <h3 class="font-medium text-gray-900 mb-1">
+        <a href={article.href} class="hover:text-blue-600 transition-colors">{article.title}</a>
+      </h3>
+      {article.description && (
+        <p class="text-sm text-gray-500 line-clamp-2">{article.description}</p>
+      )}
+    </article>
+  ))}
+</div>

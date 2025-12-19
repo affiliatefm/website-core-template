@@ -203,10 +203,16 @@ export function getAlternateUrls(
         continue;
       }
 
+      // Empty string or same slug — use current page URL for this language
+      const normalizedSlug = value.replace(/^\//, "");
+      if (normalizedSlug === "" || normalizedSlug === currentSlug) {
+        result[key] = buildLocalUrl(currentLanguage, currentSlug);
+        continue;
+      }
+
       if (!isSupportedLanguage(key)) continue;
 
       // Local slug — find the entry
-      const normalizedSlug = value.replace(/^\//, "");
       const targetEntry = allEntries.find(
         (candidate) =>
           getLanguageFromId(candidate.id) === key &&

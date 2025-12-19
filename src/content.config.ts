@@ -69,6 +69,15 @@ const pages = defineCollection({
      * Draft pages are excluded from production builds.
      */
     draft: z.boolean().default(false),
+
+    /**
+     * Auto-translation target (for astro-content-ai-translator).
+     * Values: "all" | ["ru", "de"] | undefined
+     */
+    _translateTo: z.union([
+      z.literal("all"),
+      z.array(z.string()),
+    ]).optional(),
   }),
 });
 

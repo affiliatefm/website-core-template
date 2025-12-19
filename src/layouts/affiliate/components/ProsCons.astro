@@ -1,0 +1,35 @@
+---
+/**
+ * Pros & Cons
+ * ===========
+ * Side-by-side comparison for reviews.
+ */
+
+interface Props {
+  pros?: string[];
+  cons?: string[];
+}
+
+const { pros = [], cons = [] } = Astro.props;
+---
+
+{(pros.length > 0 || cons.length > 0) && (
+  <div class="grid sm:grid-cols-2 gap-4 my-6">
+    {pros.length > 0 && (
+      <div class="p-4 bg-emerald-50 rounded-lg border border-emerald-100">
+        <h4 class="text-sm font-semibold text-emerald-800 mb-2">✓ Pros</h4>
+        <ul class="text-sm text-emerald-900 space-y-1 list-none pl-0">
+          {pros.map((item) => <li>• {item}</li>)}
+        </ul>
+      </div>
+    )}
+    {cons.length > 0 && (
+      <div class="p-4 bg-red-50 rounded-lg border border-red-100">
+        <h4 class="text-sm font-semibold text-red-800 mb-2">✗ Cons</h4>
+        <ul class="text-sm text-red-900 space-y-1 list-none pl-0">
+          {cons.map((item) => <li>• {item}</li>)}
+        </ul>
+      </div>
+    )}
+  </div>
+)}

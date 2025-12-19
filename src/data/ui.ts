@@ -1,6 +1,12 @@
-// UI strings per language. Add keys as needed.
+/**
+ * UI Strings
+ * ==========
+ * User-level translations for site content.
+ * Template translations are in /layouts/{template}/i18n.ts
+ */
+
 export const uiStrings = {
   en: {
-    homeLabel: "Home",
+    siteName: "Affiliate.FM",
   },
 } as const;

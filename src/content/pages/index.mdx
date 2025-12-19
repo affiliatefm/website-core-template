@@ -1,72 +1,80 @@
 ---
-title: "Affiliate.FM: Website Core Template"
-description: Reusable static site generator for multilingual sites
+title: "Website Core Template — Astro 5 Multilingual Starter"
+description: "Minimal Astro 5 template for multilingual static sites. Zero config to start, update-safe, content-driven. Part of the Affiliate.FM open-source ecosystem."
 _translateTo: all
+alternates:
+  en: ""
+  en-US: ""
 ---
 
-import { products } from "@/data/products";
+import { products, categories, getProductsByRank, getProductsByCategory } from "@/data/products";
+import RatingTable from "@/layouts/affiliate/components/RatingTable.astro";
 
 # Website Core Template
 
-Reusable, updatable static site generator for multilingual sites. Part of the [Affiliate.FM](https://affiliate.fm) open-source ecosystem — tools for affiliate and digital marketing.
+Minimal Astro 5 template for multilingual static sites. Zero config to start — just add content.
 
-## Features
+Built by [Affiliate.FM](https://affiliate.fm) — independent media and open-source tools for affiliate, performance, and digital marketing.
 
-- **i18n routing** — folder-based, zero config
-- **Auto-sitemap** — with hreflang links
-- **Updatable core** — `make update` syncs core, preserves your content
-- **Data-ready** — import data into MDX pages
+<div class="section">
 
 ## Quick Start
 
 ```bash
 npm create astro@latest -- --template affiliatefm/website-core-template
+cd my-site
 make dev
 ```
 
-Edit `src/data/site.ts` → add content to `src/content/pages/` → done.
+Open [http://localhost:4321](http://localhost:4321)
 
-## Data Example
+</div>
 
-<table>
-  <thead>
-    <tr><th>Tool</th><th>Description</th><th></th></tr>
-  </thead>
-  <tbody>
-    {products.map(p => (
-      <tr key={p.id}>
-        <td><strong>{p.name}</strong></td>
-        <td>{p.description}</td>
-        <td><a href={p.url}>View →</a></td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+<div class="section">
 
-## Docs
+## Ecosystem
 
-### Adding Languages
+Explore the full Affiliate.FM open-source toolkit:
 
-Create `src/content/pages/ru/index.mdx` → available at `/ru/`
+<nav class="flex flex-wrap gap-2 mb-6 pb-4 border-b border-gray-200">
+  <a href="/" class="px-3 py-1.5 text-sm font-medium bg-gray-900 text-white rounded-md no-underline">All</a>
+  {categories.map((cat) => (
+    <a href={`/#${cat.slug}`} class="px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-md no-underline">{cat.name}</a>
+  ))}
+</nav>
 
-### Frontmatter
+<RatingTable products={getProductsByRank()} />
 
-- `title` — page title (required)
-- `description` — meta description
-- `permalink` — custom URL slug
-- `alternates` — link translations with different slugs
-- `draft: true` — exclude from build
+</div>
 
-### Commands
+<div class="section">
 
-| Command | Description |
-|---------|-------------|
-| `make dev` | Dev server |
-| `make build` | Production build |
-| `make update` | Update core |
+## Documentation
 
-## Links
+<a href="/docs/" class="block p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors no-underline group">
+  <span class="text-xs font-medium text-blue-600">Docs</span>
+  <h3 class="text-base font-semibold text-gray-900 mt-1 group-hover:text-blue-600 transition-colors">Getting Started</h3>
+  <p class="text-sm text-gray-500 mt-1 mb-0">Learn how to set up, configure, and extend the template for your project.</p>
+</a>
 
-- [Source code](https://github.com/affiliatefm/website-core-template)
-- [Content AI Translator](https://github.com/affiliatefm/astro-content-ai-translator) — AI-powered translation for Astro. Auto-generates localized content from your content/ directory.
-- [Content AI Enhancer](https://github.com/affiliatefm/astro-content-ai-enhancer) — AI assistant that turns raw Markdown into structured, well-formatted pages while keeping the original voice.
+</div>
+
+<div class="section">
+
+## Features
+
+- **Zero config** — Works out of the box
+- **Multilingual** — Built-in i18n with hreflang support
+- **Update-safe** — Core updates don't touch your content
+- **Content-driven** — MDX with full component support
+- **Build checks** — Automatic validation on every build
+
+</div>
+
+---
+
+## About This Template
+
+This site is itself built with **website-core-template** — demonstrating its capabilities as a real-world example.
+
+Part of the [Affiliate.FM](https://affiliate.fm) open-source ecosystem.

@@ -32,7 +32,9 @@
   "dependencies": {
     "@affiliate.fm/astro-content-ai-translator": "^0.3.0",
     "@astrojs/mdx": "^4.3.13",
-    "astro": "^5.16.5"
+    "@astrojs/tailwind": "^6.0.2",
+    "astro": "^5.16.5",
+    "tailwindcss": "^3.4.19"
   },
   "devDependencies": {
     "js-beautify": "^1.15.4",

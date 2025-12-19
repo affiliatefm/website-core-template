@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
+import tailwind from "@astrojs/tailwind";
 import { fileURLToPath } from "node:url";
 import {
   siteUrl,
@@ -13,7 +14,7 @@ import aiTranslator from "@affiliate.fm/astro-content-ai-translator";
 export default defineConfig({
   site: siteUrl,
 
-  integrations: [mdx(), checksIntegration(), aiTranslator()],
+  integrations: [mdx(), tailwind(), checksIntegration(), aiTranslator()],
 
   trailingSlash: "always",
 
