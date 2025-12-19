@@ -27,7 +27,7 @@ cp "$TEMP/Makefile" .
 [[ -f "$TEMP/.prettierrc" ]] && cp "$TEMP/.prettierrc" .
 [[ -f "$TEMP/.jsbeautifyrc" ]] && cp "$TEMP/.jsbeautifyrc" .
 
-# Merge package.json (keep user name, update deps)
+# Merge package.json (keep user name, update deps) and copy lock file
 node -e "
 const fs = require('fs');
 const user = JSON.parse(fs.readFileSync('$TEMP/_user/package.json'));
@@ -35,6 +35,7 @@ const core = JSON.parse(fs.readFileSync('$TEMP/package.json'));
 const merged = { ...core, name: user.name };
 fs.writeFileSync('package.json', JSON.stringify(merged, null, 2));
 "
+cp "$TEMP/package-lock.json" .
 
 # Restore user data
 [[ -d "$TEMP/_user/content" ]] && rm -rf src/content && cp -r "$TEMP/_user/content" src/
