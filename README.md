@@ -1,6 +1,8 @@
-# Astro i18n Core Template
+# Affiliate.FM Website Core Template
 
 Minimal Astro 5 template for multilingual sites. Zero config to start — just add content.
+
+Part of the [Affiliate.FM](https://github.com/AffiliatesFM) open-source ecosystem.
 
 ## Features
 
@@ -164,6 +166,15 @@ This template works with any Astro integration:
 npx astro add tailwind
 npx astro add react
 ```
+
+## Related
+
+- [website-core-template](https://github.com/affiliatefm/website-core-template) — i18n-ready Astro starter template
+- [astro-content-ai-enhancer](https://github.com/affiliatefm/astro-content-ai-enhancer) — AI assistant that enhances raw Markdown into structured, well-formatted pages
+
+## Author
+
+Built by [Affiliate.FM](https://affiliate.fm) — independent media and open-source tools for affiliate, performance, and digital marketing.
 
 ## License
 
