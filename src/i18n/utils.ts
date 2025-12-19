@@ -126,16 +126,17 @@ export function getPageUrl(entry: {
 // URL HELPERS
 // =============================================================================
 
-function getOrigin(): string {
-  return siteUrl.endsWith("/") ? siteUrl.slice(0, -1) : siteUrl;
-}
-
 /**
  * Build absolute URL for a language.
+ * Uses siteUrl directly (can be domain, subdomain, or domain/folder).
  */
 export function getAbsoluteLanguageUrl(language: LanguageCode, slug: string) {
-  const relative = getRelativeLocaleUrl(language, slug);
-  return `${getOrigin()}${relative}`;
+  const base = siteUrl.endsWith("/") ? siteUrl : siteUrl + "/";
+  
+  if (language === defaultLanguage) {
+    return slug ? `${base}${slug}/` : base;
+  }
+  return slug ? `${base}${language}/${slug}/` : `${base}${language}/`;
 }
 
 // =============================================================================
