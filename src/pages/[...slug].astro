@@ -2,96 +2,84 @@
 /**
  * Universal Page Router
  * =====================
- * Single route handler for all pages (all locales).
- *
- * Handles:
- * - /                        → default locale index
- * - /about                   → default locale page
- * - /docs/getting-started    → default locale nested page
- * - /ru                      → non-default locale index
- * - /ru/about                → non-default locale page
- * - /ru/docs/getting-started → non-default locale nested page
+ * Single route handler for all languages.
  */
 
 import { getCollection, render } from "astro:content";
 import Layout from "#layout";
 import {
-  locales,
-  defaultLocale,
-  type Locale,
-  getLocaleFromId,
-  getUrlSlug,
-  getAlternateUrls,
-} from "@/i18n";
+  languages,
+  defaultLanguage,
+  type LanguageCode,
+} from "@/config/site";
+import { getLanguageFromId, getUrlSlug, getAlternateUrls } from "@/i18n";
 
 export async function getStaticPaths() {
   const allPages = await getCollection("pages", ({ data }) => !data.draft);
-  const nonDefaultLocales = locales.filter((l) => l !== defaultLocale);
+  const secondaryLanguages = languages.filter((l) => l !== defaultLanguage);
 
   const paths = [];
 
   // Track slugs per locale to detect duplicates
-  const slugsByLocale = new Map<string, Map<string, string>>();
-  for (const loc of locales) {
-    slugsByLocale.set(loc, new Map());
+  const slugsByLanguage = new Map<string, Map<string, string>>();
+  for (const code of languages) {
+    slugsByLanguage.set(code, new Map());
   }
 
   for (const entry of allPages) {
-    const locale = getLocaleFromId(entry.id);
+    const language = getLanguageFromId(entry.id);
     const slug = getUrlSlug(entry);
 
-    // Check for duplicate permalinks within the same locale
-    const localeSlugMap = slugsByLocale.get(locale)!;
-    if (localeSlugMap.has(slug)) {
-      const existingId = localeSlugMap.get(slug);
+    // Check for duplicate permalinks within the same language
+    const languageSlugMap = slugsByLanguage.get(language)!;
+    if (languageSlugMap.has(slug)) {
+      const existingId = languageSlugMap.get(slug);
       throw new Error(
-        `Duplicate permalink "${slug || "/"}" for locale "${locale}": ` +
+        `Duplicate permalink "${slug || "/"}" for language "${language}": ` +
           `found in both "${existingId}" and "${entry.id}". ` +
           `Use unique permalinks or rename files.`
       );
     }
-    localeSlugMap.set(slug, entry.id);
+    languageSlugMap.set(slug, entry.id);
 
-    if (locale === defaultLocale) {
-      // Default locale: no prefix
+    if (language === defaultLanguage) {
+      // Default language: no prefix
       // /about, /docs/getting-started, / (empty slug)
       paths.push({
         params: { slug: slug || undefined },
-        props: { entry, locale, allPages },
+        props: { entry, language, allPages },
       });
     } else {
-      // Non-default locale: with prefix
+      // Non-default language: with prefix
       // /ru, /ru/about, /ru/docs/getting-started
-      const fullSlug = slug ? `${locale}/${slug}` : locale;
+      const fullSlug = slug ? `${language}/${slug}` : language;
       paths.push({
         params: { slug: fullSlug },
-        props: { entry, locale, allPages },
+        props: { entry, language, allPages },
       });
     }
   }
 
-  // Validate: no default locale page should conflict with locale prefixes
-  const defaultLocalePages = allPages.filter(
-    (p) => getLocaleFromId(p.id) === defaultLocale
+  // Validate: no default language page should conflict with language prefixes
+  const defaultLanguagePages = allPages.filter(
+    (p) => getLanguageFromId(p.id) === defaultLanguage
   );
-  const conflicts = defaultLocalePages.filter((p) => {
+  const conflicts = defaultLanguagePages.filter((p) => {
     const slug = getUrlSlug(p);
-    return nonDefaultLocales.includes(slug as Locale);
+    return secondaryLanguages.includes(slug as LanguageCode);
   });
 
   if (conflicts.length > 0) {
     const list = conflicts.map((p) => `"${p.id}"`).join(", ");
     throw new Error(
-      `Default locale pages cannot use slugs reserved for locale prefixes: ${list}`
+      `Default language pages cannot use slugs reserved for language prefixes: ${list}`
     );
   }
 
   return paths;
 }
 
-const { entry, locale, allPages } = Astro.props;
-// Relative URLs for navigation (works in dev)
-const alternates = getAlternateUrls(entry, allPages);
+const { entry, language, allPages } = Astro.props;
 // Absolute URLs for SEO meta tags (hreflang, canonical)
 const alternatesAbsolute = getAlternateUrls(entry, allPages, { absolute: true });
 const { Content } = await render(entry);
@@ -100,11 +88,8 @@ const { Content } = await render(entry);
 <Layout
   title={entry.data.title}
   description={entry.data.description}
-  locale={locale}
-  alternates={alternates}
+  language={language}
   hreflangUrls={alternatesAbsolute}
 >
   <Content />
 </Layout>
-
-

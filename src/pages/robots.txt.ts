@@ -24,5 +24,3 @@ Sitemap: ${sitemapUrl}
     headers: { "Content-Type": "text/plain; charset=utf-8" },
   });
 };
-
-

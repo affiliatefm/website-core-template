@@ -1,9 +1,14 @@
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import { fileURLToPath } from "node:url";
-import { locales, defaultLocale, siteUrl, template } from "./src/config/site.ts";
+import {
+  languages,
+  defaultLanguage,
+  siteUrl,
+  layoutPath,
+} from "./src/config/site.ts";
 import { checksIntegration } from "./src/integrations/checks.ts";
-import aiTranslator from "@affiliate.fm/astro-content-astro-ai-translator";
+import aiTranslator from "@affiliate.fm/astro-content-ai-translator";
 
 export default defineConfig({
   site: siteUrl,
@@ -13,8 +18,8 @@ export default defineConfig({
   trailingSlash: "always",
 
   i18n: {
-    locales: [...locales],
-    defaultLocale,
+    locales: [...languages],
+    defaultLocale: defaultLanguage,
     routing: {
       prefixDefaultLocale: false,
     },
@@ -23,11 +28,9 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: {
-        // Virtual alias for the active template's Layout
+        // Virtual alias for the default layout
         // Usage: import Layout from "#layout"
-        "#layout": fileURLToPath(
-          new URL(`./src/layouts/${template}/Layout.astro`, import.meta.url)
-        ),
+        "#layout": fileURLToPath(new URL(layoutPath, import.meta.url)),
       },
     },
   },

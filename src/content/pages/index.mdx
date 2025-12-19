@@ -1,54 +1,13 @@
 ---
-title: Welcome
-description: Minimal Astro 5 i18n boilerplate with content-driven architecture
+title: Starter
 alternates:
   en: ""
-  ru: ""
-  ru-kz: ""
-  ja: ""
-  # External sites — full URLs
-  fr: https://fr.example.com/
-  es: https://example.es/
-_translateTo: all # or you can use [ja]
+  en-US: ""
+  ja: https://ja.example.com/
+_translateTo: all
 ---
 
-# Astro i18n Boilerplate
+# Astro i18n Starter
 
-A clean, minimal foundation for building multilingual websites with **Astro 5**.
-
-## Features
-
-- **Content-driven** — Pages as MDX files with frontmatter
-- **Auto-linking** — Translations matched automatically by path structure
-- **Custom URLs** — Different slugs per locale when needed
-- **Type-safe** — Full TypeScript support throughout
-- **Minimal** — No unnecessary dependencies or complexity
-
-## Demo Pages
-
-- [Home](/) — Paired with `/ru` (auto-matched)
-- [About](/about) — Custom URL: `/ru/o-nas`
-- [Contact](/contact) — English only
-- [Docs](/docs/getting-started) — Nested path, auto-matched
-
-## Quick Start
-
-```bash
-npm install
-npm run dev
-```
-
-## How It Works
-
-Content lives in `src/content/pages/`. Folder structure determines URLs:
-
-```
-src/content/pages/
-├── index.mdx           → /
-├── about.mdx           → /about
-└── ru/
-    ├── index.mdx       → /ru
-    └── o-nas.mdx       → /ru/o-nas
-```
-
-Pages with the same structure are linked automatically. Custom URLs use `permalink` + `alternates` in frontmatter.
+Replace this file with your own content. All routing, SEO tags, and language wiring
+are already configured — just duplicate this MDX file per locale when you're ready.

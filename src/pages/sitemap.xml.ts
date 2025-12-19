@@ -9,13 +9,12 @@
 
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
+import { defaultLanguage } from "@/config/site";
 import {
-  locales,
-  defaultLocale,
-  getLocaleFromId,
+  getLanguageFromId,
   getUrlSlug,
   getAlternateUrls,
-  getAbsoluteLocaleUrl,
+  getAbsoluteLanguageUrl,
   toHreflang,
 } from "@/i18n";
 
@@ -30,9 +29,9 @@ export const GET: APIRoute = async () => {
   }> = [];
 
   for (const entry of allPages) {
-    const locale = getLocaleFromId(entry.id);
+    const language = getLanguageFromId(entry.id);
     const slug = getUrlSlug(entry);
-    const loc = getAbsoluteLocaleUrl(locale, slug);
+    const loc = getAbsoluteLanguageUrl(language, slug);
     const alternates = getAlternateUrls(entry, allPages, { absolute: true });
 
     // Use updatedAt from frontmatter, or undefined (will be omitted)
@@ -57,7 +56,7 @@ function generateSitemapXml(
   entries: Array<{ loc: string; lastmod?: string; alternates: Record<string, string> }>
 ): string {
   const urlElements = entries.map((entry) => {
-    // Convert locale codes to BCP 47 format for hreflang
+    // Convert language codes to BCP 47 format for hreflang
     const alternateLinks = Object.entries(entry.alternates)
       .map(
         ([lang, href]) =>
@@ -65,8 +64,8 @@ function generateSitemapXml(
       )
       .join("\n");
 
-    // Add x-default pointing to default locale version
-    const xDefaultUrl = entry.alternates[defaultLocale] || entry.loc;
+    // Add x-default pointing to default language version
+    const xDefaultUrl = entry.alternates[defaultLanguage] || entry.loc;
     const xDefaultLink =
       Object.keys(entry.alternates).length > 1
         ? `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(xDefaultUrl)}" />`
@@ -98,5 +97,3 @@ function escapeXml(str: string): string {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;");
 }
-
-

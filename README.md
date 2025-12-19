@@ -1,360 +1,107 @@
-# Astro i18n Template
+# Astro i18n Starter (Minimal)
 
-A production-ready, reusable template for building multilingual websites with **Astro 5**.
+Ultra-minimal Astro 5 boilerplate for multilingual sites. All wiring is done for
+you — add content and edit a few data files, nothing else.
 
-## Features
+## What you get
 
-- **Single Config** — All site settings in one place (`src/config/site.ts`)
-- **Content Collections** — Pages as MDX files with frontmatter
-- **Auto-linking** — Translations matched automatically by path structure
-- **Custom URLs** — Different slugs per locale when needed
-- **Multi-domain** — Subdomains, ccTLDs, or external domains per locale
-- **Type-safe** — Full TypeScript support
-- **SEO-ready** — Sitemap, robots.txt, hreflang tags
-- **Minimal** — No unnecessary dependencies
+- **Data-only config** – user-facing settings live in `src/data/`.
+- **Single MDX collection** – every file under `src/content/pages/` is a route.
+- **Built-in i18n routing** – canonical URLs, hreflang, sitemap, robots.
+- **Integrity checks** – build fails if hreflang links are inconsistent.
+- **No demo clutter** – only one MDX page and one default layout.
 
-## Quick Start
+## Quick start
 
 ```bash
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
 ```
 
-## Project Structure
+## Project structure
 
 ```
 src/
-├── config/
-│   └── site.ts          # ⭐ MAIN CONFIG - Edit this file!
+├── config/               # Runtime config using the data layer (no edits needed)
+│   └── site.ts
 ├── content/
-│   └── pages/           # 📄 Your content (MDX files)
-│       ├── index.mdx           → /
-│       ├── about.mdx           → /about
-│       ├── docs/
-│       │   └── getting-started.mdx  → /docs/getting-started
-│       └── ru/                 # Russian locale
-│           ├── index.mdx       → /ru
-│           └── o-nas.mdx       → /ru/o-nas
-├── components/          # UI components
-├── layouts/             # Page layouts
-├── i18n/                # i18n utilities (auto-configured)
-└── pages/
-    ├── [...slug].astro  # Universal router (don't edit unless advanced)
-    ├── 404.astro        # Custom 404 page
-    └── robots.txt.ts    # Dynamic robots.txt (uses siteUrl from config)
+│   └── pages/            # Your MDX content (index.mdx is the only example)
+├── data/                 # The files you edit
+│   ├── site.ts           # Site URL + default language
+│   └── ui.ts             # Language strings (only the Home label)
+├── i18n/                 # URL helpers & translation utilities
+├── integrations/         # Build-time checks (hreflang integrity)
+├── layouts/              # Default layout (imported via #layout alias)
+└── pages/                # Astro routes (router, 404, sitemap, robots)
 ```
 
-## Configuration
+## Editing data
 
-### Step 1: Edit Site Config
+Only touch the files under `src/data/`:
 
-Open `src/config/site.ts` and customize:
+| File | Fields |
+| --- | --- |
+| `site.ts` | `siteUrl` (canonical origin) and `defaultLanguage` (the language served from the root URLs). |
+| `ui.ts` | Per-language UI strings. Currently only `homeLabel` is needed. |
 
-```typescript
-// 1. Set your locales
-export const locales = ["en", "ru", "fr"] as const;
-export const defaultLocale = "en" as const;
+Example UI file:
 
-// 2. Set your site URL
-export const siteUrl = "https://your-domain.com";
-
-// 3. Add locale labels (for language switcher)
-export const localeLabels = {
-  en: "English",
-  ru: "Русский",
-  fr: "Français",
-};
-
-// 4. Configure UI translations and navigation
-export const ui = {
-  en: {
-    meta: { siteName: "My Site" },
-    nav: [
-      { label: "Home", path: "" },
-      { label: "About", path: "about" },
-    ],
-    ui: {
-      readMore: "Read more",
-      backToHome: "Back to home",
-    },
-  },
-  ru: {
-    meta: { siteName: "Мой Сайт" },
-    nav: [
-      { label: "Главная", path: "" },
-      { label: "О нас", path: "o-nas" },
-    ],
-    ui: {
-      readMore: "Читать далее",
-      backToHome: "На главную",
-    },
-  },
-  // ... add more locales
+```ts
+export const uiStrings = {
+  en: { homeLabel: "Home" },
+  "en-US": { homeLabel: "Home" },
 };
 ```
 
-### Step 2: Add Content
+## Declaring languages
 
-Create MDX files in `src/content/pages/`:
+- Set `defaultLanguage` once in `src/data/site.ts` (e.g., `"en"`).
+- Place the default language content directly under `src/content/pages/` (subfolders like `docs/` are fine).
+- Create subfolders named after BCP 47 codes for every additional language: `src/content/pages/ru/`, `src/content/pages/ja/`, `src/content/pages/en-US/`, etc.
+- Avoid using 2–3 letter folder names for non-language sections to prevent conflicts with language detection.
 
-**Default locale (English):**
+Once a folder exists, the language is automatically exposed to Astro's `i18n` config. No frontmatter fields are required.
+
+## Adding content
+
+MDX files in `src/content/pages/` correspond to routes. To add a language, create a
+folder named after the language code and duplicate pages inside it.
+
 ```
 src/content/pages/
-├── index.mdx     → /
-├── about.mdx     → /about
-└── contact.mdx   → /contact
+├── index.mdx       → /
+└── ru/
+    └── index.mdx   → /ru/
 ```
 
-**Other locales:**
-```
-src/content/pages/ru/
-├── index.mdx     → /ru
-├── o-nas.mdx     → /ru/o-nas  (custom slug)
-└── contact.mdx   → /ru/contact
-```
-
-### Page Frontmatter
+Frontmatter example (matches the included `index.mdx`):
 
 ```yaml
 ---
-title: Page Title          # Required
-description: SEO desc      # Optional
-permalink: custom-slug     # Optional: override URL slug
-alternates:                # Optional: link to translations with different slugs
-  en: about
-  ru: o-nas
-updatedAt: 2024-12-15      # Optional: last update date for sitemap
-draft: false               # Optional: hide from production
----
-```
-
-## How Translation Linking Works
-
-### Automatic (by path)
-
-Pages with the **same file path** are linked automatically:
-
-```
-src/content/pages/about.mdx       → /about
-src/content/pages/ru/about.mdx    → /ru/about
-```
-
-These pages will automatically have hreflang tags pointing to each other.
-
-### Manual (for different slugs)
-
-When locales have different URLs, use `alternates` in frontmatter:
-
-**English (`about.mdx`):**
-```yaml
----
-title: About Us
-alternates:
-  ru: o-nas
----
-```
-
-**Russian (`ru/o-nas.mdx`):**
-```yaml
----
-title: О нас
-permalink: o-nas
-alternates:
-  en: about
----
-```
-
-### External Alternates (Multi-Domain)
-
-You can link to translations on external domains:
-
-```yaml
----
-title: Welcome
+title: Starter
 alternates:
   en: ""
-  ru: ""
-  fr: https://fr.example.com/      # External subdomain
-  es: https://example.es/          # External ccTLD
-  ja: https://partner-site.jp/     # External partner site
+  en-US: ""
+  ja: https://ja.example.com/   # Example external alternate
+_translateTo: all
 ---
 ```
 
-**⚠️ Important:** External sites **must** have reciprocal `hreflang` links pointing back to your site. Without bidirectional links, search engines will ignore the `hreflang` tags.
+`alternates` explicitly links translations (including off-site URLs). `_translateTo`
+is optional and is only read by the AI translation integration.
 
-The build process will warn you about external alternates:
+## Layout
 
-```
-[build-checks] Found 3 external hreflang link(s) to: https://fr.example.com, https://example.es
-[build-checks] External sites MUST have reciprocal hreflang links pointing back.
-```
+The `#layout` alias always points to `src/layouts/basic/Layout.astro`. If you need
+a custom layout, duplicate that file and change `layoutPath` in `src/config/site.ts`.
+Every page automatically receives canonical/hreflang tags and the localized Home
+link, so you stay focused on Markdown/MDX content.
 
-### Hreflang Format (BCP 47)
+## Commands
 
-Locale codes in folder names can be any format you prefer (e.g., `ru-kz`, `kz`, `zh-hans`), but hreflang tags are automatically normalized to [BCP 47 standard](https://en.wikipedia.org/wiki/IETF_language_tag):
-
-| Folder Name | Hreflang Output |
-|-------------|-----------------|
-| `ru` | `ru` |
-| `ru-kz` | `ru-KZ` |
-| `pt-br` | `pt-BR` |
-| `zh-hans` | `zh-Hans` |
-
-This ensures compatibility with Google, Bing, and other search engines.
-
-## Customization
-
-### Adding a New Locale
-
-1. Add to `locales` array in `src/config/site.ts`
-2. Add label to `localeLabels`
-3. Add UI translations to `ui` object
-4. Create content folder: `src/content/pages/{locale}/`
-
-### Removing a Locale
-
-1. Remove from `locales` array
-2. Remove from `localeLabels`
-3. Remove from `ui` object
-4. Delete content folder (optional)
-
-### Adding UI Strings
-
-1. Add key to the `UIStrings` interface in `src/config/site.ts`
-2. Add translations for each locale in `ui` object
-3. Use in components: `const { ui } = t(locale);`
-
-### Multi-Domain Setup
-
-Configure different domains/subdomains per locale in `src/config/site.ts`:
-
-```typescript
-export const domains: Partial<Record<Locale, string>> = {
-  // en uses default siteUrl (no entry needed)
-  fr: "https://fr.example.com",     // Subdomain
-  es: "https://example.es",         // Separate ccTLD
-  ja: "https://partner.com/site",   // External domain with base path
-};
-```
-
-**URL generation with domains:**
-
-| Locale | Domain Config | Generated URL |
-|--------|---------------|---------------|
-| `en` | (default) | `https://example.com/about/` |
-| `ru` | (default) | `https://example.com/ru/about/` |
-| `fr` | `https://fr.example.com` | `https://fr.example.com/about/` |
-| `es` | `https://example.es` | `https://example.es/about/` |
-
-When a locale has its own domain, the locale prefix is **not** included in the path (the domain itself identifies the locale).
-
-## SEO
-
-### Sitemap
-
-Sitemap is auto-generated at build time via `@astrojs/sitemap`. Output: `/sitemap-index.xml`
-
-### Robots.txt
-
-Auto-generated from `siteUrl` config. Edit `src/pages/robots.txt.ts` to customize rules.
-
-### 404 Page
-
-Custom 404 page at `src/pages/404.astro`. Automatically detects locale from URL path.
-
-## Technical Details
-
-### Built-in Astro i18n
-
-This template uses Astro's [built-in i18n routing](https://docs.astro.build/en/guides/internationalization/):
-
-```javascript
-// astro.config.mjs
-i18n: {
-  locales: ["en", "ru", "fr"],
-  defaultLocale: "en",
-  routing: {
-    prefixDefaultLocale: false,  // / instead of /en/
-  },
-}
-```
-
-### No Fallback Behavior
-
-This template intentionally does **not** use Astro's `fallback` feature. Here's why:
-
-1. **Static builds** — With `fallback`, Astro creates duplicate HTML files for missing translations, which may not be desired
-2. **Explicit control** — Missing translations are shown as unavailable in the language switcher (not auto-redirected)
-3. **SEO clarity** — Each page exists in specific locales only; no confusing redirects
-
-**What happens when a translation is missing:**
-
-- The page only exists for locales that have the content file
-- Language switcher shows only available locales for that page
-- No `hreflang` tags are generated for missing locales
-- Visiting a non-existent locale URL returns 404
-
-If you need fallback behavior, add it to `astro.config.mjs`:
-
-```javascript
-i18n: {
-  routing: {
-    fallback: {
-      ru: "en",  // Russian visitors see English if no Russian version
-    },
-  },
-}
-```
-
-### URL Structure
-
-| Content Path | URL |
-|-------------|-----|
-| `pages/index.mdx` | `/` |
-| `pages/about.mdx` | `/about/` |
-| `pages/ru/index.mdx` | `/ru/` |
-| `pages/ru/about.mdx` | `/ru/about/` |
-
-### Helper Functions
-
-```typescript
-import { t, getLocaleFromId, getLocaleOrigin, getAbsoluteLocaleUrl } from "@/i18n";
-
-// Get translations for locale
-const ui = t("ru");
-console.log(ui.nav); // Navigation items
-console.log(ui.ui.readMore); // "Читать далее"
-
-// Extract locale from content entry ID
-getLocaleFromId("ru/about"); // "ru"
-getLocaleFromId("about");    // "en" (default)
-
-// Get domain for a locale (respects `domains` config)
-getLocaleOrigin("fr"); // "https://fr.example.com" (if configured)
-getLocaleOrigin("ru"); // "https://example.com" (default siteUrl)
-
-// Build absolute URL for a locale
-getAbsoluteLocaleUrl("fr", "about"); // "https://fr.example.com/about/"
-getAbsoluteLocaleUrl("ru", "about"); // "https://example.com/ru/about/"
-```
-
-## Related
-
-- [@affiliate.fm/astro-content-ai-translator](https://github.com/affiliatefm/astro-content-ai-translator) — AI-powered translation for Astro content collections
-- [astro-content-ai-enhancer](https://github.com/affiliatefm/astro-content-ai-enhancer) — AI assistant that enhances raw Markdown into structured, well-formatted pages
-
-## Author
-
-Built by [Affiliate.FM](https://affiliate.fm) — independent media and open-source tools for affiliate, performance, and digital marketing.
+- `npm run dev` – start dev server
+- `npm run build` – production build + HTML formatting + integrity checks
+- `npm run preview` – preview the build
 
 ## License
 

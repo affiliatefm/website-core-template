@@ -4,8 +4,8 @@
  * Defines the schema for content collections.
  *
  * Content Structure:
- * - src/content/pages/           → Default locale (e.g., English)
- * - src/content/pages/{locale}/  → Other locales (e.g., ru/, fr/)
+ * - src/content/pages/           → Default language (e.g., English)
+ * - src/content/pages/{lang}/    → Other languages (e.g., ru/, fr/)
  *
  * Entry ID is derived from file path:
  * - index.mdx        → id: "index"        → URL: /

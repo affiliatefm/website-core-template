@@ -1,169 +1,99 @@
+import { readdirSync } from "node:fs";
+import { join, relative } from "node:path";
+import { siteUrl, defaultLanguage as defaultLanguageData } from "../data/site";
+import { uiStrings } from "../data/ui";
+
 /**
- * Site Configuration
- * ===================
- * This is the SINGLE SOURCE OF TRUTH for all site settings.
- * New users: Edit this file to customize your site.
- *
- * @file src/config/site.ts
+ * Runtime config consumed by the app.
+ * User-facing data lives in src/data/.
  */
+
+export { siteUrl };
+
+const languageInfo = discoverLanguages(defaultLanguageData);
+
+export const languages = languageInfo.languages as readonly string[];
+export type LanguageCode = (typeof languages)[number];
+export const defaultLanguage: LanguageCode = defaultLanguageData;
+
+export const ui = uiStrings;
+export type UIConfig = typeof uiStrings;
+export type UIStrings = (typeof uiStrings)[LanguageCode];
+
+export const layoutPath = "./src/layouts/basic/Layout.astro";
 
 // =============================================================================
-// TEMPLATE
+// Language discovery
 // =============================================================================
 
-/**
- * Available templates for the site.
- *
- * Each template is a complete Layout component with its own structure and styles.
- * Templates are located in src/layouts/{name}/Layout.astro
- *
- * Built-in templates:
- * - "basic"      - Clean, light template with minimal styling
- * - "basic-dark" - Dark variant with high contrast
- */
-export type TemplateId = "basic" | "basic-dark";
+function discoverLanguages(defaultLanguage: string) {
+  const pagesDir = join(process.cwd(), "src", "content", "pages");
+  const files = collectMdxFiles(pagesDir);
 
-/**
- * Active template for the site.
- * Change this to switch the entire site's layout.
- */
-export const template: TemplateId = "basic";
+  if (files.length === 0) {
+    throw new Error("No MDX files found in src/content/pages.");
+  }
 
-// =============================================================================
-// LOCALES
-// =============================================================================
+  const languages = new Set<string>([defaultLanguage]);
+  let hasDefaultContent = false;
 
-/**
- * Supported locales for your site.
- * The first locale in this array will be used as the default.
- *
- * Add/remove locales as needed. Each locale code should match:
- * 1. A folder in src/content/pages/ (except defaultLocale)
- * 2. A key in the `ui` translations below
- */
-export const locales = ["en", "ru", "ru-kz", "ja"] as const;
+  for (const filePath of files) {
+    const relPath = relative(pagesDir, filePath).replace(/\\/g, "/");
+    const [firstSegment = ""] = relPath.split("/");
+    const isNested = relPath.includes("/");
 
-/**
- * Default locale - content at root level, no URL prefix.
- * Must be one of the locales defined above.
- */
-export const defaultLocale = "en" as const;
+    if (!isNested) {
+      hasDefaultContent = true;
+      continue;
+    }
 
-/**
- * Type helper for locale strings.
- */
-export type Locale = (typeof locales)[number];
+    if (firstSegment === defaultLanguage) {
+      throw new Error(
+        `Default language "${defaultLanguage}" must be placed directly under src/content/pages/, not inside a "${defaultLanguage}/" folder.`
+      );
+    }
 
-/**
- * Human-readable labels for each locale.
- * Displayed in the language switcher.
- */
-export const localeLabels: Record<Locale, string> = {
-  en: "English",
-  ru: "Русский",
-  "ru-kz": "Қазақстан (RU)",
-  ja: "日本語",
-};
+    if (looksLikeLanguageSegment(firstSegment)) {
+      languages.add(firstSegment);
+    } else {
+      hasDefaultContent = true;
+    }
+  }
 
-// =============================================================================
-// SITE METADATA
-// =============================================================================
+  if (!hasDefaultContent) {
+    throw new Error(
+      `No content detected for default language "${defaultLanguage}". ` +
+        "Add MDX files directly under src/content/pages/ (without language prefix)."
+    );
+  }
 
-/**
- * Site URL - used for canonical URLs, sitemaps, hreflang tags.
- * Set to your production domain.
- */
-export const siteUrl = "https://example.com";
+  const orderedLanguages = [
+    defaultLanguage,
+    ...Array.from(languages).filter((lang) => lang !== defaultLanguage),
+  ];
 
-// =============================================================================
-// UI TRANSLATIONS
-// =============================================================================
-
-/**
- * UI strings for each locale.
- * Add keys as needed for your components.
- *
- * Structure:
- * - meta: Site-wide metadata
- * - nav: Navigation items (label + path pairs)
- * - ui: Common UI strings
- */
-export const ui = {
-  en: {
-    meta: {
-      siteName: "i18n Demo",
-    },
-    nav: [
-      { label: "Home", path: "" },
-      { label: "About", path: "about" },
-      { label: "Docs", path: "docs/getting-started" },
-      { label: "Contact", path: "contact" },
-    ],
-    ui: {
-      readMore: "Read more",
-      backToHome: "Back to home",
-    },
-  },
-  ru: {
-    meta: {
-      siteName: "i18n Демо",
-    },
-    nav: [
-      { label: "Главная", path: "" },
-      { label: "О нас", path: "o-nas" },
-      { label: "Документация", path: "docs/getting-started" },
-    ],
-    ui: {
-      readMore: "Читать далее",
-      backToHome: "На главную",
-    },
-  },
-  "ru-kz": {
-    meta: {
-      siteName: "i18n Демо (KZ)",
-    },
-    nav: [
-      { label: "Басты бет", path: "" },
-      { label: "Біз туралы", path: "biz-turaly" },
-    ],
-    ui: {
-      readMore: "Толығырақ оқу",
-      backToHome: "Басты бетке",
-    },
-  },
-  ja: {
-    meta: {
-      siteName: "i18n デモ",
-    },
-    nav: [
-      { label: "ホーム", path: "" },
-      { label: "概要", path: "about" },
-    ],
-    ui: {
-      readMore: "続きを読む",
-      backToHome: "ホームへ戻る",
-    },
-  },
-} as const satisfies Record<Locale, UIStrings>;
-
-/**
- * Type definition for UI strings structure.
- * Extend this interface when adding new UI sections.
- */
-interface UIStrings {
-  meta: {
-    siteName: string;
-  };
-  nav: ReadonlyArray<{ label: string; path: string }>;
-  ui: {
-    readMore: string;
-    backToHome: string;
+  return {
+    languages: orderedLanguages,
   };
 }
 
-// =============================================================================
-// TYPE EXPORTS
-// =============================================================================
+function collectMdxFiles(dir: string): string[] {
+  const files: string[] = [];
+  const entries = readdirSync(dir, { withFileTypes: true });
 
-export type UIConfig = typeof ui;
-export type NavItem = UIConfig[Locale]["nav"][number];
+  for (const entry of entries) {
+    const entryPath = join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      files.push(...collectMdxFiles(entryPath));
+    } else if (entry.isFile() && entry.name.endsWith(".mdx")) {
+      files.push(entryPath);
+    }
+  }
+
+  return files;
+}
+
+function looksLikeLanguageSegment(value: string) {
+  return /^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/.test(value);
+}
