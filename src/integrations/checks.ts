@@ -17,7 +17,9 @@
 
 import type { AstroIntegration } from "astro";
 import { readdir, readFile } from "node:fs/promises";
+import { readdirSync } from "node:fs";
 import { join, relative } from "node:path";
+import { languages, ui as languageUi } from "../config/site";
 
 // =============================================================================
 // TYPES
@@ -48,6 +50,7 @@ type CheckFn = (pages: PageHreflang[], siteUrl: string) => CheckError[];
 type CheckConfig = {
   name: string;
   enabled?: boolean;
+  needsHreflang?: boolean;
   run: CheckFn;
 };
 
@@ -292,6 +295,61 @@ const consistentExternals: CheckConfig = {
   },
 };
 
+const LANGUAGE_DIR_PATTERN = /^[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/;
+const REGIONISH_PATTERN = /^[a-z]{2}[A-Z]{2,}(?:[A-Za-z0-9]+)?$/;
+const contentPagesDir = join(process.cwd(), "src", "content", "pages");
+
+function detectSuspiciousLanguageFolders(): string[] {
+  let entries: ReturnType<typeof readdirSync> = [];
+  try {
+    entries = readdirSync(contentPagesDir, { withFileTypes: true });
+  } catch {
+    return [];
+  }
+
+  const folders: string[] = [];
+  for (const entry of entries) {
+    if (!entry.isDirectory()) continue;
+
+    const name = entry.name;
+    if (LANGUAGE_DIR_PATTERN.test(name)) continue;
+
+    if (REGIONISH_PATTERN.test(name)) {
+      folders.push(name);
+    }
+  }
+  return folders;
+}
+
+/**
+ * Check: Every registered language must have UI strings defined.
+ */
+const languageUiCoverage: CheckConfig = {
+  name: "language-ui-coverage",
+  needsHreflang: false,
+  run: () => {
+    const missing = languages.filter((lang) => !(lang in languageUi));
+    return missing.map((lang) => ({
+      check: "language-ui-coverage",
+      message: `Language "${lang}" has no UI strings defined in src/data/ui.ts.`,
+    }));
+  },
+};
+
+const suspiciousLanguageDirs: CheckConfig = {
+  name: "language-folder-validation",
+  needsHreflang: false,
+  run: () => {
+    const warnings = detectSuspiciousLanguageFolders().map((dir) => ({
+      check: "language-folder-validation",
+      message:
+        `Folder "${dir}/" in src/content/pages/ looks like a language but is not a valid BCP 47 code. ` +
+        `If it should be treated as a language, rename it (e.g., "en-US").`,
+    }));
+    return warnings;
+  },
+};
+
 // =============================================================================
 // CHECKS REGISTRY
 // =============================================================================
@@ -300,6 +358,8 @@ const consistentExternals: CheckConfig = {
  * All registered checks. Add new checks here.
  */
 const checks: CheckConfig[] = [
+  languageUiCoverage,
+  suspiciousLanguageDirs,
   bidirectionalLinks,
   consistentExternals,
   // Add more checks here:
@@ -368,26 +428,25 @@ export function checksIntegration(options: ChecksOptions = {}): AstroIntegration
         const pagesWithHreflang = pages.filter((p) => p.links.length > 0);
 
         if (pagesWithHreflang.length === 0) {
-          logger.info("No hreflang tags found, skipping checks");
-          return;
-        }
+          logger.info("No hreflang tags found. Running structural checks only.");
+        } else {
+          logger.info(`Found ${pagesWithHreflang.length} pages with hreflang tags`);
 
-        logger.info(`Found ${pagesWithHreflang.length} pages with hreflang tags`);
-
-        // Warn about external alternates (cannot be validated)
-        const externalLinks = pagesWithHreflang.flatMap((p) =>
-          p.links.filter((l) => isExternal(l.href, siteUrl))
-        );
-        if (externalLinks.length > 0) {
-          const uniqueExternalDomains = [
-            ...new Set(externalLinks.map((l) => new URL(l.href).origin)),
-          ];
-          logger.warn(
-            `Found ${externalLinks.length} external hreflang link(s) to: ${uniqueExternalDomains.join(", ")}`
+          // Warn about external alternates (cannot be validated)
+          const externalLinks = pagesWithHreflang.flatMap((p) =>
+            p.links.filter((l) => isExternal(l.href, siteUrl))
           );
-          logger.warn(
-            `External sites MUST have reciprocal hreflang links pointing back. This cannot be validated automatically.`
-          );
+          if (externalLinks.length > 0) {
+            const uniqueExternalDomains = [
+              ...new Set(externalLinks.map((l) => new URL(l.href).origin)),
+            ];
+            logger.warn(
+              `Found ${externalLinks.length} external hreflang link(s) to: ${uniqueExternalDomains.join(", ")}`
+            );
+            logger.warn(
+              `External sites MUST have reciprocal hreflang links pointing back. This cannot be validated automatically.`
+            );
+          }
         }
 
         // Run checks
@@ -442,5 +501,3 @@ export function checksIntegration(options: ChecksOptions = {}): AstroIntegration
     },
   };
 }
-
-
