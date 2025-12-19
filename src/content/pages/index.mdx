@@ -1,49 +1,37 @@
 ---
 title: Website Core Template
-description: A reusable, updatable static site generator by Affiliate.FM. Build fast, multilingual websites with Astro 5.
+description: Minimal Astro 5 template for multilingual static sites by Affiliate.FM
 ---
+
+import { products } from "@/data/products";
 
 # Website Core Template
 
-Welcome to **Website Core Template** — the reusable static site generator by [Affiliate.FM](https://affiliate.fm).
+Minimal static site generator with i18n, auto-sitemap, and updatable core.
 
-## What You Get
+## Quick Start
 
-- **🚀 Zero config start** — Works out of the box
-- **🌍 Built-in i18n** — Automatic language detection from folders
-- **🔄 Updatable core** — Get new features, keep your content
-- **📊 Data-ready** — Perfect for data-driven sites
-- **✅ SEO-ready** — Sitemap, hreflang, canonical URLs
+```bash
+npm create astro@latest -- --template affiliatefm/website-core-template
+make dev
+```
 
-## Getting Started
+## Data Example
 
-1. **Configure your site** — Edit `src/data/site.ts` with your URL
-2. **Add UI strings** — Edit `src/data/ui.ts` for each language
-3. **Create content** — Add MDX files to `src/content/pages/`
-4. **Run `make dev`** — Start building!
-
-## About This Demo
-
-This is the default homepage. Replace it with your own content.
-
-**Your content goes in:**
-- `src/content/pages/` — Your pages (this file is `index.mdx`)
-- `src/data/` — Your site configuration
-- `public/` — Your static assets
-
-**Core files (updated via `make update`):**
-- `src/config/`, `src/i18n/`, `src/integrations/`
-- `src/layouts/basic/`, `src/pages/`
+<table>
+  <thead>
+    <tr><th>Product</th><th>Description</th><th></th></tr>
+  </thead>
+  <tbody>
+    {products.map(p => (
+      <tr key={p.id}>
+        <td><strong>{p.name}</strong></td>
+        <td>{p.description}</td>
+        <td><a href={p.url}>View →</a></td>
+      </tr>
+    ))}
+  </tbody>
+</table>
 
 ---
 
-## About Affiliate.FM
-
-[Affiliate.FM](https://affiliate.fm) — Independent media and open-source tools for affiliate, performance, and digital marketing.
-
-We're building data-driven resources to help marketers succeed. This template powers our network of sites.
-
-**Links:**
-- [GitHub Repository](https://github.com/affiliatefm/website-core-template)
-- [Documentation](https://github.com/affiliatefm/website-core-template#readme)
-- [Report Issues](https://github.com/affiliatefm/website-core-template/issues)
