@@ -38,7 +38,7 @@ export const template: TemplateId = "basic";
  * 1. A folder in src/content/pages/ (except defaultLocale)
  * 2. A key in the `ui` translations below
  */
-export const locales = ["en"] as const;
+export const locales = ["en", "ru", "ru-kz", "ja"] as const;
 
 /**
  * Default locale - content at root level, no URL prefix.
@@ -57,6 +57,9 @@ export type Locale = (typeof locales)[number];
  */
 export const localeLabels: Record<Locale, string> = {
   en: "English",
+  ru: "Русский",
+  "ru-kz": "Қазақстан (RU)",
+  ja: "日本語",
 };
 
 // =============================================================================
@@ -95,10 +98,56 @@ export const ui = {
     meta: {
       siteName: "Affiliate.FM Website Core",
     },
-    nav: [{ label: "Home", path: "" }],
+    nav: [
+      { label: "Home", path: "" },
+      { label: "About", path: "about" },
+      { label: "Docs", path: "docs/getting-started" },
+      { label: "Insights", path: "insights" },
+    ],
     ui: {
       readMore: "Read more",
       backToHome: "Back to home",
+    },
+  },
+  ru: {
+    meta: {
+      siteName: "Affiliate.FM Website Core",
+    },
+    nav: [
+      { label: "Главная", path: "" },
+      { label: "О нас", path: "o-nas" },
+      { label: "Документация", path: "docs/getting-started" },
+      { label: "Инсайты", path: "insights" },
+    ],
+    ui: {
+      readMore: "Читать далее",
+      backToHome: "На главную",
+    },
+  },
+  "ru-kz": {
+    meta: {
+      siteName: "Affiliate.FM Website Core",
+    },
+    nav: [
+      { label: "Басты бет", path: "" },
+      { label: "Біз туралы", path: "biz-turaly" },
+    ],
+    ui: {
+      readMore: "Толығырақ оқу",
+      backToHome: "Басты бетке",
+    },
+  },
+  ja: {
+    meta: {
+      siteName: "i18n デモ",
+    },
+    nav: [
+      { label: "ホーム", path: "" },
+      { label: "概要", path: "about" },
+    ],
+    ui: {
+      readMore: "続きを読む",
+      backToHome: "ホームへ戻る",
     },
   },
 } as const satisfies Record<Locale, UIStrings>;

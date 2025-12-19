@@ -39,6 +39,7 @@ async function ensureConfig() {
           "astro.config.mjs",
           "README.md",
           "scripts",
+          "templates",
           "src/components",
           "src/config",
           "src/i18n",

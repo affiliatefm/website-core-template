@@ -8,7 +8,7 @@ Independent media meets open-source tooling. This repository is the exact Astro 
 - **Astro-native i18n** – folder-based locales, helpers for alternate URLs, optional per-locale domains, robots/sitemap routes.
 - **Core vs. user layers** – `affiliatefm.core.json` captures which paths the updater may touch. `src/content/`, `src/data/`, and whatever you add to `protectedPaths` remain yours.
 - **Tooling for every skill level** – Makefile targets (`make dev`, `make update`, etc.), npm scripts, and bootstrap/update helpers with human-readable logging.
-- **Data workflows** – JSON under `src/data/`, TypeScript helpers in `@/lib/data`, and demo components (e.g., `<DataShowcase />`) so you can surface KPIs next to MDX narratives.
+- **Data workflows** – the demo snapshot ships with JSON under `src/data/`, TypeScript helpers in `@/lib/data`, and components (e.g., `<DataShowcase />`) so you can surface KPIs next to MDX narratives.
 - **Translator-friendly** – ships with `@affiliate.fm/astro-content-ai-translator` so you can automate MDX drafts when you’re ready.
 
 ## Quick Start
@@ -16,14 +16,16 @@ Independent media meets open-source tooling. This repository is the exact Astro 
 ```bash
 npm create astro@latest -- --template affiliatefm/website-core-template
 cd my-site
-make install && make bootstrap && make seed && make dev
+make install && make bootstrap && make dev
 ```
+
+Want to explore the full multilingual demo? Run `make seed` (or `npm run seed:demo`) any time — it overwrites `src/` with the snapshot stored in `templates/demo/`.
 
 | Target | Runs | Notes |
 | --- | --- | --- |
 | `make install` | `npm install` | Installs dependencies |
 | `make bootstrap` | `npm run bootstrap` | Writes `affiliatefm.core.json`, creates `.affiliatefm/`, prepares `src/data/` |
-| `make seed` | `npm run seed:data` | Generates demo data sets in `src/data/` |
+| `make seed` | `npm run seed:demo` | Applies the Affiliate.FM demo snapshot (overwrites `src/`) |
 | `make dev` | `npm run dev` | Astro dev server |
 | `make build` | `npm run build` | Static build + HTML prettify |
 | `make preview` | `npm run preview` | Preview production build |
@@ -36,17 +38,13 @@ Prefer raw npm? Every target proxies an npm script, so CI environments can stay 
 
 ```
 src/content/pages/
-├── index.mdx              → / (default locale)
-├── about.mdx              → /about
-├── docs/getting-started.mdx
-└── ru/
-    ├── index.mdx          → /ru
-    ├── o-nas.mdx          → /ru/o-nas (custom slug)
-    └── insights.mdx       → /ru/insights
+└── index.mdx   → / (default locale)
 ```
 
+That’s the minimal footprint you get on install. Running `npm run seed:demo` copies the snapshot from `templates/demo/`, restoring every locale + page from our full example.
+
 - Default locale (first item in `locales`) lives at the root.
-- Other locales get their own folder. Astro’s file-based routing + the helper utilities inside `src/i18n/` auto-link versions that share a base path.
+- Additional locales live under their own folders after seeding.
 - Use `alternates` when slugs diverge. You can link to external domains too—just provide a full URL.
 - Configure locales, nav items, optional per-locale domains, and active template inside `src/config/site.ts`.
 
@@ -58,9 +56,9 @@ export const localeDomains = {
 
 ## Data Layer
 
-- JSON files in `src/data/` are protected by default (see `affiliatefm.core.json`).
-- `npm run seed:data` updates `network-opportunities.json` and `performance-insights.json` with realistic demo rows. Replace them with your own exports.
-- `@/lib/data.ts` exposes helper functions. Components like `src/components/DataShowcase.astro` demonstrate how to render the metrics inside MDX.
+- By default `src/data/` is empty. It’s still protected by default (see `affiliatefm.core.json`) so you can drop your own exports safely.
+- `npm run seed:demo` copies our JSON datasets (`network-opportunities.json`, `performance-insights.json`) plus the helper utilities in `@/lib/data`.
+- The demo snapshot also includes components like `src/components/DataShowcase.astro` that show how to surface metrics alongside MDX content.
 
 ## Keeping Core and Content in Sync
 
@@ -87,6 +85,8 @@ No Git? The updater works in any project because it doesn’t rely on merge stra
 ├── Makefile                       # Command shorthand
 ├── affiliatefm.core.template.json # Bootstrap template for protected paths
 ├── scripts/                       # bootstrap/update/seed helpers
+├── templates/
+│   └── demo/                      # Snapshot used by npm run seed:demo
 ├── src/
 │   ├── components/                # Shared components (LanguageSwitcher, DataShowcase, ...)
 │   ├── config/site.ts             # All site settings in one place
