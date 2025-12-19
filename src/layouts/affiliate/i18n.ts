@@ -7,7 +7,7 @@
  * Follows the same pattern as @/i18n for consistency.
  */
 
-import { defaultLanguage, type LanguageCode } from "@/config/site";
+import { defaultLanguage, type LanguageCode } from "../../config/site";
 
 export interface TemplateStrings {
   home: string;
@@ -16,7 +16,7 @@ export interface TemplateStrings {
   backToHome: string;
 }
 
-const translations: Record<string, TemplateStrings> = {
+export const translations: Record<string, TemplateStrings> = {
   en: {
     home: "Home",
     docs: "Docs",

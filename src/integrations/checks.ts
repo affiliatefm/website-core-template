@@ -17,9 +17,9 @@
 
 import type { AstroIntegration } from "astro";
 import { readdir, readFile } from "node:fs/promises";
-import { readdirSync } from "node:fs";
+import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
-import { languages, ui as languageUi } from "../config/site";
+import { languages, layoutPath } from "../config/site";
 
 // =============================================================================
 // TYPES
@@ -43,6 +43,7 @@ type CheckError = {
   check: string;
   message: string;
   file?: string;
+  severity?: "error" | "warning";
 };
 
 type CheckFn = (pages: PageHreflang[], siteUrl: string) => CheckError[];
@@ -321,18 +322,197 @@ function detectSuspiciousLanguageFolders(): string[] {
   return folders;
 }
 
+
 /**
- * Check: Every registered language must have UI strings defined.
+ * Extract template name from layoutPath.
+ * "./src/layouts/affiliate/Layout.astro" → "affiliate"
  */
-const languageUiCoverage: CheckConfig = {
-  name: "language-ui-coverage",
+function getTemplateName(): string {
+  const match = layoutPath.match(/layouts\/([^/]+)\//);
+  return match?.[1] || "unknown";
+}
+
+/**
+ * Get translation keys from template i18n file.
+ * Returns null if file doesn't exist.
+ */
+function getTemplateTranslationKeys(): string[] | null {
+  const templateName = getTemplateName();
+  const i18nPath = join(process.cwd(), "src", "layouts", templateName, "i18n.ts");
+  
+  try {
+    if (!existsSync(i18nPath)) return null;
+    const content = readFileSync(i18nPath, "utf-8");
+    
+    // Find the translations object assignment (const translations = { or export const translations = {)
+    const translationsMatch = content.match(/(?:export\s+)?const\s+translations[^=]*=\s*\{/);
+    if (!translationsMatch) return null;
+    const translationsStart = content.indexOf(translationsMatch[0]);
+    
+    // Find the opening brace of the object
+    const objectStart = content.indexOf("{", translationsStart);
+    if (objectStart === -1) return null;
+    
+    // Find matching closing brace by counting braces
+    let depth = 0;
+    let objectEnd = objectStart;
+    for (let i = objectStart; i < content.length; i++) {
+      if (content[i] === "{") depth++;
+      if (content[i] === "}") depth--;
+      if (depth === 0) {
+        objectEnd = i;
+        break;
+      }
+    }
+    
+    const objectContent = content.slice(objectStart + 1, objectEnd);
+    
+    // Extract top-level keys: look for "key: {" at depth 0
+    const keys: string[] = [];
+    depth = 0;
+    let keyStart = -1;
+    
+    for (let i = 0; i < objectContent.length; i++) {
+      const char = objectContent[i];
+      
+      if (char === "{") {
+        if (depth === 0 && keyStart !== -1) {
+          // Found a key followed by {
+          const keyPart = objectContent.slice(keyStart, i).trim();
+          const keyMatch = keyPart.match(/^(\w+)\s*:/);
+          if (keyMatch) {
+            keys.push(keyMatch[1]);
+          }
+          keyStart = -1;
+        }
+        depth++;
+      } else if (char === "}") {
+        depth--;
+      } else if (depth === 0 && /[a-zA-Z]/.test(char) && keyStart === -1) {
+        keyStart = i;
+      } else if (depth === 0 && char === "," && keyStart !== -1) {
+        keyStart = -1;
+      }
+    }
+    
+    return keys.length > 0 ? keys : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Check: Every registered language should have template translations.
+ * Warning only — fallback to default language is used.
+ */
+const templateTranslationsCoverage: CheckConfig = {
+  name: "template-translations-coverage",
   needsHreflang: false,
   run: () => {
-    const missing = languages.filter((lang) => !(lang in languageUi));
+    const templateName = getTemplateName();
+    const translationKeys = getTemplateTranslationKeys();
+    
+    // No i18n file for this template — skip check
+    if (translationKeys === null) {
+      return [];
+    }
+    
+    const missing = languages.filter((lang) => !translationKeys.includes(lang));
     return missing.map((lang) => ({
-      check: "language-ui-coverage",
-      message: `Language "${lang}" has no UI strings defined in src/data/ui.ts.`,
+      check: "template-translations-coverage",
+      message: `Language "${lang}" has no translations in layouts/${templateName}/i18n.ts (using fallback).`,
+      severity: "warning" as const,
     }));
+  },
+};
+
+/**
+ * Scan content files for all unique hreflang keys in alternates.
+ */
+function getAllAlternateKeys(): string[] {
+  const keys = new Set<string>();
+  
+  function scanDir(dir: string) {
+    try {
+      const entries = readdirSync(dir, { withFileTypes: true });
+      for (const entry of entries) {
+        const fullPath = join(dir, entry.name);
+        if (entry.isDirectory()) {
+          scanDir(fullPath);
+        } else if (entry.name.endsWith(".md") || entry.name.endsWith(".mdx")) {
+          try {
+            const content = readFileSync(fullPath, "utf-8");
+            // Parse alternates from frontmatter
+            const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+            if (frontmatterMatch) {
+              const frontmatter = frontmatterMatch[1];
+              // Find alternates block
+              const alternatesMatch = frontmatter.match(/alternates:\s*\n((?:\s+\S+:.*\n)*)/);
+              if (alternatesMatch) {
+                const alternatesBlock = alternatesMatch[1];
+                const keyMatches = alternatesBlock.matchAll(/^\s+(\S+):/gm);
+                for (const m of keyMatches) {
+                  keys.add(m[1]);
+                }
+              }
+            }
+          } catch {}
+        }
+      }
+    } catch {}
+  }
+  
+  scanDir(contentPagesDir);
+  return Array.from(keys);
+}
+
+/**
+ * Check: Regional variants in alternates should have template translations.
+ * Warning only — base language fallback is used.
+ */
+const regionalVariantsCoverage: CheckConfig = {
+  name: "regional-variants-coverage",
+  needsHreflang: false,
+  run: () => {
+    const templateName = getTemplateName();
+    const translationKeys = getTemplateTranslationKeys();
+    
+    // No i18n file for this template — skip check
+    if (translationKeys === null) {
+      return [];
+    }
+    
+    const alternateKeys = getAllAlternateKeys();
+    const warnings: CheckError[] = [];
+    
+    for (const key of alternateKeys) {
+      // Skip if already has direct translation
+      if (translationKeys.includes(key)) continue;
+      
+      // Skip base languages (they're checked by templateTranslationsCoverage)
+      if (!key.includes("-")) continue;
+      
+      // Get base language (en-US → en)
+      const baseLanguage = key.split("-")[0];
+      
+      // If base language has translation, just info — fallback will work
+      if (translationKeys.includes(baseLanguage)) {
+        warnings.push({
+          check: "regional-variants-coverage",
+          message: `Regional variant "${key}" in alternates uses "${baseLanguage}" fallback in layouts/${templateName}/i18n.ts.`,
+          severity: "warning",
+        });
+      } else {
+        // No base language either — more serious warning
+        warnings.push({
+          check: "regional-variants-coverage",
+          message: `Regional variant "${key}" in alternates has no translation (nor "${baseLanguage}" fallback) in layouts/${templateName}/i18n.ts.`,
+          severity: "warning",
+        });
+      }
+    }
+    
+    return warnings;
   },
 };
 
@@ -358,7 +538,8 @@ const suspiciousLanguageDirs: CheckConfig = {
  * All registered checks. Add new checks here.
  */
 const checks: CheckConfig[] = [
-  languageUiCoverage,
+  templateTranslationsCoverage,
+  regionalVariantsCoverage,
   suspiciousLanguageDirs,
   bidirectionalLinks,
   consistentExternals,
@@ -451,6 +632,7 @@ export function checksIntegration(options: ChecksOptions = {}): AstroIntegration
 
         // Run checks
         let totalErrors = 0;
+        let totalWarnings = 0;
         const results: { name: string; errors: CheckError[]; time: number }[] = [];
 
         console.log(`\n${c.cyan}${c.bold}Running build checks...${c.reset}\n`);
@@ -459,38 +641,57 @@ export function checksIntegration(options: ChecksOptions = {}): AstroIntegration
           if (check.enabled === false) continue;
 
           const start = performance.now();
-          const errors = check.run(pagesWithHreflang, siteUrl);
+          const issues = check.run(pagesWithHreflang, siteUrl);
           const time = performance.now() - start;
 
-          results.push({ name: check.name, errors, time });
-          totalErrors += errors.length;
+          const errors = issues.filter((e) => e.severity !== "warning");
+          const warnings = issues.filter((e) => e.severity === "warning");
 
-          if (errors.length === 0) {
+          results.push({ name: check.name, errors: issues, time });
+          totalErrors += errors.length;
+          totalWarnings += warnings.length;
+
+          if (issues.length === 0) {
             console.log(
               `  ${c.green}✓${c.reset} ${check.name} ${c.gray}(${time.toFixed(0)}ms)${c.reset}`
             );
+          } else if (errors.length === 0) {
+            // Only warnings
+            console.log(
+              `  ${c.cyan}⚠${c.reset} ${check.name} ${c.gray}(${time.toFixed(0)}ms)${c.reset}`
+            );
+            for (const warn of warnings) {
+              console.log(`    ${c.cyan}→${c.reset} ${c.dim}${warn.message}${c.reset}`);
+            }
           } else {
             console.log(
               `  ${c.red}✗${c.reset} ${check.name} ${c.gray}(${time.toFixed(0)}ms)${c.reset}`
             );
-            for (const err of errors) {
-              console.log(`    ${c.red}→${c.reset} ${c.dim}${err.message}${c.reset}`);
+            for (const err of issues) {
+              const icon = err.severity === "warning" ? c.cyan : c.red;
+              console.log(`    ${icon}→${c.reset} ${c.dim}${err.message}${c.reset}`);
             }
           }
         }
 
         // Summary
-        const passed = results.filter((r) => r.errors.length === 0).length;
-        const failed = results.filter((r) => r.errors.length > 0).length;
+        const passed = results.filter((r) => r.errors.every(e => e.severity === "warning")).length;
+        const failed = results.filter((r) => r.errors.some(e => e.severity !== "warning")).length;
 
         console.log("");
         if (totalErrors === 0) {
-          console.log(
-            `${c.green}${c.bold}All checks passed!${c.reset} ${c.gray}(${passed} checks)${c.reset}\n`
-          );
+          if (totalWarnings > 0) {
+            console.log(
+              `${c.green}${c.bold}All checks passed${c.reset} ${c.gray}(${totalWarnings} warning(s))${c.reset}\n`
+            );
+          } else {
+            console.log(
+              `${c.green}${c.bold}All checks passed!${c.reset} ${c.gray}(${passed} checks)${c.reset}\n`
+            );
+          }
         } else {
           console.log(
-            `${c.red}${c.bold}${failed} check(s) failed${c.reset} ${c.gray}(${totalErrors} errors)${c.reset}\n`
+            `${c.red}${c.bold}${failed} check(s) failed${c.reset} ${c.gray}(${totalErrors} error(s))${c.reset}\n`
           );
 
           if (failOnError) {

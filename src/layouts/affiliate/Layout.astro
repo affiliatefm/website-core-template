@@ -25,10 +25,33 @@ const canonicalUrl = hreflangUrls[language] ?? `${siteUrl}${Astro.url.pathname}`
 const xDefaultUrl = hreflangUrls[defaultLanguage] ?? canonicalUrl;
 const hasMultipleLanguages = Object.keys(hreflangUrls).length > 1;
 
-// For switcher, use relative URLs and filter to only show actual locales (not aliases like en-US)
-const switcherLinks = Object.entries(switcherUrls).filter(([lang]) => 
-  languages.includes(lang as LanguageCode)
-);
+// For switcher: combine relative URLs (internal) with absolute URLs (external)
+// Show all alternates except hreflang aliases (en-US when en exists)
+const siteOrigin = siteUrl.replace(/\/$/, "");
+const isExternalUrl = (url: string) => {
+  if (!url.startsWith("http://") && !url.startsWith("https://")) return false;
+  try {
+    return new URL(url).origin !== siteOrigin;
+  } catch {
+    return false;
+  }
+};
+const switcherLinks = Object.entries(hreflangUrls)
+  .filter(([lang, url]) => {
+    // Skip hreflang aliases (en-US) if base language (en) exists
+    if (lang.includes("-")) {
+      const baseLanguage = lang.split("-")[0];
+      if (baseLanguage in hreflangUrls) return false;
+    }
+    return true;
+  })
+  .map(([lang, url]) => {
+    // For internal URLs, prefer relative version from switcherUrls
+    if (!isExternalUrl(url) && lang in switcherUrls) {
+      return [lang, switcherUrls[lang]] as [string, string];
+    }
+    return [lang, url] as [string, string];
+  });
 
 // Two translation layers:
 // - ui: user data (siteName, custom strings) from src/data/ui.ts
