@@ -1,62 +1,48 @@
 ---
-title: Начало работы
-description: Как использовать этот i18n бойлерплейт
+title: Быстрый старт
+description: Настройка и обновление ядра Affiliate.FM
+alternates:
+  en: docs/getting-started
+  ru: docs/getting-started
 ---
 
-# Начало работы
+# Быстрый старт
 
-Краткое руководство по использованию бойлерплейта.
-
-## Установка
+## 1. Создаем проект
 
 ```bash
-git clone <repo-url> my-site
+npm create astro@latest -- --template affiliatefm/website-core-template
 cd my-site
-npm install
-npm run dev
+make install && make bootstrap && make seed
 ```
 
-## Добавление страниц
+`make bootstrap` → создаёт `affiliatefm.core.json` с перечнем защищенных путей. `make seed` → заполняет `src/data/` демо-метриками.
 
-### Авто-связь (одинаковый путь)
+## 2. Основные команды
 
-Создайте файлы с одинаковой структурой:
+| Команда | Что делает |
+| --- | --- |
+| `make dev` | dev-сервер Astro |
+| `make build` | production-билд + форматирование HTML |
+| `make preview` | предпросмотр билда |
+| `make check` | типизация/MDX проверки |
+| `make seed` | перегенерирует sample data |
+| `make update` | вытягивает свежий core без затрагивания protected paths |
 
-```
-pages/services.mdx      → /services
-pages/ru/services.mdx   → /ru/services
-```
+## 3. Контент и локали
 
-Связываются автоматически, frontmatter не нужен.
+- Английские страницы → `src/content/pages/*.mdx`
+- Русские страницы → `src/content/pages/ru/...`
+- Для разных URL используйте `permalink` + `alternates` в frontmatter.
 
-### Кастомные URL
+## 4. Данные
 
-Когда пути должны отличаться:
+- Кладите JSON в `src/data/`.
+- Импортируйте через `@/lib/data` → доступны хелперы для витрин.
+- Демонстрационный компонент `<DataShowcase />` можно встраивать прямо в MDX.
 
-```yaml
-# pages/about.mdx
-alternates:
-  en: about
-  ru: o-nas
-```
+## 5. Обновления
 
-```yaml
-# pages/ru/o-nas.mdx
-permalink: o-nas
-alternates:
-  en: about
-  ru: o-nas
-```
-
-## Добавление локали
-
-1. `astro.config.mjs` — добавить в `locales`
-2. `src/i18n/config.ts` — добавить в `locales` и `localeLabels`
-3. `src/i18n/translations.ts` — добавить UI строки
-4. Создать `src/content/pages/<locale>/`
-
----
-
-[← На главную](/ru)
-
-
+- `make update` скачивает репозиторий `affiliatefm/website-core-template` во временную папку.
+- Копируются только файлы из `corePaths`, остальные пути из `protectedPaths` пропускаются.
+- После копирования проверьте diff, выполните `npm install` (если `package.json` изменился) и соберите проект заново.

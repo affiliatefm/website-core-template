@@ -1,0 +1,24 @@
+---
+title: Данные и инсайты
+description: Пример того, как совмещать контент и метрики в одном Astro-проекте
+alternates:
+  en: insights
+  ru: insights
+  ja: insights
+  fr: https://fr.example.com/insights
+  es: https://example.es/insights
+---
+
+import DataShowcase from "@/components/DataShowcase.astro";
+
+# Данные и инсайты
+
+Этот раздел показывает, как использовать JSON-данные в связке с MDX. Файлы в `src/data/` можно обновлять скриптами или вручную — ядро их не перепишет при `make update`.
+
+1. Экспортируйте метрики из BI и положите их в `src/data/*.json`.
+2. Импортируйте через `@/lib/data` или свой хук.
+3. Обновите тексты для каждой локали.
+
+<DataShowcase />
+
+Хотите подключить реальные API? Добавьте серверные загрузчики в Astro или создайте компонент-остров для интерактивных графиков.

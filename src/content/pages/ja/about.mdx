@@ -1,52 +1,21 @@
 ---
-updatedAt: 2024-12-15T00:00:00.000Z
+title: Affiliate.FM について
+description: パフォーマンスマーケター向けに調整した Astro 5 コア
 alternates:
   en: about
   ru: o-nas
   ru-kz: biz-turaly
   ja: about
-permalink: about
-title: このサイトについて
-description: このi18nボイラープレートテンプレートについて
-_ai:
-  source: about.mdx
-  hash: 2a3532f166fd
-  model: gpt-4.1
-  date: '2025-12-16'
----
-# このテンプレートについて
-
-このボイラープレートは、Astro 5の組み込みi18n機能を使って**コンテンツ主導の多言語サイト**を構築する方法を示しています。
-
-## アーキテクチャ
-
-### 設定ファイル（`src/config/site.ts`）
-
-すべてのサイト設定の**単一情報源**：
-
-- 対応ロケールとデフォルトロケール
-- サイトURLとメタデータ
-- UI翻訳とナビゲーションリンク
-
-### コンテンツ（`src/content/pages/`）
-
-MDXファイルはロケールごとに整理されています。デフォルトロケールのファイルはルートに、他のロケールはサブフォルダーに配置します。
-
-### ルーティング（`src/pages/`）
-
-すべてのページを単一のユニバーサルルートで処理：
-
-- `[...slug].astro` — すべてのロケール、すべてのパス
-
-## カスタムURL
-
-このページは**カスタムURLマッピング**の例です：
-
-- 英語: `/about`
-- ロシア語: `/ru/o-nas`
-
-両ページのfrontmatter内の`alternates`と、ロシア語版の`permalink`によって実現しています。
-
+  fr: https://fr.example.com/about
+  es: https://example.es/about
 ---
 
-[← ホームに戻る](/)
+# Affiliate.FM のコア
+
+私たちは独立系メディアとして、データドリブンなアフィリエイト/パフォーマンスマーケティングのナレッジと OSS を公開しています。このテンプレートは、静的配信・多言語サイト・再利用性に特化した Astro 5 のコアです。
+
+- `make bootstrap` で設定ファイルと保護パスを生成
+- `make seed` でデモデータを更新し、即座にデータカードを表示
+- `make update` で Affiliate.FM の最新コアを反映 (コンテンツや `src/data` は保持)
+
+`src/config/site.ts` でロケールやドメインを設定し、`src/content/pages/ja/` に記事を追加すれば、静的ビルドだけで本番リリースできます。

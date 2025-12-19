@@ -1,361 +1,111 @@
-# Astro i18n Template
+# Affiliate.FM Website Core Template
 
-A production-ready, reusable template for building multilingual websites with **Astro 5**.
+Independent media meets open-source tooling. This repository is the exact Astro 5 core we use to ship multilingual, data-heavy affiliate and performance marketing sites. It stays static, embraces Astro conventions, and bakes in an upgrade story so your editorial and data layers never get overwritten.
 
-## Features
+## Highlights
 
-- **Single Config** — All site settings in one place (`src/config/site.ts`)
-- **Content Collections** — Pages as MDX files with frontmatter
-- **Auto-linking** — Translations matched automatically by path structure
-- **Custom URLs** — Different slugs per locale when needed
-- **Multi-domain** — Subdomains, ccTLDs, or external domains per locale
-- **Type-safe** — Full TypeScript support
-- **SEO-ready** — Sitemap, robots.txt, hreflang tags
-- **Minimal** — No unnecessary dependencies
+- **Drops right into `npm create astro@latest`** – the template build stays static and deploys anywhere.
+- **Astro-native i18n** – folder-based locales, helpers for alternate URLs, optional per-locale domains, robots/sitemap routes.
+- **Core vs. user layers** – `affiliatefm.core.json` captures which paths the updater may touch. `src/content/`, `src/data/`, and whatever you add to `protectedPaths` remain yours.
+- **Tooling for every skill level** – Makefile targets (`make dev`, `make update`, etc.), npm scripts, and bootstrap/update helpers with human-readable logging.
+- **Data workflows** – JSON under `src/data/`, TypeScript helpers in `@/lib/data`, and demo components (e.g., `<DataShowcase />`) so you can surface KPIs next to MDX narratives.
+- **Translator-friendly** – ships with `@affiliate.fm/astro-content-ai-translator` so you can automate MDX drafts when you’re ready.
 
 ## Quick Start
 
 ```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
+npm create astro@latest -- --template affiliatefm/website-core-template
+cd my-site
+make install && make bootstrap && make seed && make dev
 ```
 
-## Project Structure
+| Target | Runs | Notes |
+| --- | --- | --- |
+| `make install` | `npm install` | Installs dependencies |
+| `make bootstrap` | `npm run bootstrap` | Writes `affiliatefm.core.json`, creates `.affiliatefm/`, prepares `src/data/` |
+| `make seed` | `npm run seed:data` | Generates demo data sets in `src/data/` |
+| `make dev` | `npm run dev` | Astro dev server |
+| `make build` | `npm run build` | Static build + HTML prettify |
+| `make preview` | `npm run preview` | Preview production build |
+| `make check` | `npm run check` | `astro check` (type safety + MDX validation) |
+| `make update` | `npm run update:core` | Pulls the latest Affiliate.FM core without touching protected paths |
 
-```
-src/
-├── config/
-│   └── site.ts          # ⭐ MAIN CONFIG - Edit this file!
-├── content/
-│   └── pages/           # 📄 Your content (MDX files)
-│       ├── index.mdx           → /
-│       ├── about.mdx           → /about
-│       ├── docs/
-│       │   └── getting-started.mdx  → /docs/getting-started
-│       └── ru/                 # Russian locale
-│           ├── index.mdx       → /ru
-│           └── o-nas.mdx       → /ru/o-nas
-├── components/          # UI components
-├── layouts/             # Page layouts
-├── i18n/                # i18n utilities (auto-configured)
-└── pages/
-    ├── [...slug].astro  # Universal router (don't edit unless advanced)
-    ├── 404.astro        # Custom 404 page
-    └── robots.txt.ts    # Dynamic robots.txt (uses siteUrl from config)
-```
+Prefer raw npm? Every target proxies an npm script, so CI environments can stay npm native.
 
-## Configuration
+## Content & i18n Conventions
 
-### Step 1: Edit Site Config
-
-Open `src/config/site.ts` and customize:
-
-```typescript
-// 1. Set your locales
-export const locales = ["en", "ru", "fr"] as const;
-export const defaultLocale = "en" as const;
-
-// 2. Set your site URL
-export const siteUrl = "https://your-domain.com";
-
-// 3. Add locale labels (for language switcher)
-export const localeLabels = {
-  en: "English",
-  ru: "Русский",
-  fr: "Français",
-};
-
-// 4. Configure UI translations and navigation
-export const ui = {
-  en: {
-    meta: { siteName: "My Site" },
-    nav: [
-      { label: "Home", path: "" },
-      { label: "About", path: "about" },
-    ],
-    ui: {
-      readMore: "Read more",
-      backToHome: "Back to home",
-    },
-  },
-  ru: {
-    meta: { siteName: "Мой Сайт" },
-    nav: [
-      { label: "Главная", path: "" },
-      { label: "О нас", path: "o-nas" },
-    ],
-    ui: {
-      readMore: "Читать далее",
-      backToHome: "На главную",
-    },
-  },
-  // ... add more locales
-};
-```
-
-### Step 2: Add Content
-
-Create MDX files in `src/content/pages/`:
-
-**Default locale (English):**
 ```
 src/content/pages/
-├── index.mdx     → /
-├── about.mdx     → /about
-└── contact.mdx   → /contact
+├── index.mdx              → / (default locale)
+├── about.mdx              → /about
+├── docs/getting-started.mdx
+└── ru/
+    ├── index.mdx          → /ru
+    ├── o-nas.mdx          → /ru/o-nas (custom slug)
+    └── insights.mdx       → /ru/insights
 ```
 
-**Other locales:**
-```
-src/content/pages/ru/
-├── index.mdx     → /ru
-├── o-nas.mdx     → /ru/o-nas  (custom slug)
-└── contact.mdx   → /ru/contact
-```
+- Default locale (first item in `locales`) lives at the root.
+- Other locales get their own folder. Astro’s file-based routing + the helper utilities inside `src/i18n/` auto-link versions that share a base path.
+- Use `alternates` when slugs diverge. You can link to external domains too—just provide a full URL.
+- Configure locales, nav items, optional per-locale domains, and active template inside `src/config/site.ts`.
 
-### Page Frontmatter
-
-```yaml
----
-title: Page Title          # Required
-description: SEO desc      # Optional
-permalink: custom-slug     # Optional: override URL slug
-alternates:                # Optional: link to translations with different slugs
-  en: about
-  ru: o-nas
-updatedAt: 2024-12-15      # Optional: last update date for sitemap
-draft: false               # Optional: hide from production
----
-```
-
-## How Translation Linking Works
-
-### Automatic (by path)
-
-Pages with the **same file path** are linked automatically:
-
-```
-src/content/pages/about.mdx       → /about
-src/content/pages/ru/about.mdx    → /ru/about
-```
-
-These pages will automatically have hreflang tags pointing to each other.
-
-### Manual (for different slugs)
-
-When locales have different URLs, use `alternates` in frontmatter:
-
-**English (`about.mdx`):**
-```yaml
----
-title: About Us
-alternates:
-  ru: o-nas
----
-```
-
-**Russian (`ru/o-nas.mdx`):**
-```yaml
----
-title: О нас
-permalink: o-nas
-alternates:
-  en: about
----
-```
-
-### External Alternates (Multi-Domain)
-
-You can link to translations on external domains:
-
-```yaml
----
-title: Welcome
-alternates:
-  en: ""
-  ru: ""
-  fr: https://fr.example.com/      # External subdomain
-  es: https://example.es/          # External ccTLD
-  ja: https://partner-site.jp/     # External partner site
----
-```
-
-**⚠️ Important:** External sites **must** have reciprocal `hreflang` links pointing back to your site. Without bidirectional links, search engines will ignore the `hreflang` tags.
-
-The build process will warn you about external alternates:
-
-```
-[build-checks] Found 3 external hreflang link(s) to: https://fr.example.com, https://example.es
-[build-checks] External sites MUST have reciprocal hreflang links pointing back.
-```
-
-### Hreflang Format (BCP 47)
-
-Locale codes in folder names can be any format you prefer (e.g., `ru-kz`, `kz`, `zh-hans`), but hreflang tags are automatically normalized to [BCP 47 standard](https://en.wikipedia.org/wiki/IETF_language_tag):
-
-| Folder Name | Hreflang Output |
-|-------------|-----------------|
-| `ru` | `ru` |
-| `ru-kz` | `ru-KZ` |
-| `pt-br` | `pt-BR` |
-| `zh-hans` | `zh-Hans` |
-
-This ensures compatibility with Google, Bing, and other search engines.
-
-## Customization
-
-### Adding a New Locale
-
-1. Add to `locales` array in `src/config/site.ts`
-2. Add label to `localeLabels`
-3. Add UI translations to `ui` object
-4. Create content folder: `src/content/pages/{locale}/`
-
-### Removing a Locale
-
-1. Remove from `locales` array
-2. Remove from `localeLabels`
-3. Remove from `ui` object
-4. Delete content folder (optional)
-
-### Adding UI Strings
-
-1. Add key to the `UIStrings` interface in `src/config/site.ts`
-2. Add translations for each locale in `ui` object
-3. Use in components: `const { ui } = t(locale);`
-
-### Multi-Domain Setup
-
-Configure different domains/subdomains per locale in `src/config/site.ts`:
-
-```typescript
-export const domains: Partial<Record<Locale, string>> = {
-  // en uses default siteUrl (no entry needed)
-  fr: "https://fr.example.com",     // Subdomain
-  es: "https://example.es",         // Separate ccTLD
-  ja: "https://partner.com/site",   // External domain with base path
+```ts
+export const localeDomains = {
+  // ja: "https://jp.example.com", // hreflang + canonical switch to this origin
 };
 ```
 
-**URL generation with domains:**
+## Data Layer
 
-| Locale | Domain Config | Generated URL |
-|--------|---------------|---------------|
-| `en` | (default) | `https://example.com/about/` |
-| `ru` | (default) | `https://example.com/ru/about/` |
-| `fr` | `https://fr.example.com` | `https://fr.example.com/about/` |
-| `es` | `https://example.es` | `https://example.es/about/` |
+- JSON files in `src/data/` are protected by default (see `affiliatefm.core.json`).
+- `npm run seed:data` updates `network-opportunities.json` and `performance-insights.json` with realistic demo rows. Replace them with your own exports.
+- `@/lib/data.ts` exposes helper functions. Components like `src/components/DataShowcase.astro` demonstrate how to render the metrics inside MDX.
 
-When a locale has its own domain, the locale prefix is **not** included in the path (the domain itself identifies the locale).
+## Keeping Core and Content in Sync
 
-## SEO
+1. `make bootstrap` creates `affiliatefm.core.json` (or updates its `coreVersion`).
 
-### Sitemap
+   ```json
+   {
+     "coreRepo": "affiliatefm/website-core-template",
+     "protectedPaths": ["src/content", "src/data", "public"],
+     "corePaths": ["astro.config.mjs", "src/layouts", "src/pages", "scripts", ...]
+   }
+   ```
 
-Sitemap is auto-generated at build time via `@astrojs/sitemap`. Output: `/sitemap-index.xml`
+2. Add any extra directories/files you don’t want overwritten (custom integrations, new layouts, etc.).
+3. Run `make update` whenever we push a new release. The script downloads the repo via `npx giget`, copies every `corePath`, and skips anything in `protectedPaths`.
+4. Inspect the diff, run `npm install` if `package.json` changed, then rebuild.
 
-### Robots.txt
+No Git? The updater works in any project because it doesn’t rely on merge strategies—it copies from a fresh download.
 
-Auto-generated from `siteUrl` config. Edit `src/pages/robots.txt.ts` to customize rules.
+## Repository Layout
 
-### 404 Page
-
-Custom 404 page at `src/pages/404.astro`. Automatically detects locale from URL path.
-
-## Technical Details
-
-### Built-in Astro i18n
-
-This template uses Astro's [built-in i18n routing](https://docs.astro.build/en/guides/internationalization/):
-
-```javascript
-// astro.config.mjs
-i18n: {
-  locales: ["en", "ru", "fr"],
-  defaultLocale: "en",
-  routing: {
-    prefixDefaultLocale: false,  // / instead of /en/
-  },
-}
+```
+.
+├── Makefile                       # Command shorthand
+├── affiliatefm.core.template.json # Bootstrap template for protected paths
+├── scripts/                       # bootstrap/update/seed helpers
+├── src/
+│   ├── components/                # Shared components (LanguageSwitcher, DataShowcase, ...)
+│   ├── config/site.ts             # All site settings in one place
+│   ├── content/                   # MDX content per locale
+│   ├── data/                      # JSON data (safe from updates)
+│   ├── i18n/                      # Helper functions & exports
+│   ├── integrations/              # Build-time validations (hreflang checks)
+│   ├── layouts/                   # Light & dark skins
+│   └── pages/                     # Astro routes (404, catch-all, sitemap, robots)
+└── tsconfig.json                  # Path aliases (@/*)
 ```
 
-### No Fallback Behavior
+## AI Translation Integration
 
-This template intentionally does **not** use Astro's `fallback` feature. Here's why:
+The template ships with [`@affiliate.fm/astro-content-ai-translator`](https://github.com/affiliatefm/astro-content-ai-translator). Plug in your provider credentials, run the integration, and generate draft MDX translations directly from the CLI. Because translations live alongside content collections, the usual Astro DX applies.
 
-1. **Static builds** — With `fallback`, Astro creates duplicate HTML files for missing translations, which may not be desired
-2. **Explicit control** — Missing translations are shown as unavailable in the language switcher (not auto-redirected)
-3. **SEO clarity** — Each page exists in specific locales only; no confusing redirects
+## Support
 
-**What happens when a translation is missing:**
+- Questions or ideas? Email [hello@affiliate.fm](mailto:hello@affiliate.fm).
+- Bugs and feature requests? Open an issue or PR.
 
-- The page only exists for locales that have the content file
-- Language switcher shows only available locales for that page
-- No `hreflang` tags are generated for missing locales
-- Visiting a non-existent locale URL returns 404
-
-If you need fallback behavior, add it to `astro.config.mjs`:
-
-```javascript
-i18n: {
-  routing: {
-    fallback: {
-      ru: "en",  // Russian visitors see English if no Russian version
-    },
-  },
-}
-```
-
-### URL Structure
-
-| Content Path | URL |
-|-------------|-----|
-| `pages/index.mdx` | `/` |
-| `pages/about.mdx` | `/about/` |
-| `pages/ru/index.mdx` | `/ru/` |
-| `pages/ru/about.mdx` | `/ru/about/` |
-
-### Helper Functions
-
-```typescript
-import { t, getLocaleFromId, getLocaleOrigin, getAbsoluteLocaleUrl } from "@/i18n";
-
-// Get translations for locale
-const ui = t("ru");
-console.log(ui.nav); // Navigation items
-console.log(ui.ui.readMore); // "Читать далее"
-
-// Extract locale from content entry ID
-getLocaleFromId("ru/about"); // "ru"
-getLocaleFromId("about");    // "en" (default)
-
-// Get domain for a locale (respects `domains` config)
-getLocaleOrigin("fr"); // "https://fr.example.com" (if configured)
-getLocaleOrigin("ru"); // "https://example.com" (default siteUrl)
-
-// Build absolute URL for a locale
-getAbsoluteLocaleUrl("fr", "about"); // "https://fr.example.com/about/"
-getAbsoluteLocaleUrl("ru", "about"); // "https://example.com/ru/about/"
-```
-
-## Related
-
-- [@affiliate.fm/astro-content-ai-translator](https://github.com/affiliatefm/astro-content-ai-translator) — AI-powered translation for Astro content collections
-- [astro-content-ai-enhancer](https://github.com/affiliatefm/astro-content-ai-enhancer) — AI assistant that enhances raw Markdown into structured, well-formatted pages
-
-## Author
-
-Built by [Affiliate.FM](https://affiliate.fm) — independent media and open-source tools for affiliate, performance, and digital marketing.
-
-## License
-
-MIT
+Build something rad. Then share it with the community so everyone can learn from it.

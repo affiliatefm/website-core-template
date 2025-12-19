@@ -1,0 +1,52 @@
+[
+  {
+    "program": "FinEdge Global",
+    "network": "Impact Radius",
+    "vertical": "Finance",
+    "id": 1,
+    "avgCpa": 57,
+    "approvalTimeDays": 3.7,
+    "topGeo": "US",
+    "signals": "High EPC"
+  },
+  {
+    "program": "Atlas SaaS",
+    "network": "PartnerStack",
+    "vertical": "B2B SaaS",
+    "id": 2,
+    "avgCpa": 78,
+    "approvalTimeDays": 2.6,
+    "topGeo": "UK",
+    "signals": "Fresh creative"
+  },
+  {
+    "program": "Nomad Gear",
+    "network": "CJ",
+    "vertical": "E-commerce",
+    "id": 3,
+    "avgCpa": 98,
+    "approvalTimeDays": 7,
+    "topGeo": "DE",
+    "signals": "Data API access"
+  },
+  {
+    "program": "SolarCollective",
+    "network": "ShareASale",
+    "vertical": "Sustainability",
+    "id": 4,
+    "avgCpa": 71,
+    "approvalTimeDays": 5,
+    "topGeo": "CA",
+    "signals": "Auto-approvals"
+  },
+  {
+    "program": "RevMax Studio",
+    "network": "Everflow",
+    "vertical": "Gaming",
+    "id": 5,
+    "avgCpa": 93,
+    "approvalTimeDays": 5.3,
+    "topGeo": "AU",
+    "signals": "High EPC"
+  }
+]

@@ -1,11 +1,15 @@
 {
   "name": "website-core-template",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && find dist -name '*.html' -exec js-beautify -r --type html {} \\;",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "check": "astro check",
+    "bootstrap": "node scripts/bootstrap.mjs",
+    "update:core": "node scripts/update-core.mjs",
+    "seed:data": "node scripts/seed-sample-data.mjs"
   },
   "dependencies": {
     "@affiliate.fm/astro-content-ai-translator": "^0.3.0",
@@ -13,7 +17,9 @@
     "astro": "^5.16.5"
   },
   "devDependencies": {
-    "js-beautify": "^1.15.4"
+    "@astrojs/check": "^0.9.6",
+    "js-beautify": "^1.15.4",
+    "prettier": "^3.4.2",
+    "typescript": "^5.9.3"
   }
 }
-

@@ -1,0 +1,50 @@
+[
+  {
+    "month": "Jul",
+    "ctr": 3.85,
+    "epc": 2.2,
+    "conversionRate": 1.96,
+    "clicks": 1790,
+    "topRegion": "EU"
+  },
+  {
+    "month": "Aug",
+    "ctr": 3.25,
+    "epc": 3.02,
+    "conversionRate": 2.73,
+    "clicks": 3946,
+    "topRegion": "NA"
+  },
+  {
+    "month": "Sep",
+    "ctr": 4.28,
+    "epc": 1.36,
+    "conversionRate": 3.45,
+    "clicks": 3984,
+    "topRegion": "LATAM"
+  },
+  {
+    "month": "Oct",
+    "ctr": 4.28,
+    "epc": 3.02,
+    "conversionRate": 1.91,
+    "clicks": 3782,
+    "topRegion": "APAC"
+  },
+  {
+    "month": "Nov",
+    "ctr": 3.36,
+    "epc": 3.26,
+    "conversionRate": 2.15,
+    "clicks": 3490,
+    "topRegion": "EU"
+  },
+  {
+    "month": "Dec",
+    "ctr": 3.94,
+    "epc": 2.89,
+    "conversionRate": 3.41,
+    "clicks": 1869,
+    "topRegion": "NA"
+  }
+]

@@ -1,69 +1,47 @@
 ---
 title: Getting Started
-description: How to use this i18n boilerplate
+description: How to bootstrap, customize, and update the Affiliate.FM website core
 ---
 
 # Getting Started
 
-Quick guide to using and customizing this boilerplate.
-
-## Domain-aware hreflang
-
-- Update `site` in `astro.config.mjs` to your primary domain.
-- Configure per-locale domains in `src/i18n/config.ts` (`domains`), including subdomains, separate ccTLDs, or even external hosts with a base path.
-- The boilerplate builds absolute hreflang/canonical URLs from this map (and supports absolute URLs in `alternates` when you need custom targets).
-- Astro's built-in `i18n.domains` requires `output: "server"`; this template stays `static` and uses the map for link generation only.
-
-## Installation
+## 1. Create a Project
 
 ```bash
-git clone <repo-url> my-site
-cd my-site
-npm install
-npm run dev
+npm create astro@latest -- --template affiliatefm/website-core-template
+cd your-project
+make install && make bootstrap && make seed
 ```
 
-## Adding Pages
+`make bootstrap` writes `affiliatefm.core.json` (core version + protected paths) and prepares `src/data/`. Update `protectedPaths` if you need to shield custom directories.
 
-### Auto-Matched (Same Path)
+## 2. Run the Stack
 
-Create files with the same structure:
+| Command | Description |
+| --- | --- |
+| `make dev` | Start Astro dev server |
+| `make build` | Static build + HTML prettify |
+| `make preview` | Preview production build |
+| `make check` | `astro check` for TS/MDX typing |
+| `make seed` | Refresh demo data in `src/data/` |
+| `make update` | Pull latest Affiliate.FM core |
 
-```
-pages/services.mdx      → /services
-pages/ru/services.mdx   → /ru/services
-```
+Prefer npm? Every make target simply proxies `npm run <script>`.
 
-Linked automatically, no frontmatter needed.
+## 3. Add Content + Locales
 
-### Custom URLs
+- Default locale lives directly under `src/content/pages/`.
+- Add `src/content/pages/<locale>/` for each translation. Astro’s file-based routing + our helper utilities auto-link translations.
+- Use `alternates` in frontmatter whenever slugs differ across locales.
 
-When paths must differ:
+## 4. Data & Components
 
-```yaml
-# pages/about.mdx
-alternates:
-  en: about
-  ru: o-nas
-```
+- Store structured data under `src/data/` (JSON). Protected by default.
+- Consume via `@/lib/data` or build your own helpers.
+- Include UI like `<DataShowcase />` directly inside MDX.
 
-```yaml
-# pages/ru/o-nas.mdx
-permalink: o-nas
-alternates:
-  en: about
-  ru: o-nas
-```
+## 5. Safe Upgrades
 
-## Adding a Locale
+`make update` downloads the latest template into `.affiliatefm/core-latest`, copies “core” paths, and skips everything listed in `protectedPaths`. Inspect the diff, reinstall dependencies if the lockfile changed, then redeploy.
 
-1. `astro.config.mjs` — add to `locales`
-2. `src/i18n/config.ts` — add to `locales` and `localeLabels`
-3. `src/i18n/translations.ts` — add UI strings
-4. Create `src/content/pages/<locale>/`
-
----
-
-[← Back to Home](/)
-
-
+Need more locales, new layouts, or AI-assisted translations? Check `src/config/site.ts`, `src/layouts/*`, and the bundled `@affiliate.fm/astro-content-ai-translator` integration to keep everything in sync.

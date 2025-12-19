@@ -23,10 +23,7 @@
  */
 export type TemplateId = "basic" | "basic-dark";
 
-/**
- * Active template for the site.
- * Change this to switch the entire site's layout.
- */
+/** Active template for the site. */
 export const template: TemplateId = "basic";
 
 // =============================================================================
@@ -70,10 +67,18 @@ export const localeLabels: Record<Locale, string> = {
 // =============================================================================
 
 /**
- * Site URL - used for canonical URLs, sitemaps, hreflang tags.
+ * Primary domain used for canonical URLs, sitemaps, hreflang tags.
  * Set to your production domain.
  */
-export const siteUrl = "https://example.com";
+export const siteUrl = "https://affiliate.fm";
+
+/**
+ * Optional locale specific domains/subdomains.
+ * When set, alternate links and canonical URLs automatically use this origin.
+ * Example:
+ * export const localeDomains = { ja: "https://jp.example.com" };
+ */
+export const localeDomains: Partial<Record<Locale, string>> = {};
 
 // =============================================================================
 // UI TRANSLATIONS
@@ -91,13 +96,13 @@ export const siteUrl = "https://example.com";
 export const ui = {
   en: {
     meta: {
-      siteName: "i18n Demo",
+      siteName: "Affiliate.FM Website Core",
     },
     nav: [
       { label: "Home", path: "" },
       { label: "About", path: "about" },
       { label: "Docs", path: "docs/getting-started" },
-      { label: "Contact", path: "contact" },
+      { label: "Insights", path: "insights" },
     ],
     ui: {
       readMore: "Read more",
@@ -106,12 +111,13 @@ export const ui = {
   },
   ru: {
     meta: {
-      siteName: "i18n Демо",
+      siteName: "Affiliate.FM Website Core",
     },
     nav: [
       { label: "Главная", path: "" },
       { label: "О нас", path: "o-nas" },
       { label: "Документация", path: "docs/getting-started" },
+      { label: "Инсайты", path: "insights" },
     ],
     ui: {
       readMore: "Читать далее",
@@ -120,7 +126,7 @@ export const ui = {
   },
   "ru-kz": {
     meta: {
-      siteName: "i18n Демо (KZ)",
+      siteName: "Affiliate.FM Website Core",
     },
     nav: [
       { label: "Басты бет", path: "" },

@@ -1,48 +1,42 @@
 ---
-title: About
-description: About this i18n boilerplate template
-updatedAt: 2024-12-15
+title: About Affiliate.FM
+description: Why we built a reusable Astro core for affiliate and performance teams
 alternates:
   en: about
   ru: o-nas
   ru-kz: biz-turaly
   ja: about
-_translateTo: all # or you can use [ja]
+  fr: https://fr.example.com/about
+  es: https://example.es/about
 ---
 
-# About This Template
+# Why This Core Exists
 
-This boilerplate demonstrates how to build a **content-driven multilingual site** with Astro 5's built-in i18n features.
+Affiliate.FM publishes independent research, interviews, and tools for performance marketers. We needed a static-friendly stack that anyone—from solo creators to enterprise partner teams—could reuse and upgrade without breaking their content.
 
-## Architecture
+## Principles
 
-### Configuration (`src/config/site.ts`)
+1. **Stay static** – Astro 5 in static mode keeps hosting simple (Netlify, Vercel, S3, Cloudflare Pages… take your pick).
+2. **Prefer conventions** – Routes, locales, and layouts live in predictable directories so you can swap components without touching the router.
+3. **Document decisions** – Scripts like `bootstrap` and `update-core` write config files that describe what the “core” layer means for your team.
+4. **Default to accessibility + performance** – Light and dark templates share the same markup; typography/contrast already tuned.
 
-**Single source of truth** for all site settings:
+## Recommended Flow
 
-- Supported locales and default locale
-- Site URL and metadata
-- UI translations and navigation links
+1. Clone or `npm create astro@latest -- --template affiliatefm/website-core-template`.
+2. `make bootstrap && make seed` to set up config + sample data.
+3. Customize content, components, or layouts (anything under `protectedPaths` stays yours).
+4. Translate with your workflow (manual, `@affiliate.fm/astro-content-ai-translator`, or other pipelines).
+5. Stay fresh with `make update`.
 
-### Content (`src/content/pages/`)
+## Toolchain Snapshot
 
-MDX files organized by locale. Default locale files live at the root, other locales in subfolders.
+| Area | Stack |
+| ---- | ----- |
+| UI | Astro Islands + MDX + your framework components |
+| Styling | Local styles per layout (no global framework) |
+| Content | Astro Content Collections + MDX |
+| L10n | Native Astro i18n routing + helper utilities |
+| Automation | Makefile, npm scripts, bootstrap/update/seed helpers |
 
-### Routing (`src/pages/`)
-
-Single universal route handles all pages:
-
-- `[...slug].astro` — All locales, all paths
-
-## Custom URLs
-
-This page demonstrates **custom URL mapping**:
-
-- English: `/about`
-- Russian: `/ru/o-nas`
-
-Achieved with `alternates` in frontmatter on both pages, plus `permalink` on the Russian version.
-
----
-
-[← Back to Home](/)
+Have questions or ideas? [Drop us a note](mailto:hello@affiliate.fm) or open an issue.
