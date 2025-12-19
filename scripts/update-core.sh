@@ -34,7 +34,7 @@ const fs = require('fs');
 const user = JSON.parse(fs.readFileSync('$TEMP/_user/package.json'));
 const core = JSON.parse(fs.readFileSync('$TEMP/package.json'));
 const merged = { ...core, name: user.name };
-fs.writeFileSync('package.json', JSON.stringify(merged, null, 2) + '\n');
+fs.writeFileSync('package.json', JSON.stringify(merged, null, 2));
 "
 
 # Restore user data
