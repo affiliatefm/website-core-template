@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Update core from upstream, preserve user data (content/, data/, public/)
+# Update core from upstream, preserve user data (content/, data/, public/, package name)
 set -euo pipefail
 
 REPO="affiliatefm/website-core-template"
@@ -16,6 +16,7 @@ mkdir -p "$TEMP/_user"
 [[ -d "src/content" ]] && cp -r src/content "$TEMP/_user/"
 [[ -d "src/data" ]] && cp -r src/data "$TEMP/_user/"
 [[ -d "public" ]] && cp -r public "$TEMP/_user/"
+cp package.json "$TEMP/_user/"
 
 # Copy everything from template
 rm -rf src
@@ -24,9 +25,17 @@ cp -r "$TEMP/scripts" .
 cp "$TEMP/astro.config.mjs" .
 cp "$TEMP/tsconfig.json" .
 cp "$TEMP/Makefile" .
-cp "$TEMP/package.json" .
 [[ -f "$TEMP/.prettierrc" ]] && cp "$TEMP/.prettierrc" .
 [[ -f "$TEMP/.jsbeautifyrc" ]] && cp "$TEMP/.jsbeautifyrc" .
+
+# Merge package.json (keep user name, update deps)
+node -e "
+const fs = require('fs');
+const user = JSON.parse(fs.readFileSync('$TEMP/_user/package.json'));
+const core = JSON.parse(fs.readFileSync('$TEMP/package.json'));
+const merged = { ...core, name: user.name };
+fs.writeFileSync('package.json', JSON.stringify(merged, null, 2) + '\n');
+"
 
 # Restore user data
 [[ -d "$TEMP/_user/content" ]] && rm -rf src/content && cp -r "$TEMP/_user/content" src/
