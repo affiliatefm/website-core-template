@@ -68,7 +68,7 @@ const tpl = tt(language);
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonicalUrl} />
-    {Object.entries(hreflangUrls).map(([lang, url]) => (
+    {hasMultipleLanguages && Object.entries(hreflangUrls).map(([lang, url]) => (
       <link rel="alternate" hreflang={toHreflang(lang)} href={url} />
     ))}
     {hasMultipleLanguages && <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />}
