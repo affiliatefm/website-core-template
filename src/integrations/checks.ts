@@ -19,7 +19,8 @@ import type { AstroIntegration } from "astro";
 import { readdir, readFile } from "node:fs/promises";
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
-import { languages, layoutPath } from "../config/site";
+import { languages } from "../config/site";
+import { selectedTemplate, templateI18nPath } from "../templates";
 
 // =============================================================================
 // TYPES
@@ -324,12 +325,10 @@ function detectSuspiciousLanguageFolders(): string[] {
 
 
 /**
- * Extract template name from layoutPath.
- * "./src/layouts/affiliate/Layout.astro" → "affiliate"
+ * Extract template name from the selected template.
  */
 function getTemplateName(): string {
-  const match = layoutPath.match(/layouts\/([^/]+)\//);
-  return match?.[1] || "unknown";
+  return selectedTemplate.id;
 }
 
 /**
@@ -337,8 +336,10 @@ function getTemplateName(): string {
  * Returns null if file doesn't exist.
  */
 function getTemplateTranslationKeys(): string[] | null {
-  const templateName = getTemplateName();
-  const i18nPath = join(process.cwd(), "src", "layouts", templateName, "i18n.ts");
+  if (!templateI18nPath) return null;
+
+  const normalized = templateI18nPath.replace(/^\.?\//, "");
+  const i18nPath = join(process.cwd(), normalized);
   
   try {
     if (!existsSync(i18nPath)) return null;
@@ -420,7 +421,7 @@ const templateTranslationsCoverage: CheckConfig = {
     const missing = languages.filter((lang) => !translationKeys.includes(lang));
     return missing.map((lang) => ({
       check: "template-translations-coverage",
-      message: `Language "${lang}" has no translations in layouts/${templateName}/i18n.ts (using fallback).`,
+      message: `Language "${lang}" has no translations in templates/${templateName}/i18n.ts (using fallback).`,
       severity: "warning" as const,
     }));
   },
@@ -499,14 +500,14 @@ const regionalVariantsCoverage: CheckConfig = {
       if (translationKeys.includes(baseLanguage)) {
         warnings.push({
           check: "regional-variants-coverage",
-          message: `Regional variant "${key}" in alternates uses "${baseLanguage}" fallback in layouts/${templateName}/i18n.ts.`,
+          message: `Regional variant "${key}" in alternates uses "${baseLanguage}" fallback in templates/${templateName}/i18n.ts.`,
           severity: "warning",
         });
       } else {
         // No base language either — more serious warning
         warnings.push({
           check: "regional-variants-coverage",
-          message: `Regional variant "${key}" in alternates has no translation (nor "${baseLanguage}" fallback) in layouts/${templateName}/i18n.ts.`,
+          message: `Regional variant "${key}" in alternates has no translation (nor "${baseLanguage}" fallback) in templates/${templateName}/i18n.ts.`,
           severity: "warning",
         });
       }

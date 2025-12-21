@@ -1,0 +1,202 @@
+---
+/**
+ * Affiliate Site Layout
+ * =====================
+ * Modern, clean layout for affiliate marketing sites.
+ * Part of the Affiliate.FM open-source ecosystem.
+ */
+
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { t, toHreflang } from "@/i18n";
+import {
+  defaultLanguage,
+  type LanguageCode,
+  siteUrl,
+  templateId,
+  templateStyleId,
+} from "@/config/site";
+import SeoMeta from "@/components/global/head/SeoMeta.astro";
+import SkipLink from "@/components/global/body/SkipLink.astro";
+import { tt } from "./i18n";
+import "#template-style";
+
+interface Props {
+  title: string;
+  description?: string;
+  language: LanguageCode;
+  hreflangUrls?: Record<string, string>;
+  switcherUrls?: Record<string, string>;
+}
+
+const {
+  title,
+  description,
+  language,
+  hreflangUrls = {},
+  switcherUrls = {},
+} = Astro.props;
+
+const canonicalUrl = hreflangUrls[language] ?? `${siteUrl}${Astro.url.pathname}`;
+const xDefaultUrl = hreflangUrls[defaultLanguage] ?? canonicalUrl;
+const hasMultipleLanguages = Object.keys(hreflangUrls).length > 1;
+
+// For switcher: combine relative URLs (internal) with absolute URLs (external)
+// Show all alternates except hreflang aliases (en-US when en exists)
+const siteOrigin = siteUrl.replace(/\/$/, "");
+const isExternalUrl = (url: string) => {
+  if (!url.startsWith("http://") && !url.startsWith("https://")) return false;
+  try {
+    return new URL(url).origin !== siteOrigin;
+  } catch {
+    return false;
+  }
+};
+const switcherLinks = Object.entries(hreflangUrls)
+  .filter(([lang]) => {
+    if (lang.includes("-")) {
+      const baseLanguage = lang.split("-")[0];
+      if (baseLanguage in hreflangUrls) return false;
+    }
+    return true;
+  })
+  .map(([lang, url]) => {
+    if (!isExternalUrl(url) && lang in switcherUrls) {
+      return [lang, switcherUrls[lang]] as [string, string];
+    }
+    return [lang, url] as [string, string];
+  });
+
+// Two translation layers:
+// - ui: user data (siteName, custom strings) from src/data/ui.ts
+// - tpl: template strings (nav, buttons) from ./i18n.ts
+const ui = t(language);
+const tpl = tt(language);
+---
+
+<!doctype html>
+<html
+  lang={toHreflang(language)}
+  data-template={templateId}
+  data-style={templateStyleId}
+  class="antialiased"
+>
+  <head>
+    <SeoMeta
+      title={title}
+      description={description}
+      canonicalUrl={canonicalUrl}
+      hreflangUrls={hreflangUrls}
+      xDefaultUrl={xDefaultUrl}
+    />
+  </head>
+
+  <body class="tpl-page">
+    <SkipLink targetId="main-content" />
+
+    <div class="flex min-h-screen flex-col">
+      <header class="tpl-surface sticky top-0 z-50 border-b backdrop-blur">
+        <div class="mx-auto flex h-14 max-w-4xl items-center justify-between px-5">
+          <a href={getRelativeLocaleUrl(language, "")} class="tpl-brand">
+            {ui.siteName}
+          </a>
+
+          <nav class="flex items-center gap-1 overflow-x-auto whitespace-nowrap">
+            <a href={getRelativeLocaleUrl(language, "")} class="tpl-nav-link">
+              {tpl.home}
+            </a>
+            <a href={getRelativeLocaleUrl(language, "docs/")} class="tpl-nav-link">
+              {tpl.docs}
+            </a>
+            <a href={getRelativeLocaleUrl(language, "software/")} class="tpl-nav-link">
+              {tpl.software}
+            </a>
+            <a href={getRelativeLocaleUrl(language, "websites/")} class="tpl-nav-link">
+              {tpl.websites}
+            </a>
+            <a
+              href="https://github.com/AffiliateFM"
+              target="_blank"
+              rel="noopener"
+              class="tpl-nav-link"
+            >
+              GitHub
+            </a>
+          </nav>
+
+          {switcherLinks.length > 1 && (
+            <div class="tpl-switcher">
+              {switcherLinks.map(([lang, url]) => (
+                <a
+                  href={url}
+                  class:list={[
+                    "tpl-switcher-link",
+                    lang === language && "tpl-switcher-active",
+                  ]}
+                >
+                  {lang.toUpperCase()}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      </header>
+
+      <main
+        id="main-content"
+        class="tpl-prose tpl-stagger mx-auto w-full max-w-4xl flex-1 px-5 py-10"
+      >
+        <slot />
+      </main>
+
+      <footer class="tpl-footer border-t">
+        <div class="mx-auto max-w-4xl px-5 py-8">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <a
+                href="https://affiliate.fm"
+                target="_blank"
+                rel="noopener"
+                class="tpl-brand"
+              >
+                Affiliate.FM
+              </a>
+              <p class="tpl-muted mt-1 text-xs">
+                Independent media and open-source tools for affiliate marketing
+              </p>
+            </div>
+            <div class="flex gap-4 text-sm">
+              <a
+                href="https://github.com/AffiliateFM"
+                target="_blank"
+                rel="noopener"
+                class="tpl-link"
+              >
+                GitHub
+              </a>
+              <a
+                href="https://affiliate.fm"
+                target="_blank"
+                rel="noopener"
+                class="tpl-link"
+              >
+                Website
+              </a>
+            </div>
+          </div>
+          <p class="tpl-muted mt-6 text-xs">
+            Built with
+            <a
+              href="https://github.com/affiliatefm/website-core-template"
+              target="_blank"
+              rel="noopener"
+              class="tpl-link"
+            >
+              website-core-template
+            </a>
+            - reusable static site generator by Affiliate.FM
+          </p>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

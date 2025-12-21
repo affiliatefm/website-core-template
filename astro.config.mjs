@@ -4,7 +4,8 @@ import tailwind from "@astrojs/tailwind";
 import { fileURLToPath } from "node:url";
 import {
   siteUrl,
-  layoutPath,
+  templateLayoutPath,
+  templateStylePath,
   languages,
   defaultLanguage,
 } from "./src/config/site.ts";
@@ -29,7 +30,8 @@ export default defineConfig({
   vite: {
     resolve: {
       alias: {
-        "#layout": fileURLToPath(new URL(layoutPath, import.meta.url)),
+        "#layout": fileURLToPath(new URL(templateLayoutPath, import.meta.url)),
+        "#template-style": fileURLToPath(new URL(templateStylePath, import.meta.url)),
       },
     },
   },

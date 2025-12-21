@@ -15,23 +15,18 @@ export const siteUrl = "https://example.com";
 export const locales = ["en", "ru", "ja"] as const;
 export const defaultLocale = "en";
 
-// Global layout wrapper (applies to every page)
-export const layoutPath = "./src/layouts/affiliate/Layout.astro";
-
-// Page templates
-export const templates = [
-  {
-    id: "article",
-    path: "./src/layouts/affiliate/pages/Article.astro",
-  },
-  {
-    id: "product",
-    path: "./src/layouts/affiliate/pages/Product.astro",
-  },
-] as const;
+// Template system
+// - id: template folder name from src/templates
+// - style: style preset id from the selected template
+// Available templates: affiliate (keep in sync with src/templates/registry.ts)
+// Available styles (affiliate): paper, studio (keep in sync with src/templates/affiliate/template.ts)
+export const template = {
+  id: "affiliate",
+  style: "paper",
+} as const;
 
 // Collections
-// If collection.template is not set, the first template in `templates` is used.
+// If collection.template is not set, the first page template in the selected template is used.
 export const collections = [
   {
     collection: "software",

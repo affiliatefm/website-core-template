@@ -93,7 +93,7 @@ const { Content } = await render(entry);
 
 const routeInfo = getCollectionRouteInfo(getIdPath(entry.id));
 const templatePath = resolveTemplatePath(routeInfo?.collection.template);
-const templates = import.meta.glob("/src/layouts/**/*.astro");
+const templates = import.meta.glob("/src/templates/**/*.astro");
 const templateKey = toTemplateKey(templatePath);
 const loader = templates[templateKey];
 if (!loader) {

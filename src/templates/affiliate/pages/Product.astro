@@ -15,15 +15,15 @@ const { title, description, link } = entry.data;
 
 <section class="section">
   <h1>{title}</h1>
-  {description && <p class="text-gray-600 mb-4">{description}</p>}
+  {description && <p class="tpl-muted mb-4">{description}</p>}
   {link && (
     <a
       href={link}
       target="_blank"
       rel="noopener"
-      class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-md transition-colors no-underline"
+      class="tpl-button no-underline"
     >
-      {tpl.visitLink} →
+      {tpl.visitLink} ->
     </a>
   )}
 </section>

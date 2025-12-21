@@ -1,9 +1,8 @@
-import { collections, templates } from "@/data/site";
+import { collections } from "@/data/site";
+import { selectedTemplate, type TemplatePageId } from "@/templates";
 
 type ConfiguredCollection = (typeof collections)[number];
-type ConfiguredTemplate = (typeof templates)[number];
-
-export type TemplateId = ConfiguredTemplate["id"];
+export type TemplateId = TemplatePageId;
 
 export type CollectionConfig = {
   collection: string;
@@ -58,17 +57,25 @@ export const getCollectionItemSlug = (route: CollectionRouteInfo) => {
 };
 
 export const resolveTemplatePath = (templateId?: TemplateId): string => {
-  if (templates.length === 0) {
-    throw new Error("No templates configured. Check src/data/site.ts.");
+  if (selectedTemplate.pages.length === 0) {
+    throw new Error(
+      `Template "${selectedTemplate.id}" has no pages configured. ` +
+        "Check src/templates."
+    );
   }
 
   if (!templateId) {
-    return templates[0].path;
+    return selectedTemplate.pages[0].path;
   }
 
-  const selected = templates.find((template) => template.id === templateId);
+  const selected = selectedTemplate.pages.find(
+    (template) => template.id === templateId
+  );
   if (!selected) {
-    throw new Error(`Unknown template "${templateId}". Check src/data/site.ts.`);
+    throw new Error(
+      `Unknown page template "${templateId}" for "${selectedTemplate.id}". ` +
+        "Check src/templates."
+    );
   }
 
   return selected.path;

@@ -3,9 +3,9 @@
  * =============================
  * 
  * Usage in MDX:
- *   import RatingTable from "@/layouts/affiliate/components/RatingTable.astro";
- *   import ProsCons from "@/layouts/affiliate/components/ProsCons.astro";
- *   import ArticleList from "@/layouts/affiliate/components/ArticleList.astro";
+ *   import RatingTable from "@/templates/affiliate/components/RatingTable.astro";
+ *   import ProsCons from "@/templates/affiliate/components/ProsCons.astro";
+ *   import ArticleList from "@/templates/affiliate/components/ArticleList.astro";
  *
  *   <RatingTable collection="software" />
  */

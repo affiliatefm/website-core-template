@@ -1,0 +1,32 @@
+---
+interface Props {
+  targetId?: string;
+  label?: string;
+}
+
+const { targetId = "main-content", label = "Skip to content" } = Astro.props;
+---
+
+<a href={`#${targetId}`} class="global-skip-link">
+  {label}
+</a>
+
+<style>
+  .global-skip-link {
+    position: absolute;
+    left: -999px;
+    top: 0.75rem;
+    z-index: 1000;
+    padding: 0.45rem 0.75rem;
+    border-radius: 999px;
+    background: #0b1220;
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .global-skip-link:focus {
+    left: 0.75rem;
+  }
+</style>

@@ -46,15 +46,15 @@ const visible = sorted.slice(start, end);
 
 {visible.length > 0 && (
   <div class="overflow-x-auto -mx-5 px-5">
-    <table class="w-full text-sm">
+    <table class="tpl-table w-full text-sm">
       <thead>
-        <tr class="text-left text-xs font-medium text-gray-400 uppercase tracking-wide">
+        <tr class="text-left">
           <th class="w-12 pb-3">#</th>
           <th class="pb-3">Product</th>
           <th class="pb-3 w-36 text-right">{tpl.linkLabel}</th>
         </tr>
       </thead>
-      <tbody class="divide-y divide-gray-100">
+      <tbody>
         {visible.map((entry, index) => {
           const pageUrl = getPageUrl(entry);
           const { title, description, link } = entry.data;
@@ -62,14 +62,14 @@ const visible = sorted.slice(start, end);
             <tr
               class:list={[
                 "group",
-                index === 0 && "bg-emerald-50/50",
+                index === 0 && "tpl-highlight",
               ]}
             >
               <td class="py-4 pr-2">
                 <span
                   class:list={[
-                    "inline-flex items-center justify-center w-7 h-7 rounded-md text-sm font-medium",
-                    index === 0 ? "bg-emerald-600 text-white" : "bg-gray-100 text-gray-600",
+                    "tpl-rank",
+                    index === 0 && "tpl-rank-top",
                   ]}
                 >
                   {start + index + 1}
@@ -78,17 +78,17 @@ const visible = sorted.slice(start, end);
               <td class="py-4">
                 <div class="min-w-0">
                   <div class="flex items-center gap-2">
-                    <a href={pageUrl} class="font-medium text-gray-900 hover:text-blue-600">
+                    <a href={pageUrl} class="font-medium tpl-link">
                       {title}
                     </a>
                     {index === 0 && (
-                      <span class="px-1.5 py-0.5 text-[10px] font-semibold uppercase bg-emerald-100 text-emerald-700 rounded">
+                      <span class="tpl-badge">
                         Top
                       </span>
                     )}
                   </div>
                   {description && (
-                    <p class="text-gray-500 text-xs mt-0.5 line-clamp-1">{description}</p>
+                    <p class="tpl-muted text-xs mt-0.5 line-clamp-1">{description}</p>
                   )}
                 </div>
               </td>
@@ -98,12 +98,12 @@ const visible = sorted.slice(start, end);
                     href={link}
                     target="_blank"
                     rel="noopener"
-                    class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gray-900 hover:bg-gray-800 rounded-md transition-colors"
+                    class="tpl-button"
                   >
-                    {tpl.visitLink} →
+                    {tpl.visitLink} ->
                   </a>
                 ) : (
-                  <span class="text-xs text-gray-300">—</span>
+                  <span class="tpl-muted text-xs">-</span>
                 )}
               </td>
             </tr>

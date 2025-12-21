@@ -8,21 +8,22 @@ description: >-
 _translateTo: all
 ---
 
-import RatingTable from "@/layouts/affiliate/components/RatingTable.astro";
-
 # Documentation
 
-<p class="text-sm text-gray-500 mb-6">Website Core Template · By Affiliate.FM · 5 min read</p>
+<p class="tpl-muted mb-6 text-sm">Website Core Template - By Affiliate.FM - 5 min read</p>
 
-This guide covers everything you need to know to set up, configure, and extend the template for your project.
+This guide covers how to configure the template system, choose styles, and extend the core.
 
 ## Table of Contents
 
 1. [Project Structure](#project-structure)
 2. [Configuration](#configuration)
-3. [Adding Content](#adding-content)
-4. [Multilingual Setup](#multilingual-setup)
-5. [Extending with Tools](#extending-with-tools)
+3. [Template System](#template-system)
+4. [Style Presets](#style-presets)
+5. [Global Components](#global-components)
+6. [Adding Content](#adding-content)
+7. [Multilingual Setup](#multilingual-setup)
+8. [Template Components](#template-components)
 
 ---
 
@@ -30,36 +31,32 @@ This guide covers everything you need to know to set up, configure, and extend t
 
 ```
 src/
-├── content/pages/     # ✏️ Your content (MDX files)
-│   ├── index.mdx      #    Homepage
-│   ├── docs.mdx       #    Documentation
-│   ├── _collections/  #    Collection items (product pages)
-│   │   ├── software/
-│   │   │   └── ai-translator.mdx
-│   │   └── websites/
-│   │       └── ssg-directory.mdx
-│   ├── software/      #    Collection landing page
-│   │   └── index.mdx
-│   └── websites/      #    Collection landing page
-│       └── index.mdx
-│   └── ru/            #    Russian content
-│       └── index.mdx
-├── data/              # ✏️ Your configuration
-│   ├── site.ts        #    Site URL, locales, templates, collections
-│   └── ui.ts          #    UI translations
-├── config/            #    Runtime config (auto-generated)
-├── i18n/              #    URL helpers
-├── integrations/      #    Build checks
-├── layouts/           #    Page layouts
-└── pages/             #    Astro router
+├── components/global/ # Shared components (head/body)
+│   ├── head/
+│   └── body/
+├── content/pages/     # Your content (MDX files)
+│   ├── index.mdx      # Homepage
+│   ├── docs.mdx       # Documentation
+│   ├── _collections/  # Collection items (product pages)
+│   ├── software/      # Collection landing page
+│   └── websites/      # Collection landing page
+├── data/              # Your configuration
+│   ├── site.ts        # Site URL, locales, template selection
+│   └── ui.ts          # UI translations
+├── templates/         # Templates and style systems
+│   ├── registry.ts    # Registered templates
+│   └── affiliate/     # Example template
+│       ├── Layout.astro
+│       ├── template.ts
+│       ├── styles/
+│       ├── pages/
+│       └── components/
+├── i18n/              # URL helpers
+├── integrations/      # Build checks
+└── pages/             # Astro router
 ```
 
-**Your files** (✏️) — edit freely, never touched by updates  
-**Core files** — updated via `make update`
-
 ## Configuration
-
-### 1. Configure site
 
 Edit `src/data/site.ts`:
 
@@ -67,18 +64,66 @@ Edit `src/data/site.ts`:
 export const siteUrl = "https://your-domain.com";
 export const locales = ["en", "ru"] as const;
 export const defaultLocale = "en";
+
+export const template = {
+  id: "affiliate",
+  style: "paper",
+} as const;
 ```
 
-### 2. Add UI strings
-
-Edit `src/data/ui.ts`:
+Edit `src/data/ui.ts` for shared UI strings:
 
 ```typescript
 export const uiStrings = {
-  en: { siteName: "My Site" },
-  ru: { siteName: "Мой сайт" },
+  en: { siteName: "My Site", homeLabel: "Home" },
 } as const;
 ```
+
+## Template System
+
+Templates are self-contained folders under `src/templates/`.
+
+- `Layout.astro` is the global wrapper for all pages.
+- `pages/` holds page templates like `Article.astro` and `Product.astro`.
+- `components/` contains template-specific UI blocks.
+- `styles/` defines style presets for the template.
+- `template.ts` declares the template metadata (pages, styles, layout path).
+
+To register a new template:
+
+1. Add a folder under `src/templates/<your-template>/`.
+2. Create `template.ts` with `id`, `layout`, `pages`, and `styles`.
+3. Add it to `src/templates/registry.ts`.
+4. Select it in `src/data/site.ts`.
+
+## Style Presets
+
+Each template can expose multiple style presets. Select one in `src/data/site.ts`:
+
+```typescript
+export const template = {
+  id: "affiliate",
+  style: "studio",
+} as const;
+```
+
+Add a new style preset by:
+
+1. Adding a new style id in `src/templates/<template>/template.ts`.
+2. Creating a dedicated CSS file in `src/templates/<template>/styles/<style>.css`.
+3. Defining your variables under `:root[data-template="<template>"][data-style="<style>"]`.
+4. (Optional) Import `./base.css` for shared rules.
+
+Each style file is isolated and only the selected one is bundled. Styles can also override or extend base CSS, not just variables.
+
+## Global Components
+
+Global components live in `src/components/global/` and are template-agnostic.
+
+- `head/` is for meta tags, structured data, and other `<head>` markup.
+- `body/` is for shared body elements like accessibility helpers.
+
+Templates can import these components and use them without duplicating logic.
 
 ## Adding Content
 
@@ -91,8 +136,6 @@ description: "Meta description for SEO"
 ---
 
 # Your content here
-
-Write in Markdown with full MDX component support.
 ```
 
 ### Frontmatter options
@@ -112,64 +155,28 @@ Write in Markdown with full MDX component support.
 ### Same slugs (automatic)
 
 ```
-pages/about.mdx      → /about/
-pages/ru/about.mdx   → /ru/about/
+pages/about.mdx      -> /about/
+pages/ru/about.mdx   -> /ru/about/
 ```
 
-Hreflang links generated automatically.
+Hreflang links are generated automatically.
 
-## Extending with Tools
+## Template Components
 
-The template works seamlessly with other Affiliate.FM tools:
+Template-specific components are imported from `src/templates/<template>/components`:
 
-<RatingTable collection="software" limit={2} offset={1} />
+```mdx
+import RatingTable from "@/templates/affiliate/components/RatingTable.astro";
 
-### AI Translation
-
-Add automatic translation to your workflow:
-
-```bash
-npm install @affiliate.fm/astro-content-ai-translator
-npx astro-ai-translator init
+<RatingTable collection="software" limit={2} />
 ```
-
-Then mark files for translation:
-
-```yaml
----
-title: About Us
-_translateTo: all
----
-```
-
-### Adding Integrations
-
-```bash
-npx astro add tailwind
-npx astro add react
-```
-
-## Updating
-
-The template is designed for safe updates:
-
-```bash
-# Check what would change
-make update-check
-
-# Apply update
-make update
-```
-
-**Preserved:** `src/content/`, `src/data/`, `public/`  
-**Updated:** everything else
 
 ---
 
 ## Next Steps
 
-1. Clone the template
-2. Configure `src/data/site.ts`
+1. Configure `src/data/site.ts`
+2. Pick a template and style preset
 3. Add your content to `src/content/pages/`
 4. Deploy to your favorite platform
 
@@ -177,4 +184,4 @@ make update
 
 ---
 
-← [Back to home](/)
+<- [Back to home](/)

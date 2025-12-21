@@ -18,6 +18,7 @@ Open http://localhost:4321
 
 ```
 src/
+├── components/global/ # Shared components (head/body)
 ├── content/pages/     # ✏️ Your content (MDX files)
 │   ├── index.mdx      #    Homepage
 │   ├── docs.mdx       #    Documentation
@@ -33,12 +34,12 @@ src/
 │   └── ru/            #    Russian content
 │       └── index.mdx
 ├── data/              # ✏️ Your configuration
-│   ├── site.ts        #    Site URL, locales, templates, collections
+│   ├── site.ts        #    Site URL, locales, template selection
 │   └── ui.ts          #    UI translations
 ├── config/            #    Runtime config (auto-generated)
 ├── i18n/              #    URL helpers
 ├── integrations/      #    Build checks
-├── layouts/affiliate/ #    Default layout
+├── templates/affiliate/ # Default template
 └── pages/             #    Astro router
 ```
 
@@ -55,6 +56,11 @@ Edit `src/data/site.ts`:
 export const siteUrl = "https://your-domain.com";
 export const locales = ["en", "ru"] as const;
 export const defaultLocale = "en";
+
+export const template = {
+  id: "affiliate",
+  style: "paper",
+} as const;
 ```
 
 ### 2. Add UI strings
@@ -63,8 +69,8 @@ Edit `src/data/ui.ts`:
 
 ```typescript
 export const uiStrings = {
-  en: { siteName: "My Site" },
-  ru: { siteName: "Мой сайт" },
+  en: { siteName: "My Site", homeLabel: "Home" },
+  ru: { siteName: "Мой сайт", homeLabel: "Главная" },
 } as const;
 ```
 

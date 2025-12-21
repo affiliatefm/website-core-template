@@ -1,0 +1,34 @@
+---
+import { toHreflang } from "@/i18n";
+
+interface Props {
+  title: string;
+  description?: string;
+  canonicalUrl: string;
+  hreflangUrls?: Record<string, string>;
+  xDefaultUrl?: string;
+}
+
+const {
+  title,
+  description,
+  canonicalUrl,
+  hreflangUrls = {},
+  xDefaultUrl,
+} = Astro.props;
+
+const hasAlternates = Object.keys(hreflangUrls).length > 1;
+---
+
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>{title}</title>
+{description && <meta name="description" content={description} />}
+<link rel="canonical" href={canonicalUrl} />
+{hasAlternates && Object.entries(hreflangUrls).map(([lang, url]) => (
+  <link rel="alternate" hreflang={toHreflang(lang)} href={url} />
+))}
+{hasAlternates && xDefaultUrl && (
+  <link rel="alternate" hreflang="x-default" href={xDefaultUrl} />
+)}
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
