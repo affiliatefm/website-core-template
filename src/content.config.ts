@@ -82,6 +82,19 @@ const pages = defineCollection({
     cons: z.array(z.string()).optional(),
 
     /**
+     * Rating table fields (optional, used by collection product pages).
+     * Order is preserved as defined here.
+     */
+    rating: z
+      .array(
+        z.object({
+          label: z.string(),
+          value: z.union([z.string(), z.number()]),
+        })
+      )
+      .optional(),
+
+    /**
      * Auto-translation target (for astro-content-ai-translator).
      * Values: "all" | ["ru", "de"] | undefined
      */

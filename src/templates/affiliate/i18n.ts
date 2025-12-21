@@ -14,6 +14,7 @@ export interface TemplateStrings {
   docs: string;
   software: string;
   websites: string;
+  productLabel: string;
   linkLabel: string;
   visitLink: string;
   backToHome: string;
@@ -25,6 +26,7 @@ export const translations: Record<string, TemplateStrings> = {
     docs: "Docs",
     software: "Software",
     websites: "Websites",
+    productLabel: "Product",
     linkLabel: "Link",
     visitLink: "Visit",
     backToHome: "Back to home",
@@ -34,6 +36,7 @@ export const translations: Record<string, TemplateStrings> = {
     docs: "Документация",
     software: "Софт",
     websites: "Сайты",
+    productLabel: "Продукт",
     linkLabel: "Ссылка",
     visitLink: "Перейти",
     backToHome: "На главную",

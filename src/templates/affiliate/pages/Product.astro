@@ -10,7 +10,38 @@ interface Props {
 const { entry } = Astro.props;
 const language = getLanguageFromId(entry.id);
 const tpl = tt(language);
-const { title, description, link } = entry.data;
+const { title, description, link: directLink, rating } = entry.data;
+
+const normalizeRatingKey = (value: string) =>
+  value.trim().toLowerCase().replace(/\s+/g, " ");
+
+const linkLabelKey = normalizeRatingKey(tpl.linkLabel);
+
+const isLinkLabel = (label: string) => {
+  const key = normalizeRatingKey(label);
+  return key === "link" || key === linkLabelKey;
+};
+
+const isLinkValue = (value: string) => {
+  const trimmed = value.trim();
+  return trimmed.startsWith("http://") || trimmed.startsWith("https://");
+};
+
+const getRatingLink = (
+  items?: Array<{ label: string; value: string | number }>
+) => {
+  if (!Array.isArray(items)) return undefined;
+  for (const item of items) {
+    if (!isLinkLabel(item.label)) continue;
+    const value = String(item.value).trim();
+    if (isLinkValue(value)) {
+      return value;
+    }
+  }
+  return undefined;
+};
+
+const link = directLink ?? getRatingLink(rating);
 ---
 
 <section class="section">

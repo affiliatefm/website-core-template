@@ -1,9 +1,13 @@
 ---
 # general
 title: astro-content-ai-translator — AI-переводчик для Astro
-description: Утилита для перевода на базе ИИ для сайтов на Astro. Автоматически создает локализованный контент из вашей директории content/.
+description: Утилита перевода на базе ИИ для сайтов на Astro. Автоматически генерирует локализованный контент из вашей директории content/.
 # collection-product
-link: 'https://github.com/affiliatefm/astro-content-ai-translator'
+rating:
+  - label: Product
+    value: astro-content-ai-translator
+  - label: Link
+    value: https://github.com/affiliatefm/astro-content-ai-translator
 pros:
   - Cost estimates before translation
   - Supports all OpenAI models
@@ -13,7 +17,7 @@ cons:
 # ai-translator
 _ai-translator:
   source: _collections/software/ai-translator.mdx
-  hash: ae7e0c7e1df1
+  hash: c601a84a0a83
   model: gpt-4.1
   date: 2025-12-21
 ---
@@ -26,7 +30,7 @@ import ProsCons from "@/templates/affiliate/components/ProsCons.astro";
 
 ## Обзор
 
-Утилита для перевода на базе искусственного интеллекта для сайтов на Astro. Автоматически генерирует локализованный контент из файлов в директории `content/` и поддерживает как одностраничные, так и многостраничные i18n-процессы.
+Утилита перевода на базе искусственного интеллекта для сайтов на Astro. Автоматически генерирует локализованный контент из файлов в директории `content/` и поддерживает как одностраничные, так и многостраничные i18n-процессы.
 
 ## Установка
 
@@ -43,7 +47,7 @@ npx astro-ai-translator init
 
 ### Отметьте файлы для перевода
 
-В ваших файлах контента добавьте `_translateTo` во frontmatter:
+В ваших контентных файлах добавьте `_translateTo` во frontmatter:
 
 ```yaml
 ---
@@ -54,11 +58,11 @@ _translateTo: [ru, de]
 ```
 
 Варианты:
-- `_translateTo: [ru, de]` — перевод на выбранные языки
+- `_translateTo: [ru, de]` — перевод на указанные языки
 - `_translateTo: all` — перевод на все настроенные языки
 - Без поля — файл не переводится
 
-### Запуск перевода
+### Запустите перевод
 
 ```bash
 npx astro-ai-translator
@@ -67,7 +71,7 @@ npx astro-ai-translator
 Перед началом перевода вы увидите:
 - **Оценку стоимости** — приблизительное количество токенов и стоимость в USD
 - **Список файлов** — что будет переведено
-- **Запрос подтверждения** — подтвердите перед расходом средств API
+- **Запрос подтверждения** — одобрение перед расходом API-кредитов
 
 ## Поддерживаемые модели
 
@@ -75,7 +79,7 @@ npx astro-ai-translator
 |--------|------|-------|------------------|
 | gpt-4.1 | $2.00 | $8.00 | По умолчанию, наилучшее качество |
 | gpt-4.1-mini | $0.40 | $1.60 | Хороший баланс |
-| gpt-4o-mini | $0.15 | $0.60 | Экономичный вариант |
+| gpt-4o-mini | $0.15 | $0.60 | Бюджетный вариант |
 
 ---
 

@@ -17,6 +17,16 @@ interface Props {
   offset?: number;
 }
 
+type RatingItem = {
+  label: string;
+  value: string | number;
+};
+
+type RatingColumn = {
+  key: string;
+  label: string;
+};
+
 const { collection, limit, offset } = Astro.props;
 const collectionConfig = getCollectionByName(collection);
 
@@ -42,56 +52,123 @@ const sorted = [...items].sort((a, b) =>
 const start = Math.max(0, offset ?? 0);
 const end = typeof limit === "number" ? start + limit : undefined;
 const visible = sorted.slice(start, end);
+
+const normalizeRatingKey = (value: string) =>
+  value.trim().toLowerCase().replace(/\s+/g, " ");
+
+const nameLabelKey = normalizeRatingKey(tpl.productLabel);
+const linkLabelKey = normalizeRatingKey(tpl.linkLabel);
+let nameColumnLabel = tpl.productLabel;
+
+const isNameLabel = (label: string) => {
+  const key = normalizeRatingKey(label);
+  return key === "name" || key === "title" || key === "product" || key === nameLabelKey;
+};
+
+const isLinkLabel = (label: string) => {
+  const key = normalizeRatingKey(label);
+  return key === "link" || key === linkLabelKey;
+};
+
+const isLinkValue = (value: string) => {
+  const trimmed = value.trim();
+  return trimmed.startsWith("http://") || trimmed.startsWith("https://");
+};
+
+const getRatingItems = (entry: { data: { rating?: RatingItem[] } }) =>
+  Array.isArray(entry.data.rating) ? entry.data.rating : [];
+
+const splitRating = (entry: { data: { rating?: RatingItem[]; link?: string } }) => {
+  const items = getRatingItems(entry);
+  let link = entry.data.link?.trim();
+  let name: string | undefined;
+  let nameLabel: string | undefined;
+  const fields: RatingItem[] = [];
+
+  for (const item of items) {
+    const value = String(item.value).trim();
+    if (isNameLabel(item.label)) {
+      if (value) name = value;
+      if (!nameLabel) {
+        const label = item.label.trim();
+        if (label) nameLabel = label;
+      }
+      continue;
+    }
+    if (isLinkLabel(item.label)) {
+      if (isLinkValue(value)) link = value;
+      continue;
+    }
+    fields.push({ label: item.label, value });
+  }
+
+  if (link && !isLinkValue(link)) {
+    link = undefined;
+  }
+
+  return { link, name, nameLabel, fields };
+};
+
+const ratingColumns: RatingColumn[] = [];
+const ratingKeys = new Set<string>();
+
+const ratingData = visible.map((entry) => {
+  const { link, name, nameLabel, fields } = splitRating(entry);
+  if (nameLabel && nameColumnLabel === tpl.productLabel) {
+    nameColumnLabel = nameLabel;
+  }
+  const map = new Map<string, string>();
+  for (const item of fields) {
+    const key = normalizeRatingKey(item.label);
+    if (!key) continue;
+    if (!ratingKeys.has(key)) {
+      ratingKeys.add(key);
+      ratingColumns.push({ key, label: item.label });
+    }
+    map.set(key, String(item.value));
+  }
+  return { entry, link, name, values: map };
+});
 ---
 
-{visible.length > 0 && (
+{ratingData.length > 0 && (
   <div class="overflow-x-auto -mx-5 px-5">
     <table class="tpl-table w-full text-sm">
       <thead>
         <tr class="text-left">
-          <th class="w-12 pb-3">#</th>
-          <th class="pb-3">Product</th>
+          <th class="pb-3 min-w-[16rem]">{nameColumnLabel}</th>
+          {ratingColumns.map((column) => (
+            <th class="pb-3">{column.label}</th>
+          ))}
           <th class="pb-3 w-36 text-right">{tpl.linkLabel}</th>
         </tr>
       </thead>
       <tbody>
-        {visible.map((entry, index) => {
+        {ratingData.map(({ entry, link, name, values }, index) => {
           const pageUrl = getPageUrl(entry);
-          const { title, description, link } = entry.data;
+          const { title } = entry.data;
+          const displayTitle = name ?? title;
+          const ratingValues = values;
           return (
             <tr
               class:list={[
                 "group",
-                index === 0 && "tpl-highlight",
               ]}
             >
-              <td class="py-4 pr-2">
-                <span
-                  class:list={[
-                    "tpl-rank",
-                    index === 0 && "tpl-rank-top",
-                  ]}
-                >
-                  {start + index + 1}
-                </span>
-              </td>
               <td class="py-4">
                 <div class="min-w-0">
                   <div class="flex items-center gap-2">
                     <a href={pageUrl} class="font-medium tpl-link">
-                      {title}
+                      {displayTitle}
                     </a>
-                    {index === 0 && (
-                      <span class="tpl-badge">
-                        Top
-                      </span>
-                    )}
                   </div>
-                  {description && (
-                    <p class="tpl-muted text-xs mt-0.5 line-clamp-1">{description}</p>
-                  )}
                 </div>
               </td>
+              {ratingColumns.map((column) => (
+                <td class="py-4 text-sm">
+                  <span class="tpl-muted">{ratingValues.get(column.key) ?? "-"}</span>
+                </td>
+              ))}
               <td class="py-4 text-right">
                 {link ? (
                   <a

@@ -1,9 +1,13 @@
 ---
 # general
-title: astro-content-ai-translator — Astro向けAI翻訳
-description: Astroウェブサイト向けのAI翻訳ユーティリティ。content/ディレクトリから自動的にローカライズされたコンテンツを生成します。
+title: astro-content-ai-translator — Astro向けAI翻訳ツール
+description: Astroウェブサイト向けのAI翻訳ユーティリティ。content/ディレクトリからローカライズ済みコンテンツを自動生成します。
 # collection-product
-link: 'https://github.com/affiliatefm/astro-content-ai-translator'
+rating:
+  - label: Product
+    value: astro-content-ai-translator
+  - label: Link
+    value: https://github.com/affiliatefm/astro-content-ai-translator
 pros:
   - Cost estimates before translation
   - Supports all OpenAI models
@@ -13,7 +17,7 @@ cons:
 # ai-translator
 _ai-translator:
   source: _collections/software/ai-translator.mdx
-  hash: ae7e0c7e1df1
+  hash: c601a84a0a83
   model: gpt-4.1
   date: 2025-12-21
 ---
@@ -26,7 +30,7 @@ import ProsCons from "@/templates/affiliate/components/ProsCons.astro";
 
 ## 概要
 
-Astroウェブサイト向けのAI搭載翻訳ユーティリティです。`content/`ディレクトリ内のファイルから自動的にローカライズされたコンテンツを生成し、シングルページ・マルチページ両方のi18nワークフローに対応しています。
+Astroウェブサイト向けのAI翻訳ユーティリティです。`content/`ディレクトリ内のファイルからローカライズ済みコンテンツを自動生成し、シングルページ・マルチページ両方のi18nワークフローをサポートします。
 
 ## インストール
 
@@ -35,7 +39,7 @@ npm install @affiliate.fm/astro-content-ai-translator
 npx astro-ai-translator init
 ```
 
-セットアップウィザードでは以下が行われます:
+セットアップウィザードでは以下が行われます：
 - `astro.config.mjs`にインテグレーションを追加
 - `.env`にOpenAI APIキーを設定
 
@@ -43,7 +47,7 @@ npx astro-ai-translator init
 
 ### 翻訳対象ファイルの指定
 
-コンテンツファイルのfrontmatterに`_translateTo`を追加します:
+コンテンツファイルのfrontmatterに`_translateTo`を追加します：
 
 ```yaml
 ---
@@ -53,7 +57,7 @@ _translateTo: [ru, de]
 ---
 ```
 
-オプション:
+オプション：
 - `_translateTo: [ru, de]` — 特定のロケールに翻訳
 - `_translateTo: all` — 設定済みの全ロケールに翻訳
 - フィールドなし — ファイルは翻訳されません
@@ -64,18 +68,18 @@ _translateTo: [ru, de]
 npx astro-ai-translator
 ```
 
-翻訳開始前に以下が表示されます:
-- **コスト見積もり** — おおよそのトークン数とUSDコスト
-- **ファイルリスト** — 翻訳対象ファイル一覧
-- **確認プロンプト** — APIクレジット使用前に承認
+翻訳開始前に以下が表示されます：
+- **コスト見積もり** — 想定トークン数とUSDコスト
+- **ファイルリスト** — 翻訳対象ファイル
+- **確認プロンプト** — APIクレジット消費前に承認
 
 ## 対応モデル
 
-| モデル | 入力 | 出力 | 推奨用途 |
+| モデル | 入力 | 出力 | 最適用途 |
 |--------|------|------|----------|
 | gpt-4.1 | $2.00 | $8.00 | デフォルト、最高品質 |
 | gpt-4.1-mini | $0.40 | $1.60 | バランス重視 |
-| gpt-4o-mini | $0.15 | $0.60 | 低コストオプション |
+| gpt-4o-mini | $0.15 | $0.60 | 低コスト |
 
 ---
 

@@ -5,26 +5,27 @@ description: Узнайте, как настроить, сконфигуриро
 # ai-translator
 _ai-translator:
   source: docs.mdx
-  hash: 7366544c2f8a
+  hash: 94f0234d7456
   model: gpt-4.1
   date: 2025-12-21
 ---
 
-import RatingTable from "@/templates/affiliate/components/RatingTable.astro";
-
 # Документация
 
-<p class="text-sm text-gray-500 mb-6">Website Core Template · Автор: Affiliate.FM · 5 минут чтения</p>
+<p class="tpl-muted mb-6 text-sm">Website Core Template — от Affiliate.FM — 5 минут на прочтение</p>
 
-В этом руководстве вы найдете всё необходимое для настройки, конфигурирования и расширения шаблона под ваш проект.
+В этом руководстве описано, как настроить систему шаблонов, выбрать стили и расширить ядро.
 
 ## Содержание
 
 1. [Структура проекта](#project-structure)
 2. [Конфигурация](#configuration)
-3. [Добавление контента](#adding-content)
-4. [Многоязычная настройка](#multilingual-setup)
-5. [Расширение с помощью инструментов](#extending-with-tools)
+3. [Система шаблонов](#template-system)
+4. [Стили оформления](#style-presets)
+5. [Глобальные компоненты](#global-components)
+6. [Добавление контента](#adding-content)
+7. [Многоязычная настройка](#multilingual-setup)
+8. [Компоненты шаблонов](#template-components)
 
 ---
 
@@ -32,76 +33,118 @@ import RatingTable from "@/templates/affiliate/components/RatingTable.astro";
 
 ```
 src/
-├── content/pages/     # ✏️ Ваш контент (MDX-файлы)
-│   ├── index.mdx      #    Главная страница
-│   ├── docs.mdx       #    Документация
-│   ├── _collections/  #    Элементы коллекций (страницы продуктов)
-│   │   ├── software/
-│   │   │   └── ai-translator.mdx
-│   │   └── websites/
-│   │       └── ssg-directory.mdx
-│   ├── software/      #    Лэндинг коллекции
-│   │   └── index.mdx
-│   └── websites/      #    Лэндинг коллекции
-│       └── index.mdx
-│   └── ru/            #    Контент на русском
-│       └── index.mdx
-├── data/              # ✏️ Ваша конфигурация
-│   ├── site.ts        #    URL сайта, локали, шаблоны, коллекции
-│   └── ui.ts          #    Переводы интерфейса
-├── config/            #    Конфигурация рантайма (автогенерируется)
-├── i18n/              #    Хелперы для URL
-├── integrations/      #    Проверки сборки
-├── templates/           #    Макеты страниц
-└── pages/             #    Роутер Astro
+├── components/global/ # Общие компоненты (head/body)
+│   ├── head/
+│   └── body/
+├── content/pages/     # Ваш контент (MDX-файлы)
+│   ├── index.mdx      # Главная страница
+│   ├── docs.mdx       # Документация
+│   ├── _collections/  # Элементы коллекций (страницы продуктов)
+│   ├── software/      # Страница коллекции
+│   └── websites/      # Страница коллекции
+├── data/              # Ваша конфигурация
+│   ├── site.ts        # URL сайта, языки, выбор шаблона
+│   └── ui.ts          # Переводы интерфейса
+├── templates/         # Шаблоны и системы стилей
+│   ├── registry.ts    # Зарегистрированные шаблоны
+│   └── affiliate/     # Пример шаблона
+│       ├── Layout.astro
+│       ├── template.ts
+│       ├── styles/
+│       ├── pages/
+│       └── components/
+├── i18n/              # Вспомогательные функции для URL
+├── integrations/      # Проверки сборки
+└── pages/             # Роутер Astro
 ```
-
-**Ваши файлы** (✏️) — редактируйте свободно, не затрагиваются при обновлениях  
-**Ядро** — обновляется через `make update`
 
 ## Конфигурация
 
-### 1. Настройка сайта
-
-Отредактируйте `src/data/site.ts`:
+Редактируйте `src/data/site.ts`:
 
 ```typescript
 export const siteUrl = "https://your-domain.com";
 export const locales = ["en", "ru"] as const;
 export const defaultLocale = "en";
-```
 
-### 2. Добавьте строки интерфейса
-
-Отредактируйте `src/data/ui.ts`:
-
-```typescript
-export const uiStrings = {
-  en: { siteName: "My Site" },
-  ru: { siteName: "Мой сайт" },
+export const template = {
+  id: "affiliate",
+  style: "paper",
 } as const;
 ```
 
+Редактируйте `src/data/ui.ts` для общих строк интерфейса:
+
+```typescript
+export const uiStrings = {
+  en: { siteName: "My Site", homeLabel: "Home" },
+} as const;
+```
+
+## Система шаблонов
+
+Шаблоны — это отдельные папки в `src/templates/`.
+
+- `Layout.astro` — глобальный обёртчик для всех страниц.
+- `pages/` содержит шаблоны страниц, такие как `Article.astro` и `Product.astro`.
+- `components/` — UI-блоки, специфичные для шаблона.
+- `styles/` — пресеты стилей для шаблона.
+- `template.ts` — описание метаданных шаблона (страницы, стили, путь к layout).
+
+Чтобы зарегистрировать новый шаблон:
+
+1. Добавьте папку в `src/templates/<your-template>/`.
+2. Создайте `template.ts` с полями `id`, `layout`, `pages` и `styles`.
+3. Добавьте шаблон в `src/templates/registry.ts`.
+4. Выберите его в `src/data/site.ts`.
+
+## Стили оформления
+
+Каждый шаблон может содержать несколько пресетов стилей. Выберите нужный в `src/data/site.ts`:
+
+```typescript
+export const template = {
+  id: "affiliate",
+  style: "studio",
+} as const;
+```
+
+Чтобы добавить новый стиль:
+
+1. Добавьте новый идентификатор стиля в `src/templates/<template>/template.ts`.
+2. Создайте отдельный CSS-файл в `src/templates/<template>/styles/<style>.css`.
+3. Определите переменные под `:root[data-template="<template>"][data-style="<style>"]`.
+4. (Необязательно) Импортируйте `./base.css` для общих правил.
+
+Каждый файл стиля изолирован, и в сборку попадает только выбранный. Стили могут не только переопределять переменные, но и расширять или изменять базовый CSS.
+
+## Глобальные компоненты
+
+Глобальные компоненты находятся в `src/components/global/` и не зависят от шаблона.
+
+- `head/` — для мета-тегов, структурированных данных и другого содержимого `<head>`.
+- `body/` — для общих элементов body, например, помощников по доступности.
+
+Шаблоны могут импортировать эти компоненты и использовать их без дублирования логики.
+
 ## Добавление контента
 
-Создайте MDX-файлы в `src/content/pages/`:
+Создавайте MDX-файлы в `src/content/pages/`:
 
 ```yaml
 ---
 title: "Page Title"
-description: "Мета-описание для SEO"
+description: "Meta description for SEO"
 ---
 
 # Ваш контент здесь
-
-Пишите на Markdown с полной поддержкой компонентов MDX.
 ```
 
 ### Опции frontmatter
 
 | Поле | Тип | Описание |
 |------|-----|----------|
-| title | string | Заголовок страницы (обязательно) |
+| title | string | Заголовок страницы (обязателен) |
 | description | string | Мета-описание |
 | updatedAt | date | Для sitemap |
 | draft | boolean | Исключить из сборки |
@@ -114,69 +157,33 @@ description: "Мета-описание для SEO"
 ### Одинаковые слаги (автоматически)
 
 ```
-pages/about.mdx      → /about/
-pages/ru/about.mdx   → /ru/about/
+pages/about.mdx      -> /about/
+pages/ru/about.mdx   -> /ru/about/
 ```
 
 Hreflang-ссылки генерируются автоматически.
 
-## Расширение с помощью инструментов
+## Компоненты шаблонов
 
-Шаблон отлично работает с другими инструментами Affiliate.FM:
+Компоненты, специфичные для шаблона, импортируются из `src/templates/<template>/components`:
 
-<RatingTable collection="software" limit={2} offset={1} />
+```mdx
+import RatingTable from "@/templates/affiliate/components/RatingTable.astro";
 
-### AI-перевод
-
-Добавьте автоматический перевод в ваш рабочий процесс:
-
-```bash
-npm install @affiliate.fm/astro-content-ai-translator
-npx astro-ai-translator init
+<RatingTable collection="software" limit={2} />
 ```
-
-Затем отметьте файлы для перевода:
-
-```yaml
----
-title: About Us
-_translateTo: all
----
-```
-
-### Добавление интеграций
-
-```bash
-npx astro add tailwind
-npx astro add react
-```
-
-## Обновление
-
-Шаблон спроектирован для безопасных обновлений:
-
-```bash
-# Посмотреть, что изменится
-make update-check
-
-# Применить обновление
-make update
-```
-
-**Сохраняется:** `src/content/`, `src/data/`, `public/`  
-**Обновляется:** всё остальное
 
 ---
 
 ## Дальнейшие шаги
 
-1. Клонируйте шаблон
-2. Настройте `src/data/site.ts`
-3. Добавьте ваш контент в `src/content/pages/`
-4. Задеплойте на вашу любимую платформу
+1. Настройте `src/data/site.ts`
+2. Выберите шаблон и стиль
+3. Добавьте свой контент в `src/content/pages/`
+4. Разверните сайт на вашей любимой платформе
 
 **Вопросы?** Откройте issue на [GitHub](https://github.com/affiliatefm/website-core-template).
 
 ---
 
-← [Назад на главную](/)
+[Назад на главную](/)
