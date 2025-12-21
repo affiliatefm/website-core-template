@@ -1,0 +1,87 @@
+---
+# general
+title: Базовый шаблон сайта — Astro 5 Multilingual Starter от Affiliate.FM
+description: Минималистичный шаблон Astro 5 для многоязычных статических сайтов. Не требует настройки, безопасен для обновлений, ориентирован на контент. Часть открытой экосистемы Affiliate.FM.
+permalink: /
+# i18n
+alternates:
+  en: /
+  en-US: ''
+  ru: /
+  ja: /
+  ko: 'https://kr.example.com/'
+# ai-translator
+_ai-translator:
+  source: index.mdx
+  hash: c55b7af97ef4
+  model: gpt-4.1
+  date: 2025-12-21
+---
+
+import RatingTable from "@/layouts/affiliate/components/RatingTable.astro";
+
+# Базовый шаблон сайта
+
+Минималистичный шаблон Astro 5 для многоязычных статических сайтов. Не требует настройки — просто добавьте контент.
+
+Создан [Affiliate.FM](https://affiliate.fm) — независимые медиа и open-source инструменты для аффилиатного, перфоманс- и диджитал-маркетинга.
+
+<div class="section">
+
+## Быстрый старт
+
+```bash
+npm create astro@latest -- --template affiliatefm/website-core-template
+cd my-site
+make dev
+```
+
+Откройте [http://localhost:4321](http://localhost:4321)
+
+</div>
+
+<div class="section">
+
+## Софт
+
+Ключевые инструменты и проекты, созданные на основе шаблона:
+
+<RatingTable collection="software" />
+
+<p class="text-sm text-gray-500 mt-4">
+  Коллекции: <a href="/software/">Софт</a> · <a href="/websites/">Сайты</a>
+</p>
+
+</div>
+
+<div class="section">
+
+## Документация
+
+<a href="/docs/" class="block p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors no-underline group">
+  <span class="text-xs font-medium text-blue-600">Документация</span>
+  <h3 class="text-base font-semibold text-gray-900 mt-1 group-hover:text-blue-600 transition-colors">Начало работы</h3>
+  <p class="text-sm text-gray-500 mt-1 mb-0">Узнайте, как настроить, сконфигурировать и расширить шаблон для вашего проекта.</p>
+</a>
+
+</div>
+
+<div class="section">
+
+## Возможности
+
+- **Без настройки** — Работает сразу «из коробки»
+- **Многоязычный** — Встроенная i18n с поддержкой hreflang
+- **Безопасен для обновлений** — Обновления ядра не затрагивают ваш контент
+- **Ориентирован на контент** — MDX с полной поддержкой компонентов
+- **Проверки сборки** — Автоматическая валидация при каждой сборке
+
+</div>
+
+---
+
+## О шаблоне
+
+Этот сайт построен с помощью **website-core-template** — демонстрируя его возможности на реальном примере.
+
+Часть открытой экосистемы [Affiliate.FM](https://affiliate.fm).

@@ -1,0 +1,101 @@
+---
+# general
+title: astro-content-ai-enhancer — Astro向けAIコンテンツ強化ツール
+description: 生のMarkdownを構造化されたリッチなページへと変換し、適切なフォーマット、ブロック、メタデータを追加するAIアシスタント。
+# collection-product
+link: 'https://github.com/affiliatefm/astro-content-ai-enhancer'
+pros:
+  - Enhances structure
+  - Adds rich blocks
+  - Keeps your voice
+cons:
+  - Early development
+# ai-translator
+_ai-translator:
+  source: _collections/software/ai-enhancer.mdx
+  hash: eee42cdd3204
+  model: gpt-4.1
+  date: 2025-12-21
+---
+
+import ProsCons from "@/layouts/affiliate/components/ProsCons.astro";
+
+<p class="text-sm text-gray-500 mb-6">Affiliate.FMオープンソースエコシステムの一部</p>
+
+<ProsCons pros={frontmatter.pros} cons={frontmatter.cons} />
+
+## 概要
+
+AIアシスタントが生のMarkdown下書きを、見出し階層やコールアウトブロック、テーブル、豊富なメタデータを加えつつ、あなたの文体や内容を保ったまま、構造化されたページへと変換します。
+
+## できること
+
+このようなMarkdownを:
+
+```markdown
+---
+title: My Post
+---
+
+here is some text about topic. it has important info.
+also there are steps: first do this, then that, finally done.
+```
+
+このように変換します:
+
+```markdown
+---
+title: My Post
+description: A comprehensive guide to topic with step-by-step instructions.
+---
+
+# My Post
+
+Here is some text about **topic**. It contains important information.
+
+## Steps
+
+1. First, do this
+2. Then, do that  
+3. Finally, you're done
+
+> **Note:** This guide assumes basic familiarity with the subject.
+```
+
+## 特徴
+
+- **構造の強化** — 適切な見出し階層を追加
+- **リッチブロック** — パターンをコールアウト、テーブル、コードブロックに変換
+- **メタデータ生成** — 内容から説明文やタグを自動生成
+- **文体の維持** — あなたの書き方をそのまま保持
+- **選択的処理** — `_enhance: true`でファイルをマーク
+
+## インストール
+
+```bash
+npm install @affiliate.fm/astro-content-ai-enhancer
+```
+
+## 使い方
+
+強化したいファイルをマークします:
+
+```yaml
+---
+title: My Draft
+_enhance: true
+---
+```
+
+エンハンサーを実行します:
+
+```bash
+npx astro-ai-enhancer
+```
+
+---
+
+## 関連情報
+
+- [website-core-template](/) — Astroサイトの基盤となるテンプレート
+- [astro-content-ai-translator](/ai-translator/) — 強化したコンテンツを他言語に翻訳

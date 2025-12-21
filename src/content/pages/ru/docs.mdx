@@ -1,0 +1,182 @@
+---
+# general
+title: Документация — Website Core Template
+description: Узнайте, как настроить, сконфигурировать и расширить website-core-template для вашего многоязычного статического сайта.
+# ai-translator
+_ai-translator:
+  source: docs.mdx
+  hash: 7366544c2f8a
+  model: gpt-4.1
+  date: 2025-12-21
+---
+
+import RatingTable from "@/layouts/affiliate/components/RatingTable.astro";
+
+# Документация
+
+<p class="text-sm text-gray-500 mb-6">Website Core Template · Автор: Affiliate.FM · 5 минут чтения</p>
+
+В этом руководстве вы найдете всё необходимое для настройки, конфигурирования и расширения шаблона под ваш проект.
+
+## Содержание
+
+1. [Структура проекта](#project-structure)
+2. [Конфигурация](#configuration)
+3. [Добавление контента](#adding-content)
+4. [Многоязычная настройка](#multilingual-setup)
+5. [Расширение с помощью инструментов](#extending-with-tools)
+
+---
+
+## Структура проекта
+
+```
+src/
+├── content/pages/     # ✏️ Ваш контент (MDX-файлы)
+│   ├── index.mdx      #    Главная страница
+│   ├── docs.mdx       #    Документация
+│   ├── _collections/  #    Элементы коллекций (страницы продуктов)
+│   │   ├── software/
+│   │   │   └── ai-translator.mdx
+│   │   └── websites/
+│   │       └── ssg-directory.mdx
+│   ├── software/      #    Лэндинг коллекции
+│   │   └── index.mdx
+│   └── websites/      #    Лэндинг коллекции
+│       └── index.mdx
+│   └── ru/            #    Контент на русском
+│       └── index.mdx
+├── data/              # ✏️ Ваша конфигурация
+│   ├── site.ts        #    URL сайта, локали, шаблоны, коллекции
+│   └── ui.ts          #    Переводы интерфейса
+├── config/            #    Конфигурация рантайма (автогенерируется)
+├── i18n/              #    Хелперы для URL
+├── integrations/      #    Проверки сборки
+├── layouts/           #    Макеты страниц
+└── pages/             #    Роутер Astro
+```
+
+**Ваши файлы** (✏️) — редактируйте свободно, не затрагиваются при обновлениях  
+**Ядро** — обновляется через `make update`
+
+## Конфигурация
+
+### 1. Настройка сайта
+
+Отредактируйте `src/data/site.ts`:
+
+```typescript
+export const siteUrl = "https://your-domain.com";
+export const locales = ["en", "ru"] as const;
+export const defaultLocale = "en";
+```
+
+### 2. Добавьте строки интерфейса
+
+Отредактируйте `src/data/ui.ts`:
+
+```typescript
+export const uiStrings = {
+  en: { siteName: "My Site" },
+  ru: { siteName: "Мой сайт" },
+} as const;
+```
+
+## Добавление контента
+
+Создайте MDX-файлы в `src/content/pages/`:
+
+```yaml
+---
+title: "Page Title"
+description: "Мета-описание для SEO"
+---
+
+# Ваш контент здесь
+
+Пишите на Markdown с полной поддержкой компонентов MDX.
+```
+
+### Опции frontmatter
+
+| Поле | Тип | Описание |
+|------|-----|----------|
+| title | string | Заголовок страницы (обязательно) |
+| description | string | Мета-описание |
+| updatedAt | date | Для sitemap |
+| draft | boolean | Исключить из сборки |
+| link | string | Внешний URL (страницы продуктов) |
+| pros | string[] | Список плюсов (страницы продуктов) |
+| cons | string[] | Список минусов (страницы продуктов) |
+
+## Многоязычная настройка
+
+### Одинаковые слаги (автоматически)
+
+```
+pages/about.mdx      → /about/
+pages/ru/about.mdx   → /ru/about/
+```
+
+Hreflang-ссылки генерируются автоматически.
+
+## Расширение с помощью инструментов
+
+Шаблон отлично работает с другими инструментами Affiliate.FM:
+
+<RatingTable collection="software" limit={2} offset={1} />
+
+### AI-перевод
+
+Добавьте автоматический перевод в ваш рабочий процесс:
+
+```bash
+npm install @affiliate.fm/astro-content-ai-translator
+npx astro-ai-translator init
+```
+
+Затем отметьте файлы для перевода:
+
+```yaml
+---
+title: About Us
+_translateTo: all
+---
+```
+
+### Добавление интеграций
+
+```bash
+npx astro add tailwind
+npx astro add react
+```
+
+## Обновление
+
+Шаблон спроектирован для безопасных обновлений:
+
+```bash
+# Посмотреть, что изменится
+make update-check
+
+# Применить обновление
+make update
+```
+
+**Сохраняется:** `src/content/`, `src/data/`, `public/`  
+**Обновляется:** всё остальное
+
+---
+
+## Дальнейшие шаги
+
+1. Клонируйте шаблон
+2. Настройте `src/data/site.ts`
+3. Добавьте ваш контент в `src/content/pages/`
+4. Задеплойте на вашу любимую платформу
+
+**Вопросы?** Откройте issue на [GitHub](https://github.com/affiliatefm/website-core-template).
+
+---
+
+← [Назад на главную](/)

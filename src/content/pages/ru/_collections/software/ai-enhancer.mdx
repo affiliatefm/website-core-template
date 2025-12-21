@@ -1,0 +1,101 @@
+---
+# general
+title: astro-content-ai-enhancer — AI-улучшение контента для Astro
+description: AI-ассистент, который превращает сырой Markdown в структурированные, насыщенные страницы с правильным форматированием, блоками и метаданными.
+# collection-product
+link: 'https://github.com/affiliatefm/astro-content-ai-enhancer'
+pros:
+  - Enhances structure
+  - Adds rich blocks
+  - Keeps your voice
+cons:
+  - Early development
+# ai-translator
+_ai-translator:
+  source: _collections/software/ai-enhancer.mdx
+  hash: eee42cdd3204
+  model: gpt-4.1
+  date: 2025-12-21
+---
+
+import ProsCons from "@/layouts/affiliate/components/ProsCons.astro";
+
+<p class="text-sm text-gray-500 mb-6">Часть экосистемы с открытым исходным кодом Affiliate.FM</p>
+
+<ProsCons pros={frontmatter.pros} cons={frontmatter.cons} />
+
+## Обзор
+
+AI-ассистент, который преобразует черновики на Markdown в хорошо структурированные страницы. Он добавляет правильную иерархию заголовков, блоки уведомлений, таблицы и обогащает метаданные — при этом сохраняет ваш стиль и содержание.
+
+## Что он делает
+
+Преобразует это:
+
+```markdown
+---
+title: My Post
+---
+
+here is some text about topic. it has important info.
+also there are steps: first do this, then that, finally done.
+```
+
+В это:
+
+```markdown
+---
+title: My Post
+description: Подробное руководство по теме с пошаговыми инструкциями.
+---
+
+# My Post
+
+Вот немного текста о **теме**. Здесь содержится важная информация.
+
+## Шаги
+
+1. Сначала сделайте это
+2. Затем — то  
+3. Наконец, всё готово
+
+> **Примечание:** Это руководство предполагает базовое знакомство с темой.
+```
+
+## Возможности
+
+- **Улучшение структуры** — Добавляет правильную иерархию заголовков
+- **Насыщенные блоки** — Преобразует шаблоны в уведомления, таблицы, блоки кода
+- **Генерация метаданных** — Создаёт описания, теги на основе контента
+- **Сохранение стиля** — Оставляет ваш авторский стиль неизменным
+- **Выборочная обработка** — Помечайте файлы с помощью `_enhance: true`
+
+## Установка
+
+```bash
+npm install @affiliate.fm/astro-content-ai-enhancer
+```
+
+## Использование
+
+Пометьте файлы для улучшения:
+
+```yaml
+---
+title: My Draft
+_enhance: true
+---
+```
+
+Запустите улучшатель:
+
+```bash
+npx astro-ai-enhancer
+```
+
+---
+
+## Похожие проекты
+
+- [website-core-template](/) — Основа для вашего сайта на Astro
+- [astro-content-ai-translator](/ai-translator/) — Переводите улучшенный контент на другие языки

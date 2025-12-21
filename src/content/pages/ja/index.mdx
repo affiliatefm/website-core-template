@@ -1,0 +1,87 @@
+---
+# general
+title: ウェブサイトコアテンプレート — Affiliate.FMによるAstro 5多言語スターター
+description: 多言語対応の静的サイト向けミニマルなAstro 5テンプレート。ゼロ設定ですぐ開始、アップデートも安全、コンテンツ主導。Affiliate.FMオープンソースエコシステムの一部。
+permalink: /
+# i18n
+alternates:
+  en: /
+  en-US: ''
+  ru: /
+  ja: /
+  ko: 'https://kr.example.com/'
+# ai-translator
+_ai-translator:
+  source: index.mdx
+  hash: c55b7af97ef4
+  model: gpt-4.1
+  date: 2025-12-21
+---
+
+import RatingTable from "@/layouts/affiliate/components/RatingTable.astro";
+
+# ウェブサイトコアテンプレート
+
+多言語対応の静的サイト向けミニマルなAstro 5テンプレート。ゼロ設定ですぐ開始 — あとはコンテンツを追加するだけ。
+
+[Affiliate.FM](https://affiliate.fm)が開発 — アフィリエイト、パフォーマンス、デジタルマーケティング向けの独立系メディアとオープンソースツール。
+
+<div class="section">
+
+## クイックスタート
+
+```bash
+npm create astro@latest -- --template affiliatefm/website-core-template
+cd my-site
+make dev
+```
+
+[http://localhost:4321](http://localhost:4321) を開く
+
+</div>
+
+<div class="section">
+
+## ソフトウェア
+
+テンプレートを中心に構築された主なツールとプロジェクト：
+
+<RatingTable collection="software" />
+
+<p class="text-sm text-gray-500 mt-4">
+  コレクション: <a href="/software/">ソフトウェア</a> · <a href="/websites/">ウェブサイト</a>
+</p>
+
+</div>
+
+<div class="section">
+
+## ドキュメント
+
+<a href="/docs/" class="block p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors no-underline group">
+  <span class="text-xs font-medium text-blue-600">ドキュメント</span>
+  <h3 class="text-base font-semibold text-gray-900 mt-1 group-hover:text-blue-600 transition-colors">はじめに</h3>
+  <p class="text-sm text-gray-500 mt-1 mb-0">テンプレートのセットアップ、設定、拡張方法を学びましょう。</p>
+</a>
+
+</div>
+
+<div class="section">
+
+## 特長
+
+- **ゼロ設定** — すぐに使える
+- **多言語対応** — hreflang対応のi18nを標準搭載
+- **アップデートも安全** — コアの更新でコンテンツはそのまま
+- **コンテンツ主導** — コンポーネント完全対応のMDX
+- **ビルドチェック** — ビルドごとに自動バリデーション
+
+</div>
+
+---
+
+## このテンプレートについて
+
+このサイト自体も**website-core-template**で構築されており、実際の利用例としてその機能を示しています。
+
+[Affiliate.FM](https://affiliate.fm)オープンソースエコシステムの一部です。

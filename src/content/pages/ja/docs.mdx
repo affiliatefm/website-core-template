@@ -1,0 +1,182 @@
+---
+# general
+title: ドキュメント — Website Core Template
+description: 多言語対応の静的サイト用「website-core-template」のセットアップ、設定、拡張方法を解説します。
+# ai-translator
+_ai-translator:
+  source: docs.mdx
+  hash: 7366544c2f8a
+  model: gpt-4.1
+  date: 2025-12-21
+---
+
+import RatingTable from "@/layouts/affiliate/components/RatingTable.astro";
+
+# ドキュメント
+
+<p class="text-sm text-gray-500 mb-6">Website Core Template · By Affiliate.FM · 読了時間：5分</p>
+
+このガイドでは、テンプレートのセットアップ、設定、拡張に必要なすべての情報を解説します。
+
+## 目次
+
+1. [プロジェクト構成](#project-structure)
+2. [設定](#configuration)
+3. [コンテンツの追加](#adding-content)
+4. [多言語対応の設定](#multilingual-setup)
+5. [ツールによる拡張](#extending-with-tools)
+
+---
+
+## プロジェクト構成
+
+```
+src/
+├── content/pages/     # ✏️ あなたのコンテンツ（MDXファイル）
+│   ├── index.mdx      #    トップページ
+│   ├── docs.mdx       #    ドキュメント
+│   ├── _collections/  #    コレクションアイテム（商品ページ）
+│   │   ├── software/
+│   │   │   └── ai-translator.mdx
+│   │   └── websites/
+│   │       └── ssg-directory.mdx
+│   ├── software/      #    コレクショントップページ
+│   │   └── index.mdx
+│   └── websites/      #    コレクショントップページ
+│       └── index.mdx
+│   └── ru/            #    ロシア語コンテンツ
+│       └── index.mdx
+├── data/              # ✏️ あなたの設定
+│   ├── site.ts        #    サイトURL、ロケール、テンプレート、コレクション
+│   └── ui.ts          #    UI翻訳
+├── config/            #    実行時設定（自動生成）
+├── i18n/              #    URLヘルパー
+├── integrations/      #    ビルドチェック
+├── layouts/           #    ページレイアウト
+└── pages/             #    Astroルーター
+```
+
+**あなたのファイル**（✏️） — 自由に編集可能、アップデートで上書きされません  
+**コアファイル** — `make update`で更新されます
+
+## 設定
+
+### 1. サイトの設定
+
+`src/data/site.ts`を編集します：
+
+```typescript
+export const siteUrl = "https://your-domain.com";
+export const locales = ["en", "ru"] as const;
+export const defaultLocale = "en";
+```
+
+### 2. UI文字列の追加
+
+`src/data/ui.ts`を編集します：
+
+```typescript
+export const uiStrings = {
+  en: { siteName: "My Site" },
+  ru: { siteName: "Мой сайт" },
+} as const;
+```
+
+## コンテンツの追加
+
+`src/content/pages/`にMDXファイルを作成します：
+
+```yaml
+---
+title: "ページタイトル"
+description: "SEO用のメタディスクリプション"
+---
+
+# ここにコンテンツを書く
+
+MarkdownとフルMDXコンポーネントが利用できます。
+```
+
+### フロントマターのオプション
+
+| フィールド | 型 | 説明 |
+|-------|------|-------------|
+| title | string | ページタイトル（必須） |
+| description | string | メタディスクリプション |
+| updatedAt | date | サイトマップ用 |
+| draft | boolean | ビルドから除外 |
+| link | string | 外部URL（商品ページ用） |
+| pros | string[] | メリット一覧（商品ページ用） |
+| cons | string[] | デメリット一覧（商品ページ用） |
+
+## 多言語対応の設定
+
+### 同じスラッグ（自動）
+
+```
+pages/about.mdx      → /about/
+pages/ru/about.mdx   → /ru/about/
+```
+
+Hreflangリンクは自動生成されます。
+
+## ツールによる拡張
+
+このテンプレートは他のAffiliate.FMツールとシームレスに連携します：
+
+<RatingTable collection="software" limit={2} offset={1} />
+
+### AI翻訳
+
+ワークフローに自動翻訳を追加できます：
+
+```bash
+npm install @affiliate.fm/astro-content-ai-translator
+npx astro-ai-translator init
+```
+
+翻訳対象のファイルをマークします：
+
+```yaml
+---
+title: About Us
+_translateTo: all
+---
+```
+
+### インテグレーションの追加
+
+```bash
+npx astro add tailwind
+npx astro add react
+```
+
+## アップデート
+
+このテンプレートは安全にアップデートできる設計です：
+
+```bash
+# 変更点を確認
+make update-check
+
+# アップデートを適用
+make update
+```
+
+**保持されるもの：** `src/content/`, `src/data/`, `public/`  
+**更新されるもの：** その他すべて
+
+---
+
+## 次のステップ
+
+1. テンプレートをクローン
+2. `src/data/site.ts`を設定
+3. `src/content/pages/`にコンテンツを追加
+4. お好みのプラットフォームにデプロイ
+
+**質問がありますか？** [GitHub](https://github.com/affiliatefm/website-core-template)でIssueを作成してください。
+
+---
+
+← [ホームに戻る](/)

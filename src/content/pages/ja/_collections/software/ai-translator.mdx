@@ -1,0 +1,86 @@
+---
+# general
+title: astro-content-ai-translator — Astro向けAI翻訳
+description: Astroウェブサイト向けのAI翻訳ユーティリティ。content/ディレクトリから自動的にローカライズされたコンテンツを生成します。
+# collection-product
+link: 'https://github.com/affiliatefm/astro-content-ai-translator'
+pros:
+  - Cost estimates before translation
+  - Supports all OpenAI models
+  - Preserves frontmatter
+cons:
+  - Requires OpenAI API key
+# ai-translator
+_ai-translator:
+  source: _collections/software/ai-translator.mdx
+  hash: ae7e0c7e1df1
+  model: gpt-4.1
+  date: 2025-12-21
+---
+
+import ProsCons from "@/layouts/affiliate/components/ProsCons.astro";
+
+<p class="text-sm text-gray-500 mb-6">Affiliate.FMオープンソースエコシステムの一部</p>
+
+<ProsCons pros={frontmatter.pros} cons={frontmatter.cons} />
+
+## 概要
+
+Astroウェブサイト向けのAI搭載翻訳ユーティリティです。`content/`ディレクトリ内のファイルから自動的にローカライズされたコンテンツを生成し、シングルページ・マルチページ両方のi18nワークフローに対応しています。
+
+## インストール
+
+```bash
+npm install @affiliate.fm/astro-content-ai-translator
+npx astro-ai-translator init
+```
+
+セットアップウィザードでは以下が行われます:
+- `astro.config.mjs`にインテグレーションを追加
+- `.env`にOpenAI APIキーを設定
+
+## 使い方
+
+### 翻訳対象ファイルの指定
+
+コンテンツファイルのfrontmatterに`_translateTo`を追加します:
+
+```yaml
+---
+title: About Us
+description: Learn about our company
+_translateTo: [ru, de]
+---
+```
+
+オプション:
+- `_translateTo: [ru, de]` — 特定のロケールに翻訳
+- `_translateTo: all` — 設定済みの全ロケールに翻訳
+- フィールドなし — ファイルは翻訳されません
+
+### 翻訳の実行
+
+```bash
+npx astro-ai-translator
+```
+
+翻訳開始前に以下が表示されます:
+- **コスト見積もり** — おおよそのトークン数とUSDコスト
+- **ファイルリスト** — 翻訳対象ファイル一覧
+- **確認プロンプト** — APIクレジット使用前に承認
+
+## 対応モデル
+
+| モデル | 入力 | 出力 | 推奨用途 |
+|--------|------|------|----------|
+| gpt-4.1 | $2.00 | $8.00 | デフォルト、最高品質 |
+| gpt-4.1-mini | $0.40 | $1.60 | バランス重視 |
+| gpt-4o-mini | $0.15 | $0.60 | 低コストオプション |
+
+---
+
+## 関連
+
+- [website-core-template](/) — i18n対応Astroスターター
+- [astro-content-ai-enhancer](/ai-enhancer/) — MarkdownをAIで強化
+- [staticsitegenerators.net](/websites/ssg-directory/) — 実例サイト

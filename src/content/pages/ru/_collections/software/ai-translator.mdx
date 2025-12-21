@@ -1,0 +1,86 @@
+---
+# general
+title: astro-content-ai-translator — AI-переводчик для Astro
+description: Утилита для перевода на базе ИИ для сайтов на Astro. Автоматически создает локализованный контент из вашей директории content/.
+# collection-product
+link: 'https://github.com/affiliatefm/astro-content-ai-translator'
+pros:
+  - Cost estimates before translation
+  - Supports all OpenAI models
+  - Preserves frontmatter
+cons:
+  - Requires OpenAI API key
+# ai-translator
+_ai-translator:
+  source: _collections/software/ai-translator.mdx
+  hash: ae7e0c7e1df1
+  model: gpt-4.1
+  date: 2025-12-21
+---
+
+import ProsCons from "@/layouts/affiliate/components/ProsCons.astro";
+
+<p class="text-sm text-gray-500 mb-6">Часть экосистемы с открытым исходным кодом Affiliate.FM</p>
+
+<ProsCons pros={frontmatter.pros} cons={frontmatter.cons} />
+
+## Обзор
+
+Утилита для перевода на базе искусственного интеллекта для сайтов на Astro. Автоматически генерирует локализованный контент из файлов в директории `content/` и поддерживает как одностраничные, так и многостраничные i18n-процессы.
+
+## Установка
+
+```bash
+npm install @affiliate.fm/astro-content-ai-translator
+npx astro-ai-translator init
+```
+
+Мастер настройки выполнит:
+- Добавление интеграции в ваш `astro.config.mjs`
+- Настройку вашего OpenAI API-ключа в `.env`
+
+## Использование
+
+### Отметьте файлы для перевода
+
+В ваших файлах контента добавьте `_translateTo` во frontmatter:
+
+```yaml
+---
+title: О нас
+description: Узнайте о нашей компании
+_translateTo: [ru, de]
+---
+```
+
+Варианты:
+- `_translateTo: [ru, de]` — перевод на выбранные языки
+- `_translateTo: all` — перевод на все настроенные языки
+- Без поля — файл не переводится
+
+### Запуск перевода
+
+```bash
+npx astro-ai-translator
+```
+
+Перед началом перевода вы увидите:
+- **Оценку стоимости** — приблизительное количество токенов и стоимость в USD
+- **Список файлов** — что будет переведено
+- **Запрос подтверждения** — подтвердите перед расходом средств API
+
+## Поддерживаемые модели
+
+| Модель | Вход | Выход | Лучшее применение |
+|--------|------|-------|------------------|
+| gpt-4.1 | $2.00 | $8.00 | По умолчанию, наилучшее качество |
+| gpt-4.1-mini | $0.40 | $1.60 | Хороший баланс |
+| gpt-4o-mini | $0.15 | $0.60 | Экономичный вариант |
+
+---
+
+## См. также
+
+- [website-core-template](/) — Astro-стартер с поддержкой i18n
+- [astro-content-ai-enhancer](/ai-enhancer/) — ИИ для улучшения Markdown-контента
+- [staticsitegenerators.net](/websites/ssg-directory/) — Пример реального сайта

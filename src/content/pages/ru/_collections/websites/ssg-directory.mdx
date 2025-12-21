@@ -1,0 +1,72 @@
+---
+# general
+title: staticsitegenerators.net — Каталог статических генераторов сайтов
+description: Полный каталог статических генераторов сайтов. Сравнивайте возможности, языки и находите идеальный SSG для вашего проекта.
+# collection-product
+link: 'https://github.com/affiliatefm/staticsitegenerators.net'
+pros:
+  - Real-world example
+  - Multi-language content
+  - Auto-deployed
+cons:
+  - Work in progress
+# ai-translator
+_ai-translator:
+  source: _collections/websites/ssg-directory.mdx
+  hash: 7ba8df158b7a
+  model: gpt-4.1
+  date: 2025-12-21
+---
+
+import ProsCons from "@/layouts/affiliate/components/ProsCons.astro";
+
+<p class="text-sm text-gray-500 mb-6">Часть экосистемы с открытым исходным кодом Affiliate.FM</p>
+
+<ProsCons pros={frontmatter.pros} cons={frontmatter.cons} />
+
+## Обзор
+
+Полный каталог статических генераторов сайтов. Сравнивайте функции, фильтруйте по языкам и находите идеальный SSG для вашего следующего проекта.
+
+## О проекте
+
+staticsitegenerators.net — это реальный пример того, что можно создать с помощью website-core-template. Здесь представлены:
+
+- **Мультиязычный контент** — Один и тот же контент на разных языках с корректным hreflang
+- **Страницы на основе данных** — Списки SSG, сгенерированные из структурированных данных
+- **SEO-оптимизация** — Корректные мета-теги, карта сайта, структурированные данные
+- **Автоматическое развертывание** — GitHub Actions → GitHub Pages
+
+## Возможности
+
+- **300+ генераторов** — Обширная база данных SSG
+- **Фильтрация и поиск** — По языку, шаблонизатору, функциям
+- **Таблицы сравнения** — Сравнение функций бок о бок
+- **Регулярные обновления** — Данные поддерживаются сообществом
+
+## Технологический стек
+
+```
+Astro 5 + website-core-template
+├── Контент: MDX со структурированными данными
+├── Стилизация: Tailwind CSS
+├── i18n: Встроенная поддержка мультиязычности
+├── Деплой: GitHub Pages
+└── CI/CD: GitHub Actions
+```
+
+## Вклад
+
+Проект с открытым исходным кодом. Вы можете:
+
+- Добавлять новые SSG в базу данных
+- Улучшать описания и метаданные
+- Переводить контент на новые языки
+- Сообщать об ошибках и предлагать новые функции
+
+---
+
+## Связанные проекты
+
+- [website-core-template](/) — Шаблон, на котором работает этот сайт
+- [astro-content-ai-translator](/ai-translator/) — Как мы переводим контент
