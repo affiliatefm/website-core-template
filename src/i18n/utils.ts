@@ -12,6 +12,7 @@ import {
   siteUrl,
   ui as messages,
 } from "@/config/site";
+import { getCollectionItemSlug, getCollectionRouteInfo } from "@/content-logic";
 
 // =============================================================================
 // LANGUAGE VALIDATION & NORMALIZATION
@@ -80,15 +81,24 @@ export function getLanguageFromId(id: string): LanguageCode {
 }
 
 /**
- * Get the base path from an entry ID (path without language prefix).
+ * Get the path from an entry ID (keeps trailing /index).
  */
-export function getBasePath(id: string): string {
+export function getIdPath(id: string): string {
   const language = getLanguageFromId(id);
   let path = id;
 
   if (language !== defaultLanguage) {
     path = path.replace(new RegExp(`^${language}/`), "");
   }
+
+  return path;
+}
+
+/**
+ * Get the base path from an entry ID (path without language prefix).
+ */
+export function getBasePath(id: string): string {
+  let path = getIdPath(id);
 
   if (path === "index") {
     return "";
@@ -107,6 +117,12 @@ export function getUrlSlug(entry: {
   if (entry.data.permalink?.trim()) {
     return entry.data.permalink.replace(/^\//, "");
   }
+
+  const route = getCollectionRouteInfo(getIdPath(entry.id));
+  if (route) {
+    return getCollectionItemSlug(route);
+  }
+
   return getBasePath(entry.id);
 }
 

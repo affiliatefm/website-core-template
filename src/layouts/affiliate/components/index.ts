@@ -6,6 +6,8 @@
  *   import RatingTable from "@/layouts/affiliate/components/RatingTable.astro";
  *   import ProsCons from "@/layouts/affiliate/components/ProsCons.astro";
  *   import ArticleList from "@/layouts/affiliate/components/ArticleList.astro";
+ *
+ *   <RatingTable collection="software" />
  */
 
 export { default as RatingTable } from "./RatingTable.astro";

@@ -1,18 +1,18 @@
 ---
-title: Website Core Template — Astro 5 Multilingual Starter
+title: Website Core Template — Astro 5 Multilingual Starter by Affiliate.FM
 description: >-
   Minimal Astro 5 template for multilingual static sites. Zero config to start,
   update-safe, content-driven. Part of the Affiliate.FM open-source ecosystem.
-_translateTo: all
+permalink: /
 alternates:
-  en: ''
+  en: /
   en-US: ''
-  ru: ''
-  ja: ''
+  ru: /
+  ja: /
   ko: 'https://kr.example.com/'
+_translateTo: all
 ---
 
-import { products, categories, getProductsByRank, getProductsByCategory } from "@/data/products";
 import RatingTable from "@/layouts/affiliate/components/RatingTable.astro";
 
 # Website Core Template
@@ -37,18 +37,15 @@ Open [http://localhost:4321](http://localhost:4321)
 
 <div class="section">
 
-## Ecosystem
+## Software
 
-Explore the full Affiliate.FM open-source toolkit:
+Core tools and projects built around the template:
 
-<nav class="flex flex-wrap gap-2 mb-6 pb-4 border-b border-gray-200">
-  <a href="/" class="px-3 py-1.5 text-sm font-medium bg-gray-900 text-white rounded-md no-underline">All</a>
-  {categories.map((cat) => (
-    <a href={`/#${cat.slug}`} class="px-3 py-1.5 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-md no-underline">{cat.name}</a>
-  ))}
-</nav>
+<RatingTable collection="software" />
 
-<RatingTable products={getProductsByRank()} />
+<p class="text-sm text-gray-500 mt-4">
+  Collections: <a href="/software/">Software</a> · <a href="/websites/">Websites</a>
+</p>
 
 </div>
 

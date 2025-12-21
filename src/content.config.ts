@@ -71,6 +71,17 @@ const pages = defineCollection({
     draft: z.boolean().default(false),
 
     /**
+     * External link (optional, used by product pages).
+     */
+    link: z.string().url().optional(),
+
+    /**
+     * Pros/cons (optional, used by product-style pages).
+     */
+    pros: z.array(z.string()).optional(),
+    cons: z.array(z.string()).optional(),
+
+    /**
      * Auto-translation target (for astro-content-ai-translator).
      * Values: "all" | ["ru", "de"] | undefined
      */
@@ -78,6 +89,11 @@ const pages = defineCollection({
       z.literal("all"),
       z.array(z.string()),
     ]).optional(),
+
+    /**
+     * AI metadata (for astro-content-ai-translator / ai tooling).
+     */
+    _ai: z.record(z.string(), z.unknown()).optional(),
   }),
 });
 

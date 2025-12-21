@@ -3,47 +3,29 @@ title: astro-content-ai-enhancer — AI Content Enhancement for Astro
 description: >-
   AI assistant that turns raw Markdown into structured, rich pages with proper
   formatting, blocks, and metadata.
-permalink: ai-enhancer
 _translateTo: all
+link: 'https://github.com/affiliatefm/astro-content-ai-enhancer'
+pros:
+  - Enhances structure
+  - Adds rich blocks
+  - Keeps your voice
+cons:
+  - Early development
 alternates:
-  en: ai-enhancer
-  en-US: ai-enhancer
   ru: ai-enhancer
   ja: ai-enhancer
+  en: ai-enhancer
 ---
 
-import { getProductById } from "@/data/products";
 import ProsCons from "@/layouts/affiliate/components/ProsCons.astro";
-
-export const product = getProductById("astro-content-ai-enhancer");
-
-# astro-content-ai-enhancer
 
 <p class="text-sm text-gray-500 mb-6">Part of the Affiliate.FM open-source ecosystem</p>
 
-<div class="flex items-center gap-3 mb-6">
-  <span class="text-amber-500">{"★".repeat(Math.round(product.rating))}</span>
-  <span class="font-medium">{product.rating}/5</span>
-  <span class="text-gray-400">·</span>
-  <span class="text-gray-500">{product.reviewCount} commits</span>
-  <span class="badge badge-green">Early Access</span>
-</div>
+<ProsCons pros={frontmatter.pros} cons={frontmatter.cons} />
 
-AI assistant that transforms raw Markdown drafts into well-structured pages. It adds proper headings hierarchy, callout blocks, tables, and enriches metadata — while preserving your voice and content.
+## Overview
 
-<a href={product.affiliateUrl} target="_blank" rel="noopener" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gray-900 hover:bg-gray-700 rounded-md transition-colors no-underline">View on GitHub →</a>
-
-## Quick Summary
-
-<ProsCons pros={product.pros} cons={product.cons} />
-
-| | |
-|---|---|
-| **License** | MIT |
-| **Price** | {product.priceLabel} |
-| **Works with** | Astro 5, any MDX content |
-
----
+AI assistant that transforms raw Markdown drafts into well-structured pages. It adds proper heading hierarchy, callout blocks, tables, and enriches metadata — while preserving your voice and content.
 
 ## What It Does
 
@@ -116,7 +98,3 @@ npx astro-ai-enhancer
 
 - [website-core-template](/) — The foundation for your Astro site
 - [astro-content-ai-translator](/ai-translator/) — Translate enhanced content to other languages
-
----
-
-← [Back to ecosystem](/)

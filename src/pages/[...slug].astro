@@ -12,7 +12,12 @@ import {
   defaultLanguage,
   type LanguageCode,
 } from "@/config/site";
-import { getLanguageFromId, getUrlSlug, getAlternateUrls } from "@/i18n";
+import { getIdPath, getLanguageFromId, getUrlSlug, getAlternateUrls } from "@/i18n";
+import {
+  getCollectionRouteInfo,
+  resolveTemplatePath,
+  toTemplateKey,
+} from "@/content-logic";
 
 export async function getStaticPaths() {
   const allPages = await getCollection("pages", ({ data }) => !data.draft);
@@ -85,6 +90,16 @@ const alternatesAbsolute = getAlternateUrls(entry, allPages, { absolute: true })
 // Relative URLs for language switcher
 const alternatesRelative = getAlternateUrls(entry, allPages);
 const { Content } = await render(entry);
+
+const routeInfo = getCollectionRouteInfo(getIdPath(entry.id));
+const templatePath = resolveTemplatePath(routeInfo?.collection.template);
+const templates = import.meta.glob("/src/layouts/**/*.astro");
+const templateKey = toTemplateKey(templatePath);
+const loader = templates[templateKey];
+if (!loader) {
+  throw new Error(`Template not found: ${templatePath}`);
+}
+const Template = (await loader()).default;
 ---
 
 <Layout
@@ -94,5 +109,7 @@ const { Content } = await render(entry);
   hreflangUrls={alternatesAbsolute}
   switcherUrls={alternatesRelative}
 >
-  <Content />
+  <Template entry={entry}>
+    <Content />
+  </Template>
 </Layout>

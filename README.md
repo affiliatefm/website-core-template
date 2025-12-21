@@ -20,16 +20,25 @@ Open http://localhost:4321
 src/
 ├── content/pages/     # ✏️ Your content (MDX files)
 │   ├── index.mdx      #    Homepage
-│   ├── about.mdx      #    Another page
+│   ├── docs.mdx       #    Documentation
+│   ├── _collections/  #    Collection items (product pages)
+│   │   ├── software/
+│   │   │   └── ai-translator.mdx
+│   │   └── websites/
+│   │       └── ssg-directory.mdx
+│   ├── software/      #    Collection landing page
+│   │   └── index.mdx
+│   └── websites/      #    Collection landing page
+│       └── index.mdx
 │   └── ru/            #    Russian content
 │       └── index.mdx
 ├── data/              # ✏️ Your configuration
-│   ├── site.ts        #    Site URL, default language
+│   ├── site.ts        #    Site URL, locales, templates, collections
 │   └── ui.ts          #    UI translations
 ├── config/            #    Runtime config (auto-generated)
 ├── i18n/              #    URL helpers
 ├── integrations/      #    Build checks
-├── layouts/basic/     #    Default layout
+├── layouts/affiliate/ #    Default layout
 └── pages/             #    Astro router
 ```
 
@@ -44,7 +53,8 @@ Edit `src/data/site.ts`:
 
 ```typescript
 export const siteUrl = "https://your-domain.com";
-export const defaultLanguage = "en";
+export const locales = ["en", "ru"] as const;
+export const defaultLocale = "en";
 ```
 
 ### 2. Add UI strings
@@ -53,8 +63,8 @@ Edit `src/data/ui.ts`:
 
 ```typescript
 export const uiStrings = {
-  en: { homeLabel: "Home" },
-  ru: { homeLabel: "Главная" },
+  en: { siteName: "My Site" },
+  ru: { siteName: "Мой сайт" },
 } as const;
 ```
 
@@ -85,45 +95,17 @@ pages/ru/about.mdx   → /ru/about/
 
 Hreflang links generated automatically.
 
-### Different slugs
-
-```yaml
-# pages/about.mdx
----
-title: About
-alternates:
-  ru: o-nas
----
-
-# pages/ru/o-nas.mdx
----
-title: О нас
-permalink: o-nas
-alternates:
-  en: about
----
-```
-
-### External alternates
-
-```yaml
----
-title: About
-alternates:
-  ja: https://ja.example.com/about/
----
-```
-
 ## Frontmatter
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `title` | string | Page title (required) |
 | `description` | string | Meta description |
-| `permalink` | string | Custom URL slug |
-| `alternates` | object | Language → slug mapping |
 | `updatedAt` | date | For sitemap |
 | `draft` | boolean | Exclude from build |
+| `link` | string | External URL (product pages) |
+| `pros` | string[] | Pros list (product pages) |
+| `cons` | string[] | Cons list (product pages) |
 
 ## Updating
 

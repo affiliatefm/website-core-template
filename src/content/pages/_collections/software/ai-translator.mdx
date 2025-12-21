@@ -3,47 +3,29 @@ title: astro-content-ai-translator — AI Translation for Astro
 description: >-
   AI-powered translation utility for Astro websites. Automatically generates
   localized content from your content/ directory.
-permalink: ai-translator
 _translateTo: all
+link: 'https://github.com/affiliatefm/astro-content-ai-translator'
+pros:
+  - Cost estimates before translation
+  - Supports all OpenAI models
+  - Preserves frontmatter
+cons:
+  - Requires OpenAI API key
 alternates:
-  en: ai-translator
-  en-US: ai-translator
   ru: ai-translator
   ja: ai-translator
+  en: ai-translator
 ---
 
-import { getProductById } from "@/data/products";
 import ProsCons from "@/layouts/affiliate/components/ProsCons.astro";
-
-export const product = getProductById("astro-content-ai-translator");
-
-# astro-content-ai-translator
 
 <p class="text-sm text-gray-500 mb-6">Part of the Affiliate.FM open-source ecosystem</p>
 
-<div class="flex items-center gap-3 mb-6">
-  <span class="text-amber-500">{"★".repeat(Math.round(product.rating))}</span>
-  <span class="font-medium">{product.rating}/5</span>
-  <span class="text-gray-400">·</span>
-  <span class="text-gray-500">{product.reviewCount} commits</span>
-  <span class="badge badge-blue">AI-Powered</span>
-</div>
+<ProsCons pros={frontmatter.pros} cons={frontmatter.cons} />
+
+## Overview
 
 AI-powered translation utility for Astro websites. Automatically generates localized content from files in the `content/` directory and supports both single-page and multi-page i18n workflows.
-
-<a href={product.affiliateUrl} target="_blank" rel="noopener" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-gray-900 hover:bg-gray-700 rounded-md transition-colors no-underline">View on GitHub →</a>
-
-## Quick Summary
-
-<ProsCons pros={product.pros} cons={product.cons} />
-
-| | |
-|---|---|
-| **License** | MIT |
-| **Price** | {product.priceLabel} |
-| **Works with** | Astro 5, website-core-template |
-
----
 
 ## Installation
 
@@ -100,8 +82,4 @@ Before translation starts, you'll see:
 
 - [website-core-template](/) — i18n-ready Astro starter
 - [astro-content-ai-enhancer](/ai-enhancer/) — AI that enhances raw Markdown
-- [staticsitegenerators.net](/ssg-directory/) — Real-world example site
-
----
-
-← [Back to ecosystem](/)
+- [staticsitegenerators.net](/websites/ssg-directory/) — Real-world example site

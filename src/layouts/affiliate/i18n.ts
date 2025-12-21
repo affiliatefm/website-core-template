@@ -12,7 +12,10 @@ import { defaultLanguage, type LanguageCode } from "../../config/site";
 export interface TemplateStrings {
   home: string;
   docs: string;
-  viewOnGithub: string;
+  software: string;
+  websites: string;
+  linkLabel: string;
+  visitLink: string;
   backToHome: string;
 }
 
@@ -20,13 +23,19 @@ export const translations: Record<string, TemplateStrings> = {
   en: {
     home: "Home",
     docs: "Docs",
-    viewOnGithub: "View on GitHub",
+    software: "Software",
+    websites: "Websites",
+    linkLabel: "Link",
+    visitLink: "Visit",
     backToHome: "Back to home",
   },
   ru: {
     home: "Главная",
     docs: "Документация",
-    viewOnGithub: "GitHub",
+    software: "Софт",
+    websites: "Сайты",
+    linkLabel: "Ссылка",
+    visitLink: "Перейти",
     backToHome: "На главную",
   },
 };
