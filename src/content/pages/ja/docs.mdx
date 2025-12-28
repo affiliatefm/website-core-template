@@ -14,14 +14,14 @@ _ai-translator:
 
 <p class="tpl-muted mb-6 text-sm">Website Core Template - By Affiliate.FM - 読了時間 5分</p>
 
-このガイドでは、テンプレートシステムの設定方法、スタイルの選択、コアの拡張方法について説明します。
+このガイドでは、テンプレートシステムの設定方法、テンプレートの選択、コアの拡張方法について説明します。
 
 ## 目次
 
 1. [プロジェクト構成](#project-structure)
 2. [設定](#configuration)
 3. [テンプレートシステム](#template-system)
-4. [スタイルプリセット](#style-presets)
+4. [スタイル](#スタイル)
 5. [グローバルコンポーネント](#global-components)
 6. [コンテンツ追加](#adding-content)
 7. [多言語対応設定](#multilingual-setup)
@@ -45,13 +45,15 @@ src/
 ├── data/              # 設定ファイル
 │   ├── site.ts        # サイトURL、ロケール、テンプレート選択
 │   └── ui.ts          # UI翻訳
-├── templates/         # テンプレートとスタイルシステム
-│   ├── registry.ts    # 登録済みテンプレート
+├── templates/         # テンプレート
 │   └── affiliate/     # サンプルテンプレート
-│       ├── Layout.astro
-│       ├── template.ts
-│       ├── styles/
+│       ├── layout.astro
+│       ├── styles.css
+│       ├── i18n.ts
 │       ├── pages/
+│       │   ├── home.astro
+│       │   ├── article.astro
+│       │   └── product.astro
 │       └── components/
 ├── i18n/              # URLヘルパー
 ├── integrations/      # ビルドチェック
@@ -67,10 +69,7 @@ export const siteUrl = "https://your-domain.com";
 export const locales = ["en", "ru"] as const;
 export const defaultLocale = "en";
 
-export const template = {
-  id: "affiliate",
-  style: "paper",
-} as const;
+export const template = "affiliate" as const;
 ```
 
 共通UI文字列は `src/data/ui.ts` を編集します:
@@ -85,38 +84,30 @@ export const uiStrings = {
 
 テンプレートは `src/templates/` 以下の独立したフォルダです。
 
-- `Layout.astro` は全ページ共通のラッパーです。
-- `pages/` には `Article.astro` や `Product.astro` などページテンプレートを配置します。
+- `layout.astro` は全ページ共通のラッパーです。
+- `pages/` には `home.astro`, `article.astro`, `product.astro` を配置します。
 - `components/` にはテンプレート固有のUIブロックを配置します。
-- `styles/` にはテンプレート用のスタイルプリセットを定義します。
-- `template.ts` でテンプレートのメタデータ（ページ、スタイル、レイアウトパス）を宣言します。
+- `styles.css` はテンプレート専用のCSSです（任意）。
+- `i18n.ts` はテンプレートの文字列定義です（任意）。
+
+テンプレートIDはフォルダ名です（小文字推奨）。
 
 新しいテンプレートを登録するには:
 
 1. `src/templates/<your-template>/` にフォルダを追加します。
-2. `template.ts` に `id`, `layout`, `pages`, `styles` を作成します。
-3. `src/templates/registry.ts` に追加します。
+2. `layout.astro`, `pages/home.astro`, `pages/article.astro`, `pages/product.astro` を追加します。
+3. 必要なら `styles.css` と `i18n.ts` を追加します。
 4. `src/data/site.ts` で選択します。
 
-## スタイルプリセット
+ページの選択ルール:
+- ホーム (`index.mdx`) → `Home`
+- `_collections` → `Product`（`collections[].page` で上書き可）
+- それ以外 → `Article`
+- ページ単位の上書き: frontmatter の `page`
 
-各テンプレートは複数のスタイルプリセットを持つことができます。`src/data/site.ts` で選択します:
+## スタイル
 
-```typescript
-export const template = {
-  id: "affiliate",
-  style: "studio",
-} as const;
-```
-
-新しいスタイルプリセットを追加するには:
-
-1. `src/templates/<template>/template.ts` に新しいスタイルIDを追加します。
-2. `src/templates/<template>/styles/<style>.css` に専用CSSファイルを作成します。
-3. `:root[data-template="<template>"][data-style="<style>"]` の下で変数を定義します。
-4. （任意）共通ルール用に `./base.css` をインポートします。
-
-各スタイルファイルは独立しており、選択されたものだけがバンドルされます。スタイルは変数だけでなく、ベースCSSの上書きや拡張も可能です。
+テンプレート固有のCSSは `styles.css` にまとめ、`layout.astro` から読み込みます。
 
 ## グローバルコンポーネント
 
@@ -151,6 +142,7 @@ description: "SEO用メタディスクリプション"
 | link | string | 外部URL（商品ページ用） |
 | pros | string[] | メリットリスト（商品ページ用） |
 | cons | string[] | デメリットリスト（商品ページ用） |
+| page | string | ページテンプレートの上書き（"home", "article", "product"） |
 
 ## 多言語対応設定
 
@@ -178,7 +170,7 @@ import RatingTable from "@/templates/affiliate/components/RatingTable.astro";
 ## 次のステップ
 
 1. `src/data/site.ts` を設定する
-2. テンプレートとスタイルプリセットを選ぶ
+2. テンプレートを選ぶ
 3. `src/content/pages/` にコンテンツを追加する
 4. お好きなプラットフォームにデプロイする
 

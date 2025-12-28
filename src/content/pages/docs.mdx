@@ -12,14 +12,14 @@ _translateTo: all
 
 <p class="tpl-muted mb-6 text-sm">Website Core Template - By Affiliate.FM - 5 min read</p>
 
-This guide covers how to configure the template system, choose styles, and extend the core.
+This guide covers how to configure the template system, choose a template, and extend the core.
 
 ## Table of Contents
 
 1. [Project Structure](#project-structure)
 2. [Configuration](#configuration)
 3. [Template System](#template-system)
-4. [Style Presets](#style-presets)
+4. [Styling](#styling)
 5. [Global Components](#global-components)
 6. [Adding Content](#adding-content)
 7. [Multilingual Setup](#multilingual-setup)
@@ -43,13 +43,15 @@ src/
 ├── data/              # Your configuration
 │   ├── site.ts        # Site URL, locales, template selection
 │   └── ui.ts          # UI translations
-├── templates/         # Templates and style systems
-│   ├── registry.ts    # Registered templates
+├── templates/         # Templates
 │   └── affiliate/     # Example template
-│       ├── Layout.astro
-│       ├── template.ts
-│       ├── styles/
+│       ├── layout.astro
+│       ├── styles.css
+│       ├── i18n.ts
 │       ├── pages/
+│       │   ├── home.astro
+│       │   ├── article.astro
+│       │   └── product.astro
 │       └── components/
 ├── i18n/              # URL helpers
 ├── integrations/      # Build checks
@@ -65,10 +67,7 @@ export const siteUrl = "https://your-domain.com";
 export const locales = ["en", "ru"] as const;
 export const defaultLocale = "en";
 
-export const template = {
-  id: "affiliate",
-  style: "paper",
-} as const;
+export const template = "affiliate" as const;
 ```
 
 Edit `src/data/ui.ts` for shared UI strings:
@@ -83,38 +82,30 @@ export const uiStrings = {
 
 Templates are self-contained folders under `src/templates/`.
 
-- `Layout.astro` is the global wrapper for all pages.
-- `pages/` holds page templates like `Article.astro` and `Product.astro`.
+- `layout.astro` is the global wrapper for all pages.
+- `pages/` holds page templates like `home.astro`, `article.astro`, and `product.astro`.
 - `components/` contains template-specific UI blocks.
-- `styles/` defines style presets for the template.
-- `template.ts` declares the template metadata (pages, styles, layout path).
+- `styles.css` is an optional template stylesheet.
+- `i18n.ts` is an optional template strings file.
+
+Template id is the folder name (use lowercase).
 
 To register a new template:
 
 1. Add a folder under `src/templates/<your-template>/`.
-2. Create `template.ts` with `id`, `layout`, `pages`, and `styles`.
-3. Add it to `src/templates/registry.ts`.
+2. Add `layout.astro`, `pages/home.astro`, `pages/article.astro`, `pages/product.astro`.
+3. Add `styles.css` and/or `i18n.ts` if needed.
 4. Select it in `src/data/site.ts`.
 
-## Style Presets
+Page selection:
+- Homepage (`index.mdx`) → `Home`
+- `_collections` items → `Product` (or override via `collections[].page`)
+- Everything else → `Article`
+- Per-page override: `page` in frontmatter
 
-Each template can expose multiple style presets. Select one in `src/data/site.ts`:
+## Styling
 
-```typescript
-export const template = {
-  id: "affiliate",
-  style: "studio",
-} as const;
-```
-
-Add a new style preset by:
-
-1. Adding a new style id in `src/templates/<template>/template.ts`.
-2. Creating a dedicated CSS file in `src/templates/<template>/styles/<style>.css`.
-3. Defining your variables under `:root[data-template="<template>"][data-style="<style>"]`.
-4. (Optional) Import `./base.css` for shared rules.
-
-Each style file is isolated and only the selected one is bundled. Styles can also override or extend base CSS, not just variables.
+Templates keep their CSS local. Add `styles.css` and import it in `layout.astro`.
 
 ## Global Components
 
@@ -149,6 +140,7 @@ description: "Meta description for SEO"
 | link | string | External URL (product pages) |
 | pros | string[] | Pros list (product pages) |
 | cons | string[] | Cons list (product pages) |
+| page | string | Page template override ("home", "article", "product") |
 
 ## Multilingual Setup
 
@@ -176,7 +168,7 @@ import RatingTable from "@/templates/affiliate/components/RatingTable.astro";
 ## Next Steps
 
 1. Configure `src/data/site.ts`
-2. Pick a template and style preset
+2. Pick a template
 3. Add your content to `src/content/pages/`
 4. Deploy to your favorite platform
 

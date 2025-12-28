@@ -20,7 +20,7 @@ import { readdir, readFile } from "node:fs/promises";
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
 import { languages } from "../config/site";
-import { selectedTemplate, templateI18nPath } from "../templates";
+import { templateId } from "../config/site";
 
 // =============================================================================
 // TYPES
@@ -328,7 +328,7 @@ function detectSuspiciousLanguageFolders(): string[] {
  * Extract template name from the selected template.
  */
 function getTemplateName(): string {
-  return selectedTemplate.id;
+  return templateId;
 }
 
 /**
@@ -336,10 +336,13 @@ function getTemplateName(): string {
  * Returns null if file doesn't exist.
  */
 function getTemplateTranslationKeys(): string[] | null {
-  if (!templateI18nPath) return null;
-
-  const normalized = templateI18nPath.replace(/^\.?\//, "");
-  const i18nPath = join(process.cwd(), normalized);
+  const i18nPath = join(
+    process.cwd(),
+    "src",
+    "templates",
+    templateId,
+    "i18n.ts"
+  );
   
   try {
     if (!existsSync(i18nPath)) return null;

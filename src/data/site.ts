@@ -16,25 +16,20 @@ export const locales = ["en", "ru", "ja"] as const;
 export const defaultLocale = "en";
 
 // Template system
-// - id: template folder name from src/templates
-// - style: style preset id from the selected template
-// Available templates: affiliate (keep in sync with src/templates/registry.ts)
-// Available styles (affiliate): paper, studio (keep in sync with src/templates/affiliate/template.ts)
-export const template = {
-  id: "affiliate",
-  style: "light",
-} as const;
+// - value: template folder name from src/templates (lowercase)
+// Available templates: affiliate
+export const template = "affiliate" as const;
 
 // Collections
-// If collection.template is not set, the first page template in the selected template is used.
+// page maps collection items to a page template (home/article/product by default).
 export const collections = [
   {
     collection: "software",
     slug: "",
-    template: "product",
+    page: "product",
   },
   {
     collection: "websites",
-    template: "product",
+    page: "product",
   },
 ] as const;

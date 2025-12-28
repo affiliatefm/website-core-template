@@ -12,12 +12,11 @@ import {
   type LanguageCode,
   siteUrl,
   templateId,
-  templateStyleId,
 } from "@/config/site";
 import SeoMeta from "@/components/global/head/SeoMeta.astro";
 import SkipLink from "@/components/global/body/SkipLink.astro";
 import { tt } from "./i18n";
-import "#template-style";
+import "./styles.css";
 
 interface Props {
   title: string;
@@ -72,7 +71,6 @@ const tpl = tt(language);
 <html
   lang={toHreflang(language)}
   data-template={templateId}
-  data-style={templateStyleId}
 >
   <head>
     <SeoMeta

@@ -6,18 +6,14 @@
  */
 
 import { getCollection, render } from "astro:content";
-import Layout from "#layout";
 import {
   languages,
   defaultLanguage,
   type LanguageCode,
 } from "@/config/site";
 import { getIdPath, getLanguageFromId, getUrlSlug, getAlternateUrls } from "@/i18n";
-import {
-  getCollectionRouteInfo,
-  resolveTemplatePath,
-  toTemplateKey,
-} from "@/content-logic";
+import { resolvePageType } from "@/content-logic";
+import { loadTemplateLayout, loadTemplatePage } from "@/templates";
 
 export async function getStaticPaths() {
   const allPages = await getCollection("pages", ({ data }) => !data.draft);
@@ -91,15 +87,10 @@ const alternatesAbsolute = getAlternateUrls(entry, allPages, { absolute: true })
 const alternatesRelative = getAlternateUrls(entry, allPages);
 const { Content } = await render(entry);
 
-const routeInfo = getCollectionRouteInfo(getIdPath(entry.id));
-const templatePath = resolveTemplatePath(routeInfo?.collection.template);
-const templates = import.meta.glob("/src/templates/**/*.astro");
-const templateKey = toTemplateKey(templatePath);
-const loader = templates[templateKey];
-if (!loader) {
-  throw new Error(`Template not found: ${templatePath}`);
-}
-const Template = (await loader()).default;
+const idPath = getIdPath(entry.id);
+const pageType = resolvePageType({ idPath, data: entry.data });
+const Layout = await loadTemplateLayout();
+const Page = await loadTemplatePage(pageType);
 ---
 
 <Layout
@@ -109,7 +100,7 @@ const Template = (await loader()).default;
   hreflangUrls={alternatesAbsolute}
   switcherUrls={alternatesRelative}
 >
-  <Template entry={entry}>
+  <Page entry={entry}>
     <Content />
-  </Template>
+  </Page>
 </Layout>

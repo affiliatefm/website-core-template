@@ -1,0 +1,19 @@
+---
+/**
+ * Home Page
+ * =========
+ * Default layout for the homepage.
+ */
+
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  entry: CollectionEntry<"pages">;
+}
+
+const { entry: _entry } = Astro.props;
+---
+
+<article class="tpl-home">
+  <slot />
+</article>

@@ -1,6 +1,6 @@
 /**
- * Affiliate Template - Base Styles
- * =================================
+ * Affiliate Template Styles
+ * =========================
  * Minimalist, compact design system for affiliate review sites.
  * Clean typography, subtle shadows, rounded corners.
  */
@@ -21,6 +21,49 @@
   --tpl-shadow-md: 0 4px 16px var(--tpl-shadow-color);
   --tpl-max-width: 720px;
   --tpl-header-height: 52px;
+
+  /* === Background === */
+  --tpl-bg: #fafafa;
+  --tpl-surface: #ffffff;
+  --tpl-header-bg: rgba(255, 255, 255, 0.85);
+  --tpl-footer-bg: #f5f5f5;
+  --tpl-card-bg: #ffffff;
+  --tpl-hover: rgba(0, 0, 0, 0.04);
+
+  /* === Text === */
+  --tpl-text: #171717;
+  --tpl-text-secondary: #525252;
+  --tpl-text-tertiary: #a3a3a3;
+
+  /* === Borders === */
+  --tpl-border: #e5e5e5;
+  --tpl-border-hover: #d4d4d4;
+
+  /* === Accent === */
+  --tpl-accent: #4f46e5;
+  --tpl-accent-hover: #4338ca;
+  --tpl-accent-contrast: #ffffff;
+
+  /* === Shadows === */
+  --tpl-shadow-color: rgba(0, 0, 0, 0.06);
+
+  /* === Badges === */
+  --tpl-badge-bg: #f3f4f6;
+  --tpl-badge-text: #374151;
+
+  /* === Success/Error === */
+  --tpl-success-bg: #f0fdf4;
+  --tpl-success-border: #bbf7d0;
+  --tpl-success-text: #166534;
+  --tpl-error-bg: #fef2f2;
+  --tpl-error-border: #fecaca;
+  --tpl-error-text: #991b1b;
+
+  /* === Code === */
+  --tpl-code-bg: #1e1e1e;
+  --tpl-code-text: #d4d4d4;
+  --tpl-code-inline-bg: #f3f4f6;
+  --tpl-code-inline-text: #374151;
 }
 
 /* ===== Page Layout ===== */

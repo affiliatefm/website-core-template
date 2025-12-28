@@ -1,14 +1,7 @@
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import tailwind from "@astrojs/tailwind";
-import { fileURLToPath } from "node:url";
-import {
-  siteUrl,
-  templateLayoutPath,
-  templateStylePath,
-  languages,
-  defaultLanguage,
-} from "./src/config/site.ts";
+import { siteUrl, languages, defaultLanguage } from "./src/config/site.ts";
 import { checksIntegration } from "./src/integrations/checks.ts";
 import aiTranslator from "@affiliate.fm/astro-content-ai-translator";
 
@@ -27,12 +20,4 @@ export default defineConfig({
     },
   },
 
-  vite: {
-    resolve: {
-      alias: {
-        "#layout": fileURLToPath(new URL(templateLayoutPath, import.meta.url)),
-        "#template-style": fileURLToPath(new URL(templateStylePath, import.meta.url)),
-      },
-    },
-  },
 });

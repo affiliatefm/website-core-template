@@ -57,10 +57,7 @@ export const siteUrl = "https://your-domain.com";
 export const locales = ["en", "ru"] as const;
 export const defaultLocale = "en";
 
-export const template = {
-  id: "affiliate",
-  style: "paper",
-} as const;
+export const template = "affiliate" as const;
 ```
 
 ### 2. Add UI strings
@@ -90,6 +87,24 @@ Add MDX files to `src/content/pages/`:
 | `make preview` | Preview build |
 | `make update` | Update core from upstream |
 
+## Templates
+
+Templates are convention-based folders in `src/templates/<id>/`:
+
+- `layout.astro` — site layout (imports `styles.css` if needed)
+- `pages/home.astro`, `pages/article.astro`, `pages/product.astro`
+- `styles.css` — optional template stylesheet
+- `i18n.ts` — optional template strings
+- `components/` — optional template components
+
+Template id is the folder name (use lowercase).
+
+Page selection logic:
+- Homepage (`index.mdx`) → `Home`
+- `_collections` items → `Product` (or override via `collections[].page`)
+- Everything else → `Article`
+- Per-page override: `page` in frontmatter
+
 ## Multilingual
 
 ### Same slugs (automatic linking)
@@ -112,6 +127,7 @@ Hreflang links generated automatically.
 | `link` | string | External URL (product pages) |
 | `pros` | string[] | Pros list (product pages) |
 | `cons` | string[] | Cons list (product pages) |
+| `page` | string | Page template override ("home", "article", "product") |
 
 ## Updating
 

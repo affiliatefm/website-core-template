@@ -14,14 +14,14 @@ _ai-translator:
 
 <p class="tpl-muted mb-6 text-sm">Website Core Template — от Affiliate.FM — 5 минут на прочтение</p>
 
-В этом руководстве описано, как настроить систему шаблонов, выбрать стили и расширить ядро.
+В этом руководстве описано, как настроить систему шаблонов, выбрать шаблон и расширить ядро.
 
 ## Содержание
 
 1. [Структура проекта](#project-structure)
 2. [Конфигурация](#configuration)
 3. [Система шаблонов](#template-system)
-4. [Стили оформления](#style-presets)
+4. [Стили](#стили)
 5. [Глобальные компоненты](#global-components)
 6. [Добавление контента](#adding-content)
 7. [Многоязычная настройка](#multilingual-setup)
@@ -45,13 +45,15 @@ src/
 ├── data/              # Ваша конфигурация
 │   ├── site.ts        # URL сайта, языки, выбор шаблона
 │   └── ui.ts          # Переводы интерфейса
-├── templates/         # Шаблоны и системы стилей
-│   ├── registry.ts    # Зарегистрированные шаблоны
+├── templates/         # Шаблоны
 │   └── affiliate/     # Пример шаблона
-│       ├── Layout.astro
-│       ├── template.ts
-│       ├── styles/
+│       ├── layout.astro
+│       ├── styles.css
+│       ├── i18n.ts
 │       ├── pages/
+│       │   ├── home.astro
+│       │   ├── article.astro
+│       │   └── product.astro
 │       └── components/
 ├── i18n/              # Вспомогательные функции для URL
 ├── integrations/      # Проверки сборки
@@ -67,10 +69,7 @@ export const siteUrl = "https://your-domain.com";
 export const locales = ["en", "ru"] as const;
 export const defaultLocale = "en";
 
-export const template = {
-  id: "affiliate",
-  style: "paper",
-} as const;
+export const template = "affiliate" as const;
 ```
 
 Редактируйте `src/data/ui.ts` для общих строк интерфейса:
@@ -85,38 +84,30 @@ export const uiStrings = {
 
 Шаблоны — это отдельные папки в `src/templates/`.
 
-- `Layout.astro` — глобальный обёртчик для всех страниц.
-- `pages/` содержит шаблоны страниц, такие как `Article.astro` и `Product.astro`.
+- `layout.astro` — глобальный обёртчик для всех страниц.
+- `pages/` содержит шаблоны страниц, такие как `home.astro`, `article.astro` и `product.astro`.
 - `components/` — UI-блоки, специфичные для шаблона.
-- `styles/` — пресеты стилей для шаблона.
-- `template.ts` — описание метаданных шаблона (страницы, стили, путь к layout).
+- `styles.css` — опциональный CSS шаблона.
+- `i18n.ts` — опциональные строки шаблона.
+
+Идентификатор шаблона — имя папки (используйте нижний регистр).
 
 Чтобы зарегистрировать новый шаблон:
 
 1. Добавьте папку в `src/templates/<your-template>/`.
-2. Создайте `template.ts` с полями `id`, `layout`, `pages` и `styles`.
-3. Добавьте шаблон в `src/templates/registry.ts`.
+2. Добавьте `layout.astro`, `pages/home.astro`, `pages/article.astro`, `pages/product.astro`.
+3. Добавьте `styles.css` и/или `i18n.ts`, если нужно.
 4. Выберите его в `src/data/site.ts`.
 
-## Стили оформления
+Выбор шаблона страницы:
+- Главная (`index.mdx`) → `Home`
+- Элементы `_collections` → `Product` (или задайте `collections[].page`)
+- Все остальные → `Article`
+- Переопределение для страницы: `page` в frontmatter
 
-Каждый шаблон может содержать несколько пресетов стилей. Выберите нужный в `src/data/site.ts`:
+## Стили
 
-```typescript
-export const template = {
-  id: "affiliate",
-  style: "studio",
-} as const;
-```
-
-Чтобы добавить новый стиль:
-
-1. Добавьте новый идентификатор стиля в `src/templates/<template>/template.ts`.
-2. Создайте отдельный CSS-файл в `src/templates/<template>/styles/<style>.css`.
-3. Определите переменные под `:root[data-template="<template>"][data-style="<style>"]`.
-4. (Необязательно) Импортируйте `./base.css` для общих правил.
-
-Каждый файл стиля изолирован, и в сборку попадает только выбранный. Стили могут не только переопределять переменные, но и расширять или изменять базовый CSS.
+Стили живут внутри шаблона. Добавьте `styles.css` и импортируйте его в `layout.astro`.
 
 ## Глобальные компоненты
 
@@ -151,6 +142,7 @@ description: "Meta description for SEO"
 | link | string | Внешний URL (страницы продуктов) |
 | pros | string[] | Список плюсов (страницы продуктов) |
 | cons | string[] | Список минусов (страницы продуктов) |
+| page | string | Переопределение шаблона страницы ("home", "article", "product") |
 
 ## Многоязычная настройка
 
@@ -178,7 +170,7 @@ import RatingTable from "@/templates/affiliate/components/RatingTable.astro";
 ## Дальнейшие шаги
 
 1. Настройте `src/data/site.ts`
-2. Выберите шаблон и стиль
+2. Выберите шаблон
 3. Добавьте свой контент в `src/content/pages/`
 4. Разверните сайт на вашей любимой платформе
 

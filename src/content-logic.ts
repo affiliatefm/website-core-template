@@ -1,13 +1,12 @@
 import { collections } from "@/data/site";
-import { selectedTemplate, type TemplatePageId } from "@/templates";
+import type { PageType } from "@/templates/types";
 
 type ConfiguredCollection = (typeof collections)[number];
-export type TemplateId = TemplatePageId;
 
 export type CollectionConfig = {
   collection: string;
   slug?: string;
-  template?: TemplateId;
+  page?: PageType;
 };
 
 export type CollectionName = ConfiguredCollection["collection"];
@@ -24,6 +23,15 @@ const normalizeSlug = (value?: string): string => {
   if (!value) return "";
   return normalizePath(value);
 };
+
+const normalizePageType = (value?: string): PageType | undefined => {
+  if (!value) return undefined;
+  return value.trim().toLowerCase() as PageType;
+};
+
+const HOME_PAGE_ID: PageType = "home";
+const DEFAULT_PAGE_ID: PageType = "article";
+const COLLECTION_PAGE_ID: PageType = "product";
 
 export const getCollectionByName = (name: CollectionName) =>
   collections.find((collection) => collection.collection === name);
@@ -56,37 +64,22 @@ export const getCollectionItemSlug = (route: CollectionRouteInfo) => {
   return prefix ? `${prefix}/${route.itemSlug}` : route.itemSlug;
 };
 
-export const resolveTemplatePath = (templateId?: TemplateId): string => {
-  if (selectedTemplate.pages.length === 0) {
-    throw new Error(
-      `Template "${selectedTemplate.id}" has no pages configured. ` +
-        "Check src/templates."
-    );
+export const resolvePageType = (input: {
+  idPath: string;
+  data: { page?: string; permalink?: string };
+}): PageType => {
+  const explicit = normalizePageType(input.data.page);
+  if (explicit) return explicit;
+
+  const normalizedIdPath = normalizePath(input.idPath);
+  const permalink = input.data.permalink?.trim();
+  const isHome = normalizedIdPath === "index" || permalink === "/";
+  if (isHome) return HOME_PAGE_ID;
+
+  const route = getCollectionRouteInfo(normalizedIdPath);
+  if (route) {
+    return normalizePageType(route.collection.page) ?? COLLECTION_PAGE_ID;
   }
 
-  if (!templateId) {
-    return selectedTemplate.pages[0].path;
-  }
-
-  const selected = selectedTemplate.pages.find(
-    (template) => template.id === templateId
-  );
-  if (!selected) {
-    throw new Error(
-      `Unknown page template "${templateId}" for "${selectedTemplate.id}". ` +
-        "Check src/templates."
-    );
-  }
-
-  return selected.path;
-};
-
-export const toTemplateKey = (value: string): string => {
-  const normalized = normalizePath(value).replace(/^\./, "");
-
-  if (normalized.startsWith("/src/")) return normalized;
-  if (normalized.startsWith("src/")) return `/${normalized}`;
-  if (normalized.startsWith("/")) return normalized;
-
-  return `/${normalized}`;
+  return DEFAULT_PAGE_ID;
 };

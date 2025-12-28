@@ -1,58 +1,79 @@
-import { template as siteTemplate } from "../data/site";
-import { templateRegistry, type TemplateId, type TemplatePageId, type TemplateStyleId } from "./registry";
-import type { TemplateDefinition, TemplateStyle } from "./types";
+import { template as siteTemplate } from "@/data/site";
+import type { PageType } from "./types";
 
-export { templateRegistry };
-export type { TemplateDefinition } from "./types";
-export type { TemplateId, TemplatePageId, TemplateStyleId } from "./registry";
+type ModuleLoader<T = unknown> = () => Promise<T>;
 
-const normalizeId = (value: string) => value.trim();
+const normalizeId = (value: string) => value.trim().toLowerCase();
 
-const resolveTemplate = (id: string): TemplateDefinition => {
-  const normalized = normalizeId(id);
-  const found = templateRegistry.find((template) => template.id === normalized);
-  if (!found) {
-    const available = templateRegistry.map((template) => template.id).join(", ");
+const layoutModules = import.meta.glob("./*/layout.astro");
+const pageModules = import.meta.glob("./*/pages/*.astro");
+
+const layoutLoaders = new Map<string, ModuleLoader>();
+for (const [path, loader] of Object.entries(layoutModules)) {
+  const match = path.match(/^\.\/([^/]+)\/layout\.astro$/);
+  if (!match) continue;
+  layoutLoaders.set(normalizeId(match[1]), loader as ModuleLoader);
+}
+
+const pageLoaders = new Map<string, Map<string, ModuleLoader>>();
+for (const [path, loader] of Object.entries(pageModules)) {
+  const match = path.match(/^\.\/([^/]+)\/pages\/([^/]+)\.astro$/);
+  if (!match) continue;
+  const [, templateId, pageName] = match;
+  const templateKey = normalizeId(templateId);
+  const pageId = normalizeId(pageName);
+  if (!pageLoaders.has(templateKey)) {
+    pageLoaders.set(templateKey, new Map());
+  }
+  pageLoaders.get(templateKey)!.set(pageId, loader as ModuleLoader);
+}
+
+const DEFAULT_PAGE_ID: PageType = "article";
+
+const resolveTemplateId = (templateId?: string): string => {
+  const normalized = normalizeId(templateId ?? siteTemplate);
+  if (!layoutLoaders.has(normalized)) {
+    const available = [...layoutLoaders.keys()].sort().join(", ");
     throw new Error(
-      `Unknown template "${id}". Available templates: ${available || "(none)"}.`
+      `Unknown template "${templateId ?? siteTemplate}". ` +
+        `Available templates: ${available || "(none)"}.`
     );
   }
-  return found;
+  return normalized;
 };
 
-const resolveStyle = (
-  template: TemplateDefinition,
-  styleId?: string
-): TemplateStyle => {
-  if (template.styles.length === 0) {
-    throw new Error(`Template "${template.id}" has no styles configured.`);
+const resolvePageLoader = (templateId: string, pageId: PageType): ModuleLoader => {
+  const pages = pageLoaders.get(templateId);
+  if (!pages || pages.size === 0) {
+    throw new Error(`Template "${templateId}" has no page templates.`);
   }
 
-  if (!styleId) {
-    return template.styles[0];
-  }
-
-  const normalized = normalizeId(styleId);
-  const found = template.styles.find((style) => style.id === normalized);
-  if (!found) {
-    const available = template.styles.map((style) => style.id).join(", ");
+  const normalized = normalizeId(pageId);
+  const loader = pages.get(normalized) ?? pages.get(DEFAULT_PAGE_ID);
+  if (!loader) {
+    const available = [...pages.keys()].sort().join(", ");
     throw new Error(
-      `Unknown style "${styleId}" for template "${template.id}". ` +
-        `Available styles: ${available || "(none)"}.`
+      `Template "${templateId}" doesn't provide page "${pageId}". ` +
+        `Available pages: ${available || "(none)"}.`
     );
   }
-  return found;
+  return loader;
 };
 
-export const selectedTemplate = resolveTemplate(siteTemplate.id);
-export const selectedTemplateStyle = resolveStyle(
-  selectedTemplate,
-  siteTemplate.style
-);
+export function getTemplateId(): string {
+  return resolveTemplateId();
+}
 
-export const templateId = selectedTemplate.id as TemplateId;
-export const templateStyleId = selectedTemplateStyle.id as TemplateStyleId;
-export const templateStylePath = selectedTemplateStyle.path;
-export const templateLayoutPath = selectedTemplate.layout;
-export const templatePages = selectedTemplate.pages;
-export const templateI18nPath = selectedTemplate.i18n;
+export async function loadTemplateLayout(templateId?: string) {
+  const resolved = resolveTemplateId(templateId);
+  const loader = layoutLoaders.get(resolved)!;
+  const module = (await loader()) as { default: unknown };
+  return module.default;
+}
+
+export async function loadTemplatePage(pageId: PageType, templateId?: string) {
+  const resolved = resolveTemplateId(templateId);
+  const loader = resolvePageLoader(resolved, pageId);
+  const module = (await loader()) as { default: unknown };
+  return module.default;
+}

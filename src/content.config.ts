@@ -51,6 +51,12 @@ const pages = defineCollection({
     permalink: z.string().optional(),
 
     /**
+     * Page template type (optional).
+     * Example: page: "home" | "article" | "product"
+     */
+    page: z.string().optional(),
+
+    /**
      * Alternate language mappings (optional).
      * Only needed when translations have different slugs.
      * Example: alternates: { en: "about", ru: "o-nas" }

@@ -1,11 +1,12 @@
 ---
-import Layout from "#layout";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { languages, defaultLanguage, type LanguageCode } from "@/config/site";
 import { t } from "@/i18n";
+import { loadTemplateLayout } from "@/templates";
 
 const seg = Astro.url.pathname.split("/")[1];
 const lang: LanguageCode = languages.includes(seg as LanguageCode) ? (seg as LanguageCode) : defaultLanguage;
+const Layout = await loadTemplateLayout();
 ---
 
 <Layout title="404" language={lang}>
