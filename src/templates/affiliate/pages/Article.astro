@@ -1,5 +1,12 @@
 ---
+/**
+ * Article Page
+ * ============
+ * Clean article layout for blog posts and guides.
+ */
+
 import type { CollectionEntry } from "astro:content";
+
 interface Props {
   entry: CollectionEntry<"pages">;
 }
@@ -7,4 +14,6 @@ interface Props {
 const { entry: _entry } = Astro.props;
 ---
 
-<slot />
+<article>
+  <slot />
+</article>

@@ -1,4 +1,10 @@
 ---
+/**
+ * Product Page
+ * ============
+ * Clean product review layout with CTA button.
+ */
+
 import type { CollectionEntry } from "astro:content";
 import { getLanguageFromId } from "@/i18n";
 import { tt } from "../i18n";
@@ -44,19 +50,24 @@ const getRatingLink = (
 const link = directLink ?? getRatingLink(rating);
 ---
 
-<section class="section">
-  <h1>{title}</h1>
-  {description && <p class="tpl-muted mb-4">{description}</p>}
-  {link && (
-    <a
-      href={link}
-      target="_blank"
-      rel="noopener"
-      class="tpl-button no-underline"
-    >
-      {tpl.visitLink} ->
-    </a>
-  )}
-</section>
+<article>
+  <header class="tpl-product-header">
+    <h1 class="tpl-product-title">{title}</h1>
+    {description && <p class="tpl-product-desc">{description}</p>}
+    {link && (
+      <a
+        href={link}
+        target="_blank"
+        rel="noopener"
+        class="tpl-button"
+      >
+        {tpl.visitLink}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 17L17 7M17 7H7M17 7V17"/>
+        </svg>
+      </a>
+    )}
+  </header>
 
-<slot />
+  <slot />
+</article>

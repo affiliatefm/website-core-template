@@ -22,7 +22,7 @@ export const defaultLocale = "en";
 // Available styles (affiliate): paper, studio (keep in sync with src/templates/affiliate/template.ts)
 export const template = {
   id: "affiliate",
-  style: "paper",
+  style: "light",
 } as const;
 
 // Collections

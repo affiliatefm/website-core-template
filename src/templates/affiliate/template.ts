@@ -17,14 +17,14 @@ export const affiliateTemplate = {
   ],
   styles: [
     {
-      id: "paper",
-      label: "Paper",
-      path: "./src/templates/affiliate/styles/paper.css",
+      id: "light",
+      label: "Light",
+      path: "./src/templates/affiliate/styles/light.css",
     },
     {
-      id: "studio",
-      label: "Studio",
-      path: "./src/templates/affiliate/styles/studio.css",
+      id: "dark",
+      label: "Dark",
+      path: "./src/templates/affiliate/styles/dark.css",
     },
   ],
 } as const satisfies TemplateDefinition;

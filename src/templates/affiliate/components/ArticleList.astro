@@ -2,7 +2,7 @@
 /**
  * Article List
  * ============
- * Clean article listing.
+ * Clean, compact article listing.
  */
 
 import type { Article } from "../types";
@@ -24,17 +24,18 @@ function formatDate(date: Date | string): string {
 
 <div class="tpl-divider">
   {articles.map((article) => (
-    <article class="py-4 first:pt-0 last:pb-0">
-      <div class="tpl-muted mb-1 flex items-center gap-2 text-xs">
-        {article.category && <span class="tpl-link font-medium">{article.category}</span>}
+    <a href={article.href} class="tpl-article-item">
+      <div class="tpl-article-meta">
+        {article.category && (
+          <span class="tpl-article-category">{article.category}</span>
+        )}
+        {article.category && article.date && <span>·</span>}
         {article.date && <time>{formatDate(article.date)}</time>}
       </div>
-      <h3 class="mb-1 font-medium">
-        <a href={article.href} class="tpl-link">{article.title}</a>
-      </h3>
+      <h3 class="tpl-article-title">{article.title}</h3>
       {article.description && (
-        <p class="tpl-muted line-clamp-2 text-sm">{article.description}</p>
+        <p class="tpl-article-desc">{article.description}</p>
       )}
-    </article>
+    </a>
   ))}
 </div>

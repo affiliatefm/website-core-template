@@ -3,15 +3,12 @@
  * ================================
  * Internal translations for the affiliate template.
  * These are part of the template, not user data.
- * 
- * Follows the same pattern as @/i18n for consistency.
  */
 
 import { defaultLanguage, type LanguageCode } from "../../config/site";
 
 export interface TemplateStrings {
   home: string;
-  docs: string;
   software: string;
   websites: string;
   productLabel: string;
@@ -23,7 +20,6 @@ export interface TemplateStrings {
 export const translations: Record<string, TemplateStrings> = {
   en: {
     home: "Home",
-    docs: "Docs",
     software: "Software",
     websites: "Websites",
     productLabel: "Product",
@@ -33,13 +29,21 @@ export const translations: Record<string, TemplateStrings> = {
   },
   ru: {
     home: "Главная",
-    docs: "Документация",
     software: "Софт",
     websites: "Сайты",
     productLabel: "Продукт",
     linkLabel: "Ссылка",
     visitLink: "Перейти",
     backToHome: "На главную",
+  },
+  ja: {
+    home: "ホーム",
+    software: "ソフトウェア",
+    websites: "ウェブサイト",
+    productLabel: "製品",
+    linkLabel: "リンク",
+    visitLink: "訪問",
+    backToHome: "ホームに戻る",
   },
 };
 

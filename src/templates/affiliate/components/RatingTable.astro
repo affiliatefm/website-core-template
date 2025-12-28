@@ -2,7 +2,7 @@
 /**
  * Rating Table
  * ============
- * Product comparison table for a single collection.
+ * Clean product comparison table.
  */
 
 import { getCollection } from "astro:content";
@@ -132,55 +132,49 @@ const ratingData = visible.map((entry) => {
 ---
 
 {ratingData.length > 0 && (
-  <div class="overflow-x-auto -mx-5 px-5">
-    <table class="tpl-table w-full text-sm">
+  <div class="tpl-scroll-x">
+    <table class="tpl-table">
       <thead>
-        <tr class="text-left">
-          <th class="pb-3 min-w-[16rem]">{nameColumnLabel}</th>
+        <tr>
+          <th style="min-width: 12rem;">{nameColumnLabel}</th>
           {ratingColumns.map((column) => (
-            <th class="pb-3">{column.label}</th>
+            <th>{column.label}</th>
           ))}
-          <th class="pb-3 w-36 text-right">{tpl.linkLabel}</th>
+          <th style="width: 7rem; text-align: right;">{tpl.linkLabel}</th>
         </tr>
       </thead>
       <tbody>
-        {ratingData.map(({ entry, link, name, values }, index) => {
+        {ratingData.map(({ entry, link, name, values }) => {
           const pageUrl = getPageUrl(entry);
           const { title } = entry.data;
           const displayTitle = name ?? title;
-          const ratingValues = values;
           return (
-            <tr
-              class:list={[
-                "group",
-              ]}
-            >
-              <td class="py-4">
-                <div class="min-w-0">
-                  <div class="flex items-center gap-2">
-                    <a href={pageUrl} class="font-medium tpl-link">
-                      {displayTitle}
-                    </a>
-                  </div>
-                </div>
+            <tr>
+              <td>
+                <a href={pageUrl} class="tpl-link" style="font-weight: 500;">
+                  {displayTitle}
+                </a>
               </td>
               {ratingColumns.map((column) => (
-                <td class="py-4 text-sm">
-                  <span class="tpl-muted">{ratingValues.get(column.key) ?? "-"}</span>
+                <td class="tpl-text-muted">
+                  {values.get(column.key) ?? "—"}
                 </td>
               ))}
-              <td class="py-4 text-right">
+              <td style="text-align: right;">
                 {link ? (
                   <a
                     href={link}
                     target="_blank"
                     rel="noopener"
-                    class="tpl-button"
+                    class="tpl-button tpl-button-sm"
                   >
-                    {tpl.visitLink} ->
+                    {tpl.visitLink}
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M7 17L17 7M17 7H7M17 7V17"/>
+                    </svg>
                   </a>
                 ) : (
-                  <span class="tpl-muted text-xs">-</span>
+                  <span class="tpl-text-tertiary">—</span>
                 )}
               </td>
             </tr>
@@ -189,4 +183,4 @@ const ratingData = visible.map((entry) => {
       </tbody>
     </table>
   </div>
-)
+)}

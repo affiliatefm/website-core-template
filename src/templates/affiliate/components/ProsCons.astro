@@ -2,34 +2,118 @@
 /**
  * Pros & Cons
  * ===========
- * Side-by-side comparison for reviews.
+ * Clean side-by-side comparison for reviews.
  */
 
 interface Props {
   pros?: string[];
   cons?: string[];
+  prosTitle?: string;
+  consTitle?: string;
 }
 
-const { pros = [], cons = [] } = Astro.props;
+const { 
+  pros = [], 
+  cons = [], 
+  prosTitle = "Pros", 
+  consTitle = "Cons" 
+} = Astro.props;
+
+const hasPros = pros.length > 0;
+const hasCons = cons.length > 0;
 ---
 
-{(pros.length > 0 || cons.length > 0) && (
-  <div class="my-6 grid gap-4 sm:grid-cols-2">
-    {pros.length > 0 && (
-      <div class="tpl-positive rounded-xl p-4">
-        <h4 class="mb-2 text-sm font-semibold">Pros</h4>
-        <ul class="list-none space-y-1 pl-0 text-sm">
-          {pros.map((item) => <li>- {item}</li>)}
+{(hasPros || hasCons) && (
+  <div class="proscons-grid">
+    {hasPros && (
+      <div class="tpl-pros proscons-box">
+        <h4 class="tpl-pros-title proscons-title">
+          <svg class="proscons-icon" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          </svg>
+          {prosTitle}
+        </h4>
+        <ul class="proscons-list">
+          {pros.map((item) => <li>{item}</li>)}
         </ul>
       </div>
     )}
-    {cons.length > 0 && (
-      <div class="tpl-negative rounded-xl p-4">
-        <h4 class="mb-2 text-sm font-semibold">Cons</h4>
-        <ul class="list-none space-y-1 pl-0 text-sm">
-          {cons.map((item) => <li>- {item}</li>)}
+    {hasCons && (
+      <div class="tpl-cons proscons-box">
+        <h4 class="tpl-cons-title proscons-title">
+          <svg class="proscons-icon" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+          {consTitle}
+        </h4>
+        <ul class="proscons-list">
+          {cons.map((item) => <li>{item}</li>)}
         </ul>
       </div>
     )}
   </div>
 )}
+
+<style>
+  .proscons-grid {
+    display: grid;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+
+  @media (min-width: 640px) {
+    .proscons-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .proscons-box {
+    padding: 1rem;
+  }
+
+  .proscons-title {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    margin: 0 0 0.625rem 0;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .proscons-icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+  }
+
+  .proscons-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .proscons-list li {
+    position: relative;
+    padding-left: 0.875rem;
+    margin-bottom: 0.375rem;
+  }
+
+  .proscons-list li:last-child {
+    margin-bottom: 0;
+  }
+
+  .proscons-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.5em;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.4;
+  }
+</style>
