@@ -39,11 +39,11 @@ src/
 ├── config/            #    Runtime config (auto-generated)
 ├── i18n/              #    URL helpers
 ├── integrations/      #    Build checks
-├── templates/affiliate/ # Default template
+├── templates/affiliate/ # Core template
 └── pages/             #    Astro router
 ```
 
-**Your files** (✏️) — edit freely, never touched by updates  
+**Your files** (✏️) — edit freely, preserved by updates  
 **Core files** — updated via `make update`
 
 ## Setup
@@ -89,7 +89,10 @@ Add MDX files to `src/content/pages/`:
 
 ## Templates
 
-Templates are convention-based folders in `src/templates/<id>/`:
+Templates are convention-based folders in `src/templates/`:
+
+- Core templates: `src/templates/<id>/` (updated by `make update`)
+- User templates: `src/templates/_<id>/` (preserved by `make update`)
 
 - `layout.astro` — site layout (imports `styles.css` if needed)
 - `pages/home.astro`, `pages/article.astro`, `pages/product.astro`
@@ -98,6 +101,7 @@ Templates are convention-based folders in `src/templates/<id>/`:
 - `components/` — optional template components
 
 Template id is the folder name (use lowercase).
+User templates keep the leading underscore in `src/data/site.ts`.
 
 Page selection logic:
 - Homepage (`index.mdx`) → `Home`
@@ -139,7 +143,7 @@ make update-check
 make update
 ```
 
-**Preserved:** `src/content/`, `src/data/`, `public/`  
+**Preserved:** `src/content/`, `src/data/`, `src/templates/_*`, `public/`  
 **Updated:** everything else
 
 ## Build Checks

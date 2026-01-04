@@ -12,7 +12,7 @@ _ai-translator:
 
 # Документация
 
-<p class="tpl-muted mb-6 text-sm">Website Core Template — от Affiliate.FM — 5 минут на прочтение</p>
+<p class="tpl-text-muted mb-6 text-sm">Website Core Template — от Affiliate.FM — 5 минут на прочтение</p>
 
 В этом руководстве описано, как настроить систему шаблонов, выбрать шаблон и расширить ядро.
 
@@ -82,7 +82,10 @@ export const uiStrings = {
 
 ## Система шаблонов
 
-Шаблоны — это отдельные папки в `src/templates/`.
+Шаблоны — это отдельные папки в `src/templates/`:
+
+- Шаблоны ядра: `src/templates/<id>/` (обновляются через `make update`)
+- Пользовательские шаблоны: `src/templates/_<id>/` (сохраняются)
 
 - `layout.astro` — глобальный обёртчик для всех страниц.
 - `pages/` содержит шаблоны страниц, такие как `home.astro`, `article.astro` и `product.astro`.
@@ -90,11 +93,12 @@ export const uiStrings = {
 - `styles.css` — опциональный CSS шаблона.
 - `i18n.ts` — опциональные строки шаблона.
 
-Идентификатор шаблона — имя папки (используйте нижний регистр).
+Идентификатор шаблона — имя папки (используйте нижний регистр). Для пользовательских
+шаблонов ведущий символ `_` сохраняется в `src/data/site.ts`.
 
 Чтобы зарегистрировать новый шаблон:
 
-1. Добавьте папку в `src/templates/<your-template>/`.
+1. Добавьте папку в `src/templates/_<your-template>/`.
 2. Добавьте `layout.astro`, `pages/home.astro`, `pages/article.astro`, `pages/product.astro`.
 3. Добавьте `styles.css` и/или `i18n.ts`, если нужно.
 4. Выберите его в `src/data/site.ts`.
@@ -157,7 +161,10 @@ Hreflang-ссылки генерируются автоматически.
 
 ## Компоненты шаблонов
 
-Компоненты, специфичные для шаблона, импортируются из `src/templates/<template>/components`:
+Компоненты шаблонов импортируются из:
+
+- `src/templates/<template>/components` (ядро)
+- `src/templates/_<template>/components` (пользовательские)
 
 ```mdx
 import RatingTable from "@/templates/affiliate/components/RatingTable.astro";

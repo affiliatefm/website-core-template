@@ -10,7 +10,7 @@ _translateTo: all
 
 # Documentation
 
-<p class="tpl-muted mb-6 text-sm">Website Core Template - By Affiliate.FM - 5 min read</p>
+<p class="tpl-text-muted mb-6 text-sm">Website Core Template - By Affiliate.FM - 5 min read</p>
 
 This guide covers how to configure the template system, choose a template, and extend the core.
 
@@ -80,7 +80,10 @@ export const uiStrings = {
 
 ## Template System
 
-Templates are self-contained folders under `src/templates/`.
+Templates are self-contained folders in `src/templates/`:
+
+- Core templates: `src/templates/<id>/` (updated by `make update`)
+- User templates: `src/templates/_<id>/` (preserved by `make update`)
 
 - `layout.astro` is the global wrapper for all pages.
 - `pages/` holds page templates like `home.astro`, `article.astro`, and `product.astro`.
@@ -88,11 +91,12 @@ Templates are self-contained folders under `src/templates/`.
 - `styles.css` is an optional template stylesheet.
 - `i18n.ts` is an optional template strings file.
 
-Template id is the folder name (use lowercase).
+Template id is the folder name (use lowercase). User templates keep the leading
+underscore in `src/data/site.ts`.
 
 To register a new template:
 
-1. Add a folder under `src/templates/<your-template>/`.
+1. Add a folder under `src/templates/_<your-template>/`.
 2. Add `layout.astro`, `pages/home.astro`, `pages/article.astro`, `pages/product.astro`.
 3. Add `styles.css` and/or `i18n.ts` if needed.
 4. Select it in `src/data/site.ts`.
@@ -155,7 +159,10 @@ Hreflang links are generated automatically.
 
 ## Template Components
 
-Template-specific components are imported from `src/templates/<template>/components`:
+Template-specific components are imported from:
+
+- `src/templates/<template>/components` (core templates)
+- `src/templates/_<template>/components` (user templates)
 
 ```mdx
 import RatingTable from "@/templates/affiliate/components/RatingTable.astro";

@@ -30,7 +30,8 @@ const pages = defineCollection({
         .replace(/\\/g, "/") // Windows → POSIX
         .replace(/\.mdx$/, ""),
   }),
-  schema: z.object({
+  schema: z
+    .object({
     /**
      * Page title (required).
      * Used in <title> tag and headings.
@@ -113,7 +114,9 @@ const pages = defineCollection({
      * AI metadata (for astro-content-ai-translator / ai tooling).
      */
     _ai: z.record(z.string(), z.unknown()).optional(),
-  }),
+  })
+    // Allow custom frontmatter fields for user templates.
+    .passthrough(),
 });
 
 export const collections = { pages };

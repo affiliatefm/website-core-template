@@ -12,7 +12,7 @@ _ai-translator:
 
 # ドキュメント
 
-<p class="tpl-muted mb-6 text-sm">Website Core Template - By Affiliate.FM - 読了時間 5分</p>
+<p class="tpl-text-muted mb-6 text-sm">Website Core Template - By Affiliate.FM - 読了時間 5分</p>
 
 このガイドでは、テンプレートシステムの設定方法、テンプレートの選択、コアの拡張方法について説明します。
 
@@ -82,7 +82,10 @@ export const uiStrings = {
 
 ## テンプレートシステム
 
-テンプレートは `src/templates/` 以下の独立したフォルダです。
+テンプレートは `src/templates/` に配置します:
+
+- コアテンプレート: `src/templates/<id>/`（`make update` で更新）
+- ユーザーテンプレート: `src/templates/_<id>/`（保持される）
 
 - `layout.astro` は全ページ共通のラッパーです。
 - `pages/` には `home.astro`, `article.astro`, `product.astro` を配置します。
@@ -90,11 +93,12 @@ export const uiStrings = {
 - `styles.css` はテンプレート専用のCSSです（任意）。
 - `i18n.ts` はテンプレートの文字列定義です（任意）。
 
-テンプレートIDはフォルダ名です（小文字推奨）。
+テンプレートIDはフォルダ名です（小文字推奨）。ユーザーテンプレートは先頭の
+`_` を `src/data/site.ts` にそのまま記載します。
 
 新しいテンプレートを登録するには:
 
-1. `src/templates/<your-template>/` にフォルダを追加します。
+1. `src/templates/_<your-template>/` にフォルダを追加します。
 2. `layout.astro`, `pages/home.astro`, `pages/article.astro`, `pages/product.astro` を追加します。
 3. 必要なら `styles.css` と `i18n.ts` を追加します。
 4. `src/data/site.ts` で選択します。
@@ -157,7 +161,10 @@ Hreflangリンクは自動生成されます。
 
 ## テンプレートコンポーネント
 
-テンプレート固有のコンポーネントは `src/templates/<template>/components` からインポートします:
+テンプレート固有のコンポーネントは以下からインポートします:
+
+- `src/templates/<template>/components`（コア）
+- `src/templates/_<template>/components`（ユーザー）
 
 ```mdx
 import RatingTable from "@/templates/affiliate/components/RatingTable.astro";

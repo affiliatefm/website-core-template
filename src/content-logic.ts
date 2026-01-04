@@ -9,7 +9,9 @@ export type CollectionConfig = {
   page?: PageType;
 };
 
-export type CollectionName = ConfiguredCollection["collection"];
+export type CollectionName = [ConfiguredCollection] extends [never]
+  ? string
+  : ConfiguredCollection["collection"];
 
 export type CollectionRouteInfo = {
   collection: CollectionConfig;

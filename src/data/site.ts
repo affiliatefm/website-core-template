@@ -17,6 +17,7 @@ export const defaultLocale = "en";
 
 // Template system
 // - value: template folder name from src/templates (lowercase)
+// - user templates should be prefixed with "_" and are preserved on update
 // Available templates: affiliate
 export const template = "affiliate" as const;
 
