@@ -162,8 +162,8 @@ npx astro add react
 
 ## Related
 
-- [astro-content-ai-translator](https://github.com/affiliatefm/astro-content-ai-translator) — AI-powered translation for Astro. Auto-generates localized content from your content/ directory.
-- [astro-content-ai-enhancer](https://github.com/affiliatefm/astro-content-ai-enhancer) — AI assistant that turns raw Markdown into structured, well-formatted pages while keeping the original voice.
+- [astro-content-ai-translator](https://affiliate.fm/tools/astro-content-ai-translator/) — AI-powered translation for Astro. Auto-generates localized content from your content/ directory.
+- [astro-content-ai-enhancer](https://affiliate.fm/tools/astro-content-ai-enhancer/) — AI assistant that turns raw Markdown into structured, well-formatted pages while keeping the original voice.
 
 ## Author
 

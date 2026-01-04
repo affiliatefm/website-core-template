@@ -5,7 +5,7 @@
   "description": "A reusable, updatable static site generator by Affiliate.FM. Build fast, multilingual websites with Astro 5.",
   "author": "Affiliate.FM <hello@affiliate.fm>",
   "license": "MIT",
-  "homepage": "https://github.com/affiliatefm/website-core-template#readme",
+  "homepage": "https://affiliate.fm/tools/website-core-template/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/affiliatefm/website-core-template.git"
