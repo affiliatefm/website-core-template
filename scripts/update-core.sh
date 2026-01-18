@@ -42,6 +42,8 @@ const core = JSON.parse(fs.readFileSync('$TEMP/package.json'));
 const merged = {
   ...core,
   name: user.name,
+  homepage: user.homepage || core.homepage,
+  repository: user.repository || core.repository,
   dependencies: { ...core.dependencies, ...user.dependencies },
   devDependencies: { ...core.devDependencies, ...user.devDependencies },
 };
