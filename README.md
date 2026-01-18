@@ -162,6 +162,7 @@ npx astro add react
 
 ## Related
 
+- [ai-content-rewriter](https://affiliate.fm/tools/ai-content-rewriter/) — AI-powered content rewriting tool. Generate unique variants while preserving meaning and SEO value.
 - [astro-content-ai-translator](https://affiliate.fm/tools/astro-content-ai-translator/) — AI-powered translation for Astro. Auto-generates localized content from your content/ directory.
 - [astro-content-ai-enhancer](https://affiliate.fm/tools/astro-content-ai-enhancer/) — AI assistant that turns raw Markdown into structured, well-formatted pages while keeping the original voice.
 
