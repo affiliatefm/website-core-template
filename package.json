@@ -30,7 +30,7 @@
     "format": "prettier --write \"src/**/*.{astro,ts,js,mjs,json,md,mdx}\""
   },
   "dependencies": {
-    "@affiliate.fm/ai-content-rewriter": "^0.4.0",
+    "@affiliate.fm/ai-content-rewriter": "^1.0.0",
     "@affiliate.fm/astro-content-ai-translator": "^0.4.5",
     "@astrojs/mdx": "^4.3.13",
     "@astrojs/preact": "^4.0.0",
