@@ -48,7 +48,7 @@ const merged = {
   devDependencies: { ...core.devDependencies, ...user.devDependencies },
 };
 // User deps override core deps (user knows better for their project)
-fs.writeFileSync('package.json', JSON.stringify(merged, null, 2));
+fs.writeFileSync('package.json', JSON.stringify(merged, null, 2) + '\\n');
 "
 
 # Restore user data
