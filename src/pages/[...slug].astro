@@ -45,36 +45,41 @@ export async function getStaticPaths() {
   for (const entry of allPages) {
     const language = getLanguageFromId(entry.id);
     const slug = getUrlSlug(entry);
+    const isVariantOnly = Boolean((entry.data as any).variantOnly);
 
-    // Check for duplicate permalinks within the same language
-    const languageSlugMap = slugsByLanguage.get(language)!;
-    if (languageSlugMap.has(slug)) {
-      const existingId = languageSlugMap.get(slug);
-      throw new Error(
-        `Duplicate permalink "${slug || "/"}" for language "${language}": ` +
-          `found in both "${existingId}" and "${entry.id}". ` +
-          `Use unique permalinks or rename files.`
-      );
+    if (!isVariantOnly) {
+      // Check for duplicate permalinks within the same language
+      const languageSlugMap = slugsByLanguage.get(language)!;
+      if (languageSlugMap.has(slug)) {
+        const existingId = languageSlugMap.get(slug);
+        throw new Error(
+          `Duplicate permalink "${slug || "/"}" for language "${language}": ` +
+            `found in both "${existingId}" and "${entry.id}". ` +
+            `Use unique permalinks or rename files.`
+        );
+      }
+      languageSlugMap.set(slug, entry.id);
     }
-    languageSlugMap.set(slug, entry.id);
 
-    if (language === defaultLanguage) {
-      // Default language: no prefix
-      // /about, /docs/getting-started, / (empty slug)
-      paths.push({
-        params: { slug: slug || undefined },
-        props: { entry, language, allPages },
-      });
-      addPath(slug, entry.id, "core");
-    } else {
-      // Non-default language: with prefix
-      // /ru, /ru/about, /ru/docs/getting-started
-      const fullSlug = slug ? `${language}/${slug}` : language;
-      paths.push({
-        params: { slug: fullSlug },
-        props: { entry, language, allPages },
-      });
-      addPath(fullSlug, entry.id, "core");
+    if (!isVariantOnly) {
+      if (language === defaultLanguage) {
+        // Default language: no prefix
+        // /about, /docs/getting-started, / (empty slug)
+        paths.push({
+          params: { slug: slug || undefined },
+          props: { entry, language, allPages },
+        });
+        addPath(slug, entry.id, "core");
+      } else {
+        // Non-default language: with prefix
+        // /ru, /ru/about, /ru/docs/getting-started
+        const fullSlug = slug ? `${language}/${slug}` : language;
+        paths.push({
+          params: { slug: fullSlug },
+          props: { entry, language, allPages },
+        });
+        addPath(fullSlug, entry.id, "core");
+      }
     }
 
     const idPath = getIdPath(entry.id);
@@ -98,9 +103,10 @@ export async function getStaticPaths() {
   }
 
   // Validate: no default language page should conflict with language prefixes
-  const defaultLanguagePages = allPages.filter(
-    (p) => getLanguageFromId(p.id) === defaultLanguage
-  );
+  const defaultLanguagePages = allPages.filter((p) => {
+    if (getLanguageFromId(p.id) !== defaultLanguage) return false;
+    return !(p.data as any).variantOnly;
+  });
   const conflicts = defaultLanguagePages.filter((p) => {
     const slug = getUrlSlug(p);
     return secondaryLanguages.includes(slug as LanguageCode);
