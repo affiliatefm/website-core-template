@@ -58,7 +58,7 @@ const buildDefaultSlug = (prefix: string, context: RouteVariantContext): string 
   if (context.language === defaultLanguage) {
     return joinPath(normalizedPrefix, context.slug);
   }
-  return joinPath(normalizedPrefix, context.language, context.slug);
+  return joinPath(context.language, normalizedPrefix, context.slug);
 };
 
 export function resolveRouteVariants(
