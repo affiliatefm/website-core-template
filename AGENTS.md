@@ -6,6 +6,7 @@ Default behavior:
 - Treat core files as read-only in site repos.
 - Only edit user-owned areas listed below unless the user explicitly asks to change core.
 - If a change must land in the core, do not edit core files in the site repo. Instead, ask the maintainer to update `website-core-template` and then run `make update` in the site.
+- For custom routes, prefer `src/data/routes.ts` plus user templates instead of adding files under `src/pages/` in site repos.
 
 User-owned areas (preserved by update):
 - `src/content/`

@@ -65,7 +65,10 @@ NODE
 
 # Restore user data
 [[ -d "$TEMP/_user/content" ]] && rm -rf src/content && cp -r "$TEMP/_user/content" src/
-[[ -d "$TEMP/_user/data" ]] && rm -rf src/data && cp -r "$TEMP/_user/data" src/
+if [[ -d "$TEMP/_user/data" ]]; then
+  mkdir -p src/data
+  cp -r "$TEMP/_user/data/." src/data/
+fi
 if [[ -d "$TEMP/_user/templates" ]]; then
   mkdir -p src/templates
   for dir in "$TEMP/_user/templates"/_*; do
