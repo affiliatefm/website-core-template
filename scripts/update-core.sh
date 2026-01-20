@@ -33,6 +33,13 @@ cp "$TEMP/tsconfig.json" .
 cp "$TEMP/Makefile" .
 [[ -f "$TEMP/.prettierrc" ]] && cp "$TEMP/.prettierrc" .
 [[ -f "$TEMP/.jsbeautifyrc" ]] && cp "$TEMP/.jsbeautifyrc" .
+[[ -f "$TEMP/AGENTS.md" ]] && cp "$TEMP/AGENTS.md" .
+[[ -f "$TEMP/CLAUDE.md" ]] && cp "$TEMP/CLAUDE.md" .
+[[ -f "$TEMP/.cursorrules" ]] && cp "$TEMP/.cursorrules" .
+if [[ -f "$TEMP/.github/copilot-instructions.md" ]]; then
+  mkdir -p .github
+  cp "$TEMP/.github/copilot-instructions.md" .github/
+fi
 
 # Merge package.json (keep user name and extra deps, update core deps)
 node -e "
