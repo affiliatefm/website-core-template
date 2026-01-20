@@ -42,10 +42,15 @@ if [[ -f "$TEMP/.github/copilot-instructions.md" ]]; then
 fi
 
 # Merge package.json (keep user name and extra deps, update core deps)
-node -e "
+TEMP_DIR="$TEMP" node <<'NODE'
 const fs = require('fs');
-const user = JSON.parse(fs.readFileSync('$TEMP/_user/package.json'));
-const core = JSON.parse(fs.readFileSync('$TEMP/package.json'));
+const path = require('path');
+
+const temp = process.env.TEMP_DIR;
+const user = JSON.parse(
+  fs.readFileSync(path.join(temp, '_user', 'package.json'))
+);
+const core = JSON.parse(fs.readFileSync(path.join(temp, 'package.json')));
 const merged = {
   ...core,
   name: user.name,
@@ -55,8 +60,8 @@ const merged = {
   devDependencies: { ...core.devDependencies, ...user.devDependencies },
 };
 // User deps override core deps (user knows better for their project)
-fs.writeFileSync('package.json', JSON.stringify(merged, null, 2) + '\\n');
-"
+fs.writeFileSync('package.json', JSON.stringify(merged, null, 2) + '\n');
+NODE
 
 # Restore user data
 [[ -d "$TEMP/_user/content" ]] && rm -rf src/content && cp -r "$TEMP/_user/content" src/
